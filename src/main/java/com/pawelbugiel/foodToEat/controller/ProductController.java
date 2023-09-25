@@ -1,5 +1,7 @@
 package com.pawelbugiel.foodToEat.controller;
 
+import com.pawelbugiel.foodToEat.dto.ProductDto;
+import com.pawelbugiel.foodToEat.mapper.ProductMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,12 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductMapper productMapper;
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ProductMapper productMapper) {
         this.productService = productService;
+        this.productMapper = productMapper;
     }
 
     @PostMapping("/product")
@@ -25,7 +29,12 @@ public class ProductController {
 
 
     @GetMapping("/products")
-    public List<Product> getAllProducts(){
-        return productService.getAllProducts();
+    public List<ProductDto> getAllProducts(){
+
+
+        return productService.getAllProducts()
+                .stream()
+                .map(p -> new ProductMapper().toProductDto(p))
+                .toList();
     }
 }

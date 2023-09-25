@@ -2,8 +2,10 @@ package com.pawelbugiel.foodToEat.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
@@ -13,12 +15,22 @@ import java.time.LocalDate;
 @Entity
 public class Product {
 
+    public Product() {
+    }
+
+    @Autowired
+    public Product(String name, double quantity, LocalDate expiryDate) {
+        this.name = name;
+        this.quantity = quantity;
+        this.expiryDate = expiryDate;
+    }
+
     @Id
-    @JsonIgnore
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank(message = "Product name cannot be empty")
     @Column(name = "name")
     private String name;
 
