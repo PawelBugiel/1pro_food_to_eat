@@ -23,18 +23,17 @@ public class ProductController {
     }
 
     @PostMapping("/product")
-    public void createProduct(@RequestBody Product product){
+    public void createProduct(@RequestBody ProductDto productDto){
+        Product product = productMapper.toProduct(productDto);
         productService.createProduct(product);
     }
 
 
     @GetMapping("/products")
     public List<ProductDto> getAllProducts(){
-
-
         return productService.getAllProducts()
                 .stream()
-                .map(p -> new ProductMapper().toProductDto(p))
+                .map(productMapper::toProductDto)
                 .toList();
     }
 }
