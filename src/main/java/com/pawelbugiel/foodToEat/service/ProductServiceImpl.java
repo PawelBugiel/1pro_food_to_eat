@@ -3,20 +3,33 @@ package com.pawelbugiel.foodToEat.service;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ProductServiceImpl implements ProductService{
 
-    @Autowired
     private final ProductRepository productRepository;
 
+    @Autowired
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
+    // --- CREATE
+
+    @Override
+    public void createProduct(Product product){
+        productRepository.save(product);
+    }
+
+
+    // --- READ
     @Override
     public List<Product> getAllProducts(){
         return productRepository.findAll();
     }
+
+
 }

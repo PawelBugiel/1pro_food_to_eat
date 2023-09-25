@@ -7,6 +7,16 @@ import java.util.List;
 
 public interface ProductService {
 
+    // --- CREATE
+
+    void createProduct(Product product);
+
+
+    // --- READ
+
     List<Product> getAllProducts();
+
+
+
 
 }
