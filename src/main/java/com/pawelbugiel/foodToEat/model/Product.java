@@ -1,11 +1,8 @@
 package com.pawelbugiel.foodToEat.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
@@ -15,22 +12,11 @@ import java.time.LocalDate;
 @Entity
 public class Product {
 
-    public Product() {
-    }
-
-    @Autowired
-    public Product(String name, double quantity, LocalDate expiryDate) {
-        this.name = name;
-        this.quantity = quantity;
-        this.expiryDate = expiryDate;
-    }
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "Product name cannot be empty")
     @Column(name = "name")
     private String name;
 
@@ -40,5 +26,46 @@ public class Product {
     @Column(name = "expiry_date")
     private LocalDate expiryDate;
 
+    public static final class ProductBuilder {
+        private long id;
+        private String name;
+        private double quantity;
+        private LocalDate expiryDate;
 
+        private ProductBuilder() {
+        }
+
+        public static ProductBuilder aProduct() {
+            return new ProductBuilder();
+        }
+
+        public ProductBuilder withId(long id) {
+            this.id = id;
+            return this;
+        }
+
+        public ProductBuilder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public ProductBuilder withQuantity(double quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public ProductBuilder withExpiryDate(LocalDate expiryDate) {
+            this.expiryDate = expiryDate;
+            return this;
+        }
+
+        public Product build() {
+            Product product = new Product();
+            product.name = this.name;
+            product.id = this.id;
+            product.quantity = this.quantity;
+            product.expiryDate = this.expiryDate;
+            return product;
+        }
+    }
 }
