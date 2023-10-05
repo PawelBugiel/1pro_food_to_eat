@@ -1,0 +1,8 @@
+product properties:
+  name
+  quantity
+  expiryDate
+
+functionality :
+  1. add new product - all its properties are mandatory
+  2. update existing product

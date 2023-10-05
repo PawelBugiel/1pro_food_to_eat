@@ -12,11 +12,11 @@ import java.time.LocalDate;
 public class ProductWriteDto {
 
     @NotNull(message = "Product name cannot be empty")
-    @Size(min = 3, max = 33, message = "A name needs from 3 to 33 characters.")
+    @Size(min = 3, max = 33, message = "The name must be between 3 and 33 characters long")
     private String name;
 
 
-    @Range(min = 1, max = 10_000,  message = "Quantity must be in range from 1 to 1 000 000")
+    @Range(min = 1, max = 10_000,  message = "Product quantity must be in range from 1 to 10 000")
     private int quantity;
 
     @FutureOrPresent
