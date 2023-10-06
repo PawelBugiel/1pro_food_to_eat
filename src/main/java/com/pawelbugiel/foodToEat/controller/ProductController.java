@@ -16,7 +16,7 @@ import java.util.List;
 import static com.pawelbugiel.foodToEat.mapper.ProductWriteMapper.mapProductDtoToProduct;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("api/v1/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -29,6 +29,8 @@ public class ProductController {
     }
 
 
+    // @ResponseStatus can be used to return http statuses
+//    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/product")
     public ResponseEntity<?> createProduct(@RequestBody ProductWriteDto productWriteDto) {
         validator.validate(productWriteDto);
