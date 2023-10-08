@@ -62,7 +62,7 @@ public class ProductRepositoryTest {
         productRepository.save(tempProduct_2);
 
         // Act
-                        // uses Optional 
+                        // uses Optional
         Product retreivedProduct = productRepository.findById(tempProduct_2.getId()).orElse(null);
 
         // Assert
