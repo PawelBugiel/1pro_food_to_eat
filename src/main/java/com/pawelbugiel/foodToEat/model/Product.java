@@ -21,7 +21,7 @@ public class Product {
     private String name;
 
     @Column (name = "quantity")
-    private double quantity;
+    private int quantity;
 
     @Column(name = "expiry_date")
     private LocalDate expiryDate;
@@ -29,7 +29,7 @@ public class Product {
     public static final class ProductBuilder {
         private long id;
         private String name;
-        private double quantity;
+        private int quantity;
         private LocalDate expiryDate;
 
         private ProductBuilder() {
@@ -49,7 +49,7 @@ public class Product {
             return this;
         }
 
-        public ProductBuilder withQuantity(double quantity) {
+        public ProductBuilder withQuantity(int quantity) {
             this.quantity = quantity;
             return this;
         }

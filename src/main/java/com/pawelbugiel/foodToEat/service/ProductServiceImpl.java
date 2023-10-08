@@ -2,8 +2,8 @@ package com.pawelbugiel.foodToEat.service;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
-import com.pawelbugiel.foodToEat.mapper.ProductWriteDtoMapper;
-import com.pawelbugiel.foodToEat.mapper.ProductWriteMapper;
+import com.pawelbugiel.foodToEat.mapper.ToProductDtoMapper;
+import com.pawelbugiel.foodToEat.mapper.ToProductMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
 import com.pawelbugiel.foodToEat.validators.ObjectValidator;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
@@ -25,19 +25,23 @@ public class ProductServiceImpl implements ProductService{
     // --- CREATE
 
     @Override
-    public ProductDto createProduct(ProductWriteDto productWriteDto){
+    public ProductDto createProduct(ProductWriteDto productWriteDto) {
 
-        Product product = ProductWriteMapper.mapProductDtoToProduct(productWriteDto);
+        Product product = ToProductMapper.mapProductDtoToProduct(productWriteDto);
 
         Product newProduct = productRepository.save(product);
 
-        return ProductWriteDtoMapper.productToDto(newProduct);
+        return ToProductDtoMapper.mapProductToProductDto(newProduct);
     }
 
     // --- READ
     @Override
-    public List<Product> getAllProducts(){
-        return productRepository.findAll();
+    public List<ProductDto> getAllProducts() {
+
+        return productRepository.findAll()
+                .stream()
+                .map(ToProductDtoMapper::mapProductToProductDto)
+                .toList();
     }
 
 

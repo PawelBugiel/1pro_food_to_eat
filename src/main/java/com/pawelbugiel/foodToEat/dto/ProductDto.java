@@ -16,42 +16,42 @@ public class ProductDto {
 
     @NotNull
     @Min(1)
-    private double quantity;
+    private int quantity;
 
     @FutureOrPresent
     private LocalDate expiryDate;
 
 
-    public static final class ProductWriteDtoBuilder {
+    public static final class ProductDtoBuilder {
         private long id;
         private @NotBlank(message = "Product name cannot be empty")
         @NotEmpty String name;
-        private @NotNull @Min(1) double quantity;
+        private @NotNull @Min(1) int quantity;
         private @FutureOrPresent LocalDate expiryDate;
 
-        private ProductWriteDtoBuilder() {
+        private ProductDtoBuilder() {
         }
 
-        public static ProductWriteDtoBuilder aProductWriteDto() {
-            return new ProductWriteDtoBuilder();
+        public static ProductDtoBuilder aProductDto() {
+            return new ProductDtoBuilder();
         }
 
-        public ProductWriteDtoBuilder withId(long id) {
+        public ProductDtoBuilder withId(long id) {
             this.id = id;
             return this;
         }
 
-        public ProductWriteDtoBuilder withName(String name) {
+        public ProductDtoBuilder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public ProductWriteDtoBuilder withQuantity(double quantity) {
+        public ProductDtoBuilder withQuantity(int quantity) {
             this.quantity = quantity;
             return this;
         }
 
-        public ProductWriteDtoBuilder withExpiryDate(LocalDate expiryDate) {
+        public ProductDtoBuilder withExpiryDate(LocalDate expiryDate) {
             this.expiryDate = expiryDate;
             return this;
         }

@@ -5,15 +5,15 @@ import com.pawelbugiel.foodToEat.model.Product;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProductWriteDtoMapper {
+public class ToProductDtoMapper {
 
-    public static ProductDto productToDto(Product product){
-        return ProductDto.ProductWriteDtoBuilder.aProductWriteDto()
+    public static ProductDto mapProductToProductDto(Product product) {
+        return ProductDto.ProductDtoBuilder.aProductDto()
+                .withId(product.getId())
                 .withName(product.getName())
                 .withQuantity(product.getQuantity())
                 .withExpiryDate(product.getExpiryDate())
                 .build();
     }
-
 
 }
