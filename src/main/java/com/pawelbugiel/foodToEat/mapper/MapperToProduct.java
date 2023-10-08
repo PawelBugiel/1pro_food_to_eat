@@ -1,3 +1,4 @@
+/*
 package com.pawelbugiel.foodToEat.mapper;
 
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
@@ -5,7 +6,7 @@ import com.pawelbugiel.foodToEat.model.Product;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ToProductMapper {
+public class MapperToProduct {
 
     public static Product mapProductDtoToProduct(ProductWriteDto productWriteDto) {
         return Product.ProductBuilder.aProduct()
@@ -16,3 +17,4 @@ public class ToProductMapper {
     }
 
 }
+*/

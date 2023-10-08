@@ -2,7 +2,7 @@ package com.pawelbugiel.foodToEat.controller;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
-import com.pawelbugiel.foodToEat.mapper.ToProductDtoMapper;
+import com.pawelbugiel.foodToEat.mapper.MapperToProductDto;
 import com.pawelbugiel.foodToEat.service.ProductService;
 import com.pawelbugiel.foodToEat.validators.ObjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class ProductController {
     private final ObjectValidator<ProductWriteDto> validator;
 
     @Autowired
-    public ProductController(ProductService productService, ToProductDtoMapper toProductDtoMapper, ObjectValidator<ProductWriteDto> validator) {
+    public ProductController(ProductService productService, MapperToProductDto mapperToProductDto, ObjectValidator<ProductWriteDto> validator) {
         this.productService = productService;
         this.validator = validator;
     }

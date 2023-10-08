@@ -2,8 +2,7 @@ package com.pawelbugiel.foodToEat.service;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
-import com.pawelbugiel.foodToEat.mapper.ToProductDtoMapper;
-import com.pawelbugiel.foodToEat.mapper.ToProductMapper;
+import com.pawelbugiel.foodToEat.mapper.ProductAndProductDtoMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
 import com.pawelbugiel.foodToEat.validators.ObjectValidator;
@@ -11,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.pawelbugiel.foodToEat.mapper.ProductAndProductDtoMapper.*;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -27,11 +28,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto createProduct(ProductWriteDto productWriteDto) {
 
-        Product product = ToProductMapper.mapProductDtoToProduct(productWriteDto);
+        Product product = mapProductDtoToProduct(productWriteDto);
 
         Product newProduct = productRepository.save(product);
 
-        return ToProductDtoMapper.mapProductToProductDto(newProduct);
+        return mapProductToProductDto(newProduct);
     }
 
     // --- READ
@@ -40,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.findAll()
                 .stream()
-                .map(ToProductDtoMapper::mapProductToProductDto)
+                .map(ProductAndProductDtoMapper::mapProductToProductDto)
                 .toList();
     }
 

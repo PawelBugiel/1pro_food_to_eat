@@ -1,14 +1,16 @@
+/*
 package com.pawelbugiel.foodToEat.mapper;
 
-import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
+import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.model.Product;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ToProductWriteDtoMapper {
+public class MapperToProductDto {
 
-    public static ProductWriteDto mapProductToProductWriteDto(Product product) {
-        return ProductWriteDto.ProductWriteDtoBuilder.aProductWriteDto()
+    public static ProductDto mapProductToProductDto(Product product) {
+        return ProductDto.ProductDtoBuilder.aProductDto()
+                .withId(product.getId())
                 .withName(product.getName())
                 .withQuantity(product.getQuantity())
                 .withExpiryDate(product.getExpiryDate())
@@ -16,3 +18,4 @@ public class ToProductWriteDtoMapper {
     }
 
 }
+*/
