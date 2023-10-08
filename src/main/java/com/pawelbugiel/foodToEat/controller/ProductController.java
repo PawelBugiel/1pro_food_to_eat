@@ -2,7 +2,6 @@ package com.pawelbugiel.foodToEat.controller;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
-import com.pawelbugiel.foodToEat.mapper.MapperToProductDto;
 import com.pawelbugiel.foodToEat.service.ProductService;
 import com.pawelbugiel.foodToEat.validators.ObjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,25 +19,21 @@ public class ProductController {
     private final ObjectValidator<ProductWriteDto> validator;
 
     @Autowired
-    public ProductController(ProductService productService, MapperToProductDto mapperToProductDto, ObjectValidator<ProductWriteDto> validator) {
+    public ProductController(ProductService productService, ObjectValidator<ProductWriteDto> validator) {
         this.productService = productService;
         this.validator = validator;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/product")
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductWriteDto productWriteDto) {
-
+    public ResponseEntity<ProductWriteDto> createProduct(@RequestBody ProductWriteDto productWriteDto) {
         validator.validate(productWriteDto);
-
-        ProductDto productDto = productService.createProduct(productWriteDto);
-
-        return new ResponseEntity<>(productDto, HttpStatus.OK);
+        ProductWriteDto tempProductWriteDto = productService.createProduct(productWriteDto);
+        return new ResponseEntity<>(tempProductWriteDto, HttpStatus.OK);
     }
 
     @GetMapping("/products")
     public List<ProductDto> getAllProducts() {
-
         return productService.getAllProducts();
     }
 }

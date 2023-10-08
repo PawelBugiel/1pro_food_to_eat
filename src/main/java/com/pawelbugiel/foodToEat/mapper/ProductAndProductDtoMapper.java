@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductAndProductDtoMapper {
 
-    public static Product mapProductDtoToProduct(ProductWriteDto productWriteDto) {
+    public static Product mapProductWriteDtoToProduct(ProductWriteDto productWriteDto) {
         return Product.ProductBuilder.aProduct()
                 .withName(productWriteDto.getName())
                 .withQuantity(productWriteDto.getQuantity())
@@ -24,4 +24,13 @@ public class ProductAndProductDtoMapper {
                 .withExpiryDate(product.getExpiryDate())
                 .build();
     }
+
+    public static ProductWriteDto mapProductToProductWriteDto(Product product){
+        return ProductWriteDto.ProductWriteDtoBuilder.aProductWriteDto()
+                .withName(product.getName())
+                .withQuantity(product.getQuantity())
+                .withExpiryDate(product.getExpiryDate())
+                .build();
+    }
+
 }

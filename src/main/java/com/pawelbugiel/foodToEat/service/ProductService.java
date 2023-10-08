@@ -9,7 +9,7 @@ public interface ProductService {
 
     // --- CREATE
 
-    ProductDto createProduct(ProductWriteDto productWriteDto);
+    ProductWriteDto createProduct(ProductWriteDto productWriteDto);
 
 
     // --- READ

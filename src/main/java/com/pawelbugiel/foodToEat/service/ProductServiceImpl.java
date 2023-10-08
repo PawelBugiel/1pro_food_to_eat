@@ -26,13 +26,13 @@ public class ProductServiceImpl implements ProductService {
     // --- CREATE
 
     @Override
-    public ProductDto createProduct(ProductWriteDto productWriteDto) {
+    public ProductWriteDto createProduct(ProductWriteDto productWriteDto) {
 
-        Product product = mapProductDtoToProduct(productWriteDto);
+        Product product = mapProductWriteDtoToProduct(productWriteDto);
 
         Product newProduct = productRepository.save(product);
 
-        return mapProductToProductDto(newProduct);
+        return mapProductToProductWriteDto(newProduct);
     }
 
     // --- READ
