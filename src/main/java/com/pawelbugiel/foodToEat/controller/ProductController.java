@@ -6,6 +6,7 @@ import com.pawelbugiel.foodToEat.service.ProductService;
 import com.pawelbugiel.foodToEat.validators.ObjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,4 +37,15 @@ public class ProductController {
     public List<ProductDto> getAllProducts() {
         return productService.getAllProducts();
     }
+
+    @ResponseStatus(HttpStatus.FOUND)
+    @GetMapping("product/{id}")
+    public ResponseEntity<?> findProductById(@PathVariable long id) {
+
+        return (productService.getProductById(id).isEmpty()) ?
+                new ResponseEntity<>("Product not found\n", HttpStatusCode.valueOf(404)) :
+                new ResponseEntity<>("Product found", HttpStatusCode.valueOf(200));
+
+    }
 }
+

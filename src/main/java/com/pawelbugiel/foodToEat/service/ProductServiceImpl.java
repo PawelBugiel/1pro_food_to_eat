@@ -2,26 +2,30 @@ package com.pawelbugiel.foodToEat.service;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
-import com.pawelbugiel.foodToEat.mapper.ProductAndProductDtoMapper;
+import com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
-import com.pawelbugiel.foodToEat.validators.ObjectValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
-import static com.pawelbugiel.foodToEat.mapper.ProductAndProductDtoMapper.*;
+import static com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper.mapProductToProductWriteDto;
+import static com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper.mapProductWriteDtoToProduct;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
+    @Autowired
     private final ProductRepository productRepository;
 
-    @Autowired
+  /*  @Autowired
     public ProductServiceImpl(ProductRepository productRepository, ObjectValidator<Product> productObjectValidator) {
         this.productRepository = productRepository;
-    }
+    }*/
 
     // --- CREATE
 
@@ -43,6 +47,15 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .map(ProductAndProductDtoMapper::mapProductToProductDto)
                 .toList();
+    }
+
+    @Override
+    public Optional<ProductDto> getProductById(long id) {
+
+        Optional<ProductDto> result =  productRepository.findById(id)
+                .map(ProductAndProductDtoMapper::mapProductToProductDto);
+
+        return (result.isPresent()) ? result : Optional.empty();
     }
 
 

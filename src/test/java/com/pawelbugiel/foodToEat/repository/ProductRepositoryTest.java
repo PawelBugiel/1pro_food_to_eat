@@ -14,11 +14,19 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /*
- * a naming convention is "aClass_aMethod_whatWillBeReturned"
+ * When to write tests for @Repository ?  Only for methods implemented on my own
+ *
+ *
+ * @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+ *  annotation is to avoid a problem with cleaning up the embedded H2 database before running each of test methods.
+ * alternatively it is possible to use @AfterEach tearDown()
+ *
+ * @AutoConfigureTestDatabase to use H2
+ *
+ * @DataJpaTest to test Jpa Repository
  * */
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-// The above annotation is to avoid a problem with cleaning up the embedded database before running each of test methods.
 @AutoConfigureTestDatabase
 @DataJpaTest
 public class ProductRepositoryTest {
@@ -45,7 +53,7 @@ public class ProductRepositoryTest {
 
     @Test
     public void productRepository_saveProduct_Product() {
-        // Arrange
+        // given
         LocalDate expiryDate = LocalDate.of(2023, 12, 12);
         Product product = Product.ProductBuilder.aProduct()
                 .withName("Water")
@@ -53,10 +61,10 @@ public class ProductRepositoryTest {
                 .withExpiryDate(expiryDate)
                 .build();
 
-        // Act
+        // when
         Product savedProduct = productRepository.save(product);
 
-        // Assert
+        // then
         assertThat(savedProduct).isNotNull();
         assertThat(savedProduct.getId()).isGreaterThan(0);
     }
@@ -65,11 +73,11 @@ public class ProductRepositoryTest {
     public void productRepository_getProduct_aProduct() {
 
         // Act
-        Product retreivedProduct = productRepository.findById(2L).orElse(null);
+        Product retrievedProduct = productRepository.findById(2L).orElse(null);
 
         // Assert
-        assert retreivedProduct != null;
-        assertThat(retreivedProduct.getId()).isEqualTo(2);
+        assertThat(retrievedProduct).isNotNull();
+        assertThat(retrievedProduct.getId()).isEqualTo(2);
     }
 
     @Test
@@ -82,4 +90,6 @@ public class ProductRepositoryTest {
         assertThat(products).isNotNull();
         assertThat(products.size()).isEqualTo(2);
     }
+
+
 }

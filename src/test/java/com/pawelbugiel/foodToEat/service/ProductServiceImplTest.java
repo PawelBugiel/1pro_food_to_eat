@@ -1,10 +1,11 @@
 package com.pawelbugiel.foodToEat.service;
 
-import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
-import com.pawelbugiel.foodToEat.mapper.ProductAndProductDtoMapper;
+import com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,24 +13,57 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Mockito.*;
+
+/*
+ * @ExtendWith(MockitoExtension.class) annotation is used to avoid implicitly implementing open and close a mock resource
+ * 1.
+ *
+ * @BeforeEach
+ * void setUp {
+ * AutoCloseable autoCloseable = MockitoAnnotations.openMocks(this);
+ * }
+ *2.
+ * @AfterEach
+ * void tearDown() throws Exception {
+ * autoCloseable.close();
+ * }
+ * */
 
 @ExtendWith(MockitoExtension.class)
-public class ProductServiceImplTest {
+public class  ProductServiceImplTest {
 
     @Mock
     private ProductRepository productRepository;
 
     @InjectMocks
-    private ProductServiceImpl productService;
+    private ProductServiceImpl underTest_ProductServiceImpl;
 
+    @BeforeEach
+    public void setUp() {
+/*        List<Product> mockProducts = new ArrayList<>();
+        mockProducts.add(Product.ProductBuilder.aProduct()
+                .withName("Milk")
+                .withQuantity(2)
+                .withExpiryDate(LocalDate.of(2033, 3, 3))
+                .build());
+
+        mockProducts.add(Product.ProductBuilder.aProduct()
+                .withName("Bread")
+                .withQuantity(4)
+                .withExpiryDate(LocalDate.of(2044, 4, 4))
+                .build());*/
+
+        underTest_ProductServiceImpl = new ProductServiceImpl(productRepository);
+
+    }
+
+//    @Disabled
     @Test
-    public void ProductService_createProduct_ReturnsPokemon(){
+    public void ProductService_createProduct_ReturnsProduct() {
 
         // Arrange
         Product product = (Product.ProductBuilder.aProduct()
@@ -43,38 +77,48 @@ public class ProductServiceImplTest {
         // when(*method*).thenReturn(*value*)
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
-        ProductWriteDto savedProductWriteDto = productService.createProduct(productWriteDto);
+        ProductWriteDto savedProductWriteDto = underTest_ProductServiceImpl.createProduct(productWriteDto);
 
         // Assert
-
         assertThat(savedProductWriteDto).isNotNull();
     }
 
     @Test
-    public void ProductService_getAllProducts_returnsProductDtos(){
+    public void ProductService_getAllProducts_returnsProductDtos() {
 
-        // Mock the behavior of productRepository.findAll
-        List<Product> mockProducts = new ArrayList<>();
-        mockProducts.add(Product.ProductBuilder.aProduct()
+       /* // Mock the behavior of productRepository.findAll
+        List<Product> products = new ArrayList<>();
+        products.add(Product.ProductBuilder.aProduct()
                 .withName("Milk")
                 .withQuantity(2)
-                .withExpiryDate(LocalDate.of(2033, 03,03))
+                .withExpiryDate(LocalDate.of(2033, 3,3))
                 .build());
 
-        mockProducts.add(Product.ProductBuilder.aProduct()
+        products.add(Product.ProductBuilder.aProduct()
                 .withName("Bread")
                 .withQuantity(4)
-                .withExpiryDate(LocalDate.of(2044, 04,04))
+                .withExpiryDate(LocalDate.of(2044, 4,4))
                 .build());
 
-        when(productRepository.findAll()
-        ).thenReturn(mockProducts);
+        when(productRepository.findAll()).thenReturn(products);
 
         // Call the method to test
-        List<ProductDto> productDtos = productService.getAllProducts();
+        List<ProductDto> productDtos = underTest_ProductServiceImpl.getAllProducts();
 
-        assertThat(productDtos.get(1).getName()).isEqualTo(mockProducts.get(1).getName());
+        assertThat(productDtos.get(1).getName()).isEqualTo(products.get(1).getName());
         assertThat(productDtos.size()).isEqualTo(2);
+*/
+        // when
+        underTest_ProductServiceImpl.getAllProducts();
+        //then
+        verify(productRepository).findAll();
     }
 
+    @Disabled
+    @Test
+    public void ProductService_getProduct_returnsProductDto() {
+fail("ProductService_getProduct_returnsProductDto not implemented yet..");
+
+
+    }
 }
