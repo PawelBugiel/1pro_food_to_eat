@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/products")
@@ -40,12 +42,10 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("product/{id}")
-    public ResponseEntity<?> findProductById(@PathVariable long id) {
-
-        return (productService.getProductById(id).isEmpty()) ?
+    public ResponseEntity<?> findProductById(@PathVariable UUID id) {
+        Optional<ProductDto> productDtoOptional = productService.getProductById(id);
+        return (productDtoOptional.isEmpty()) ?
                 new ResponseEntity<>("Product not found\n", HttpStatusCode.valueOf(404)) :
-                new ResponseEntity<>("Product found", HttpStatusCode.valueOf(200));
-
+                new ResponseEntity<>(productDtoOptional.get(), HttpStatusCode.valueOf(200));
     }
 }
-

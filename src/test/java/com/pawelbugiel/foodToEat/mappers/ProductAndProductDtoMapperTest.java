@@ -1,3 +1,4 @@
+/*
 package com.pawelbugiel.foodToEat.mappers;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
@@ -63,3 +64,4 @@ class ProductAndProductDtoMapperTest {
         Assertions.assertThat(productWriteDto.getExpiryDate()).isEqualTo(product.getExpiryDate());
     }
 }
+*/

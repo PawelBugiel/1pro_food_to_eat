@@ -4,15 +4,18 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ProductDto {
 
-    private long id;
+    private UUID id;
 
     @NotBlank(message = "Product name cannot be empty")
     @NotEmpty
@@ -27,11 +30,10 @@ public class ProductDto {
 
 
     public static final class ProductDtoBuilder {
-        private long id;
-        private @NotBlank(message = "Product name cannot be empty")
-        @NotEmpty String name;
-        private @NotNull @Min(1) int quantity;
-        private @FutureOrPresent LocalDate expiryDate;
+        private UUID id;
+        private String name;
+        private int quantity;
+        private LocalDate expiryDate;
 
         private ProductDtoBuilder() {
         }
@@ -40,7 +42,7 @@ public class ProductDto {
             return new ProductDtoBuilder();
         }
 
-        public ProductDtoBuilder withId(long id) {
+        public ProductDtoBuilder withId(UUID id) {
             this.id = id;
             return this;
         }

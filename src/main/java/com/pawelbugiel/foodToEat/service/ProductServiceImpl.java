@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper.mapProductToProductWriteDto;
 import static com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper.mapProductWriteDtoToProduct;
@@ -50,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductDto> getProductById(long id) {
+    public Optional<ProductDto> getProductById(UUID id) {
 
         Optional<ProductDto> result =  productRepository.findById(id)
                 .map(ProductAndProductDtoMapper::mapProductToProductDto);

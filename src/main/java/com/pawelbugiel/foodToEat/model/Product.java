@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 @ToString
@@ -14,8 +15,8 @@ public class Product {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "name")
     private String name;
@@ -27,7 +28,7 @@ public class Product {
     private LocalDate expiryDate;
 
     public static final class ProductBuilder {
-        private long id;
+        private UUID id;
         private String name;
         private int quantity;
         private LocalDate expiryDate;
@@ -39,7 +40,7 @@ public class Product {
             return new ProductBuilder();
         }
 
-        public ProductBuilder withId(long id) {
+        public ProductBuilder withId(UUID id) {
             this.id = id;
             return this;
         }
