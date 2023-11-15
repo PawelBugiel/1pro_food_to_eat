@@ -2,6 +2,7 @@ package com.pawelbugiel.foodToEat.repository;
 
 import com.pawelbugiel.foodToEat.model.Product;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -10,6 +11,8 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,61 +36,80 @@ public class ProductRepositoryTest {
 
     @Autowired
     private ProductRepository productRepository;
+    private final LocalDate expiryDate_1 = LocalDate.of(2024, 1, 1);
+    private final LocalDate expiryDate_2 = LocalDate.of(2025, 2, 2);
+    private Product product_1;
+    private Product product_2;
 
     @BeforeEach
     public void setUp() {
-        Product product_1 = (Product.ProductBuilder.aProduct()
+        product_1 = (Product.ProductBuilder.aProduct()
                 .withName("Milk")
                 .withQuantity(1)
-                .withExpiryDate(LocalDate.of(2024, 1, 1))
+                .withExpiryDate(expiryDate_1)
                 .build());
 
-        Product product_2 = (Product.ProductBuilder.aProduct()
+        product_2 = (Product.ProductBuilder.aProduct()
                 .withName("Mars")
                 .withQuantity(2)
-                .withExpiryDate(LocalDate.of(2055, 2, 2))
+                .withExpiryDate(expiryDate_2)
                 .build());
 
         productRepository.saveAll(List.of(product_1, product_2));
     }
 
-   /* @Test
+    @Test
+    @DisplayName("Successfully saved product")
     public void productRepository_saveProduct_Product() {
-        // given
-        LocalDate expiryDate = LocalDate.of(2023, 12, 12);
-        Product product = Product.ProductBuilder.aProduct()
-                .withName("Water")
-                .withQuantity(11)
-                .withExpiryDate(expiryDate)
-                .build();
-
         // when
-        Product savedProduct = productRepository.save(product);
+        Product savedProduct = productRepository.save(product_1);
 
         // then
         assertThat(savedProduct).isNotNull();
-        assertThat(savedProduct.getId()).isGreaterThan(0);
-    }*/
-
-   /* @Test
-    public void productRepository_getProduct_aProduct() {
-
-        // Act
-        Product retrievedProduct = productRepository.findById(2L).orElse(null);
-
-        // Assert
-        assertThat(retrievedProduct).isNotNull();
-        assertThat(retrievedProduct.getId()).isEqualTo(2);
-    }*/
+        assertThat(savedProduct.getName()).isEqualTo("Milk");
+        assertThat(savedProduct.getQuantity()).isEqualTo(1);
+        assertThat(savedProduct.getExpiryDate()).isEqualTo(expiryDate_1);
+    }
 
     @Test
-    public void productRepository_getAllProducts_ListOfProducts() {
+    @DisplayName("Successfully found product by id")
+    public void productRepository_getProduct_aProduct() {
+        // Given
+        Product saved = productRepository.save(product_2);
+        UUID savedUUID = saved.getId();
 
-        // Act
+        // When
+        Product retrievedProduct = productRepository.findById(savedUUID).orElse(Product.ProductBuilder.aProduct().withName("UnnamedProduct").build());
+
+        // Then
+        assertThat(retrievedProduct).isNotNull();
+        assertThat(retrievedProduct.getName()).isEqualTo("Mars");
+        assertThat(retrievedProduct.getQuantity()).isEqualTo(2);
+        assertThat(retrievedProduct.getExpiryDate()).isEqualTo(expiryDate_2);
+    }
+
+    @Test
+    @DisplayName("Product not found by id")
+    public void productRepository_getProduct_aProductWithNameUnnamedProduct() {
+        // Given
+        UUID notPresentUUID = UUID.randomUUID();
+
+        // When
+        Optional<Product> optionalRetrievedProduct = productRepository.findById(notPresentUUID);
+
+        // Then
+        assertThat(optionalRetrievedProduct).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Successfully retrieved all products")
+    public void productRepository_getAllProducts_ListOfProducts() {
+        // When
         List<Product> products = productRepository.findAll();
 
-        // Assert
+        // Then
         assertThat(products).isNotNull();
+        assertThat(products).isNotEmpty();
         assertThat(products.size()).isEqualTo(2);
     }
 

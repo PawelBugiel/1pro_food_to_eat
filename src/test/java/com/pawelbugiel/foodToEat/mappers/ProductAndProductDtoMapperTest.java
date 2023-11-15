@@ -1,4 +1,3 @@
-/*
 package com.pawelbugiel.foodToEat.mappers;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
@@ -9,9 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @SpringBootTest
 class ProductAndProductDtoMapperTest {
+
+
+   private final UUID tempUUID = UUID.randomUUID();
 
     @Test
     void mapProductWriteDtoToProduct() {
@@ -32,11 +35,13 @@ class ProductAndProductDtoMapperTest {
     @Test
     void mapProductToProductDto() {
         // Arrange
+
+
         Product product = Product.ProductBuilder.aProduct()
                 .withName("Water")
                 .withQuantity(5)
                 .withExpiryDate(LocalDate.of(2077,7,7))
-                .withId(44L)
+                .withId(tempUUID)
                 .build();
 
         // Act
@@ -54,7 +59,7 @@ class ProductAndProductDtoMapperTest {
                 .withName("Water")
                 .withQuantity(5)
                 .withExpiryDate(LocalDate.of(2077,7,7))
-                .withId(44L)
+                .withId(tempUUID)
                 .build();
 
         // Act
@@ -64,4 +69,3 @@ class ProductAndProductDtoMapperTest {
         Assertions.assertThat(productWriteDto.getExpiryDate()).isEqualTo(product.getExpiryDate());
     }
 }
-*/
