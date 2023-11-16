@@ -6,6 +6,7 @@ import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -63,9 +64,9 @@ public class  ProductServiceImplTest {
 
 //    @Disabled
     @Test
+    @DisplayName("should create Product and Return Product Write Dto")
     public void ProductService_createProduct_ReturnsProduct() {
-
-        // Arrange
+        // GIVEN
         Product product = (Product.ProductBuilder.aProduct()
                 .withName("Milk")
                 .withQuantity(1)
@@ -74,13 +75,19 @@ public class  ProductServiceImplTest {
 
         ProductWriteDto productWriteDto = ProductAndProductDtoMapper.mapProductToProductWriteDto(product);
 
-        // when(*method*).thenReturn(*value*)
+        // set how the productRepository mock should behave
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
+        // WHEN
         ProductWriteDto savedProductWriteDto = underTest_ProductServiceImpl.createProduct(productWriteDto);
 
-        // Assert
+        // THEN
         assertThat(savedProductWriteDto).isNotNull();
+        assertThat(savedProductWriteDto.getName()).isEqualTo(product.getName());
+        assertThat(savedProductWriteDto.getQuantity()).isEqualTo(product.getQuantity());
+        assertThat(savedProductWriteDto.getExpiryDate()).isEqualTo(product.getExpiryDate());
+
+        verify(productRepository, times(1)).save(any(Product.class));
     }
 
     @Test

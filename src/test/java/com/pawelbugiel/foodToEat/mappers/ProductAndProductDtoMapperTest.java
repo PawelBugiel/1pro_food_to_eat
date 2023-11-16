@@ -4,68 +4,64 @@ import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
 import com.pawelbugiel.foodToEat.model.Product;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-@SpringBootTest
 class ProductAndProductDtoMapperTest {
 
-
-   private final UUID tempUUID = UUID.randomUUID();
+    private final UUID tempUUID = UUID.randomUUID();
+    private final LocalDate expiryDate_1 = LocalDate.of(2077, 7, 7);
+    private final Product product_1 = Product.ProductBuilder.aProduct()
+            .withName("Water")
+            .withQuantity(5)
+            .withExpiryDate(expiryDate_1)
+            .withId(tempUUID)
+            .build();
 
     @Test
+    @DisplayName("Product Write Dto correctly mapped to Product")
     void mapProductWriteDtoToProduct() {
-        // Arrange
+        // Given
         ProductWriteDto productWriteDto = ProductWriteDto.ProductWriteDtoBuilder.aProductWriteDto()
                 .withName("Water")
                 .withQuantity(5)
-                .withExpiryDate(LocalDate.of(2077,7,7))
+                .withExpiryDate(LocalDate.of(2077, 7, 7))
                 .build();
 
-        // Act
+        // When
         Product product = ProductAndProductDtoMapper.mapProductWriteDtoToProduct(productWriteDto);
 
-        // Assert
+        // Then
         Assertions.assertThat(productWriteDto.getName()).isEqualTo(product.getName());
+        Assertions.assertThat(productWriteDto.getQuantity()).isEqualTo(5);
+        Assertions.assertThat(productWriteDto.getExpiryDate()).isEqualTo(expiryDate_1);
     }
 
     @Test
+    @DisplayName("Product correctly mapped to Product Dto")
     void mapProductToProductDto() {
-        // Arrange
+        // When
+        ProductDto productDto = ProductAndProductDtoMapper.mapProductToProductDto(product_1);
 
-
-        Product product = Product.ProductBuilder.aProduct()
-                .withName("Water")
-                .withQuantity(5)
-                .withExpiryDate(LocalDate.of(2077,7,7))
-                .withId(tempUUID)
-                .build();
-
-        // Act
-        ProductDto productDto = ProductAndProductDtoMapper.mapProductToProductDto(product);
-
-        // Assert
-        Assertions.assertThat(productDto.getQuantity()).isEqualTo(product.getQuantity());
+        // Then
+        Assertions.assertThat(productDto.getQuantity()).isEqualTo(product_1.getQuantity());
+        Assertions.assertThat(productDto.getExpiryDate()).isEqualTo(expiryDate_1);
+        Assertions.assertThat(productDto.getName()).isEqualTo("Water");
+        Assertions.assertThat(productDto.getId()).isEqualTo(tempUUID);
     }
 
     @Test
+    @DisplayName("Product correctly mapped to Product Write Dto")
     void mapProductToProductWriteDto() {
-//        fail("this test has yet to be implemented");
-        // Arrange
-        Product product = Product.ProductBuilder.aProduct()
-                .withName("Water")
-                .withQuantity(5)
-                .withExpiryDate(LocalDate.of(2077,7,7))
-                .withId(tempUUID)
-                .build();
+        // When
+        ProductWriteDto productWriteDto = ProductAndProductDtoMapper.mapProductToProductWriteDto(product_1);
 
-        // Act
-        ProductWriteDto productWriteDto = ProductAndProductDtoMapper.mapProductToProductWriteDto(product);
-
-        // Assert
-        Assertions.assertThat(productWriteDto.getExpiryDate()).isEqualTo(product.getExpiryDate());
-    }
+        // Then
+        Assertions.assertThat(productWriteDto.getName()).isEqualTo("Water");
+        Assertions.assertThat(productWriteDto.getExpiryDate()).isEqualTo(expiryDate_1);
+        Assertions.assertThat(productWriteDto.getQuantity()).isEqualTo(5);
+}
 }
