@@ -3,7 +3,8 @@ package com.pawelbugiel.foodToEat.controller;
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
 import com.pawelbugiel.foodToEat.service.ProductService;
-import com.pawelbugiel.foodToEat.validators.ObjectValidator;
+//import com.pawelbugiel.foodToEat.validators.ObjectValidator;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,18 +20,16 @@ import java.util.UUID;
 public class ProductController {
 
     private final ProductService productService;
-    private final ObjectValidator<ProductWriteDto> validator;
 
     @Autowired
-    public ProductController(ProductService productService, ObjectValidator<ProductWriteDto> validator) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.validator = validator;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/product")
-    public ResponseEntity<ProductWriteDto> createProduct(@RequestBody ProductWriteDto productWriteDto) {
-        validator.validate(productWriteDto);
+    public ResponseEntity<ProductWriteDto> createProduct(@RequestBody @Valid ProductWriteDto productWriteDto) {
+//        validator.validate(productWriteDto);
         ProductWriteDto tempProductWriteDto = productService.createProduct(productWriteDto);
         return new ResponseEntity<>(tempProductWriteDto, HttpStatus.OK);
     }

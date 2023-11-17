@@ -1,3 +1,4 @@
+/*
 package com.pawelbugiel.foodToEat.validators;
 
 import jakarta.validation.*;
@@ -25,3 +26,4 @@ public class ObjectValidator<T> {
         }
     }
 }
+*/
