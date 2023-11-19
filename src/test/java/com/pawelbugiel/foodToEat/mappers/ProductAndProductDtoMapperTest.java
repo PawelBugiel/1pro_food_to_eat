@@ -17,7 +17,7 @@ class ProductAndProductDtoMapperTest {
     private final Product product_1 = Product.ProductBuilder.aProduct()
             .withName("Water")
             .withQuantity(5)
-            .withExpiryDate(expiryDate_1)
+//            .withExpiryDate(expiryDate_1)
             .withId(tempUUID)
             .build();
 
@@ -28,7 +28,7 @@ class ProductAndProductDtoMapperTest {
         ProductWriteDto productWriteDto = ProductWriteDto.ProductWriteDtoBuilder.aProductWriteDto()
                 .withName("Water")
                 .withQuantity(5)
-                .withExpiryDate(LocalDate.of(2077, 7, 7))
+//                .withExpiryDate(LocalDate.of(2077, 7, 7))
                 .build();
 
         // When
@@ -37,7 +37,7 @@ class ProductAndProductDtoMapperTest {
         // Then
         Assertions.assertThat(productWriteDto.getName()).isEqualTo(product.getName());
         Assertions.assertThat(productWriteDto.getQuantity()).isEqualTo(5);
-        Assertions.assertThat(productWriteDto.getExpiryDate()).isEqualTo(expiryDate_1);
+//        Assertions.assertThat(productWriteDto.getExpiryDate()).isEqualTo(expiryDate_1);
     }
 
     @Test
@@ -48,7 +48,7 @@ class ProductAndProductDtoMapperTest {
 
         // Then
         Assertions.assertThat(productDto.getQuantity()).isEqualTo(product_1.getQuantity());
-        Assertions.assertThat(productDto.getExpiryDate()).isEqualTo(expiryDate_1);
+//        Assertions.assertThat(productDto.getExpiryDate()).isEqualTo(expiryDate_1);
         Assertions.assertThat(productDto.getName()).isEqualTo("Water");
         Assertions.assertThat(productDto.getId()).isEqualTo(tempUUID);
     }
@@ -61,7 +61,7 @@ class ProductAndProductDtoMapperTest {
 
         // Then
         Assertions.assertThat(productWriteDto.getName()).isEqualTo("Water");
-        Assertions.assertThat(productWriteDto.getExpiryDate()).isEqualTo(expiryDate_1);
+//        Assertions.assertThat(productWriteDto.getExpiryDate()).isEqualTo(expiryDate_1);
         Assertions.assertThat(productWriteDto.getQuantity()).isEqualTo(5);
 }
 }

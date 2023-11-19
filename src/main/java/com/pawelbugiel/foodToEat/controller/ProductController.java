@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/v1/products")
+@RequestMapping("api/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -28,10 +28,9 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/product")
-    public ResponseEntity<ProductWriteDto> createProduct(@RequestBody @Valid ProductWriteDto productWriteDto) {
-//        validator.validate(productWriteDto);
-        ProductWriteDto tempProductWriteDto = productService.createProduct(productWriteDto);
-        return new ResponseEntity<>(tempProductWriteDto, HttpStatus.OK);
+    public ProductDto createProduct(@RequestBody @Valid ProductWriteDto productWriteDto) {
+        ProductDto tempProductWriteDto = productService.createProduct(productWriteDto);
+        return tempProductWriteDto;
     }
 
     @GetMapping("/products")

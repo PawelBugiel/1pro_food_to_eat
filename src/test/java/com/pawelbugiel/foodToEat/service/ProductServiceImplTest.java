@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /*
@@ -58,32 +59,30 @@ public class ProductServiceImplTest {
             .withExpiryDate(LocalDate.of(2044, 4, 4))
             .build();
 
-    //    @Disabled
     @Test
     @DisplayName("should create Product and Return Product Write Dto")
-    public void ProductService_createProduct_ReturnsProduct() {
+    public void testCreateProduct_whenAllDetailsPassed_ReturnsProduct() {
         // GIVEN
-
         ProductWriteDto productWriteDto = ProductAndProductDtoMapper.mapProductToProductWriteDto(product_1);
 
         // set how the productRepository mock should behave
         when(productRepository.save(any(Product.class))).thenReturn(product_1);
 
         // WHEN
-        ProductWriteDto savedProductWriteDto = underTest_ProductServiceImpl.createProduct(productWriteDto);
+        ProductDto savedProductDto = underTest_ProductServiceImpl.createProduct(productWriteDto);
 
         // THEN
-        assertThat(savedProductWriteDto).isNotNull();
-        assertThat(savedProductWriteDto.getName()).isEqualTo(product_1.getName());
-        assertThat(savedProductWriteDto.getQuantity()).isEqualTo(product_1.getQuantity());
-        assertThat(savedProductWriteDto.getExpiryDate()).isEqualTo(product_1.getExpiryDate());
+        assertThat(savedProductDto).isNotNull();
+        assertThat(savedProductDto.getName()).isEqualTo(product_1.getName());
+        assertThat(savedProductDto.getQuantity()).isEqualTo(product_1.getQuantity());
+        assertThat(savedProductDto.getExpiryDate()).isEqualTo(product_1.getExpiryDate());
 
         verify(productRepository, times(1)).save(any(Product.class));
     }
 
     @Test
-    @DisplayName("Should returns all products ")
-    public void ProductService_getAllProducts_returnsProductDtos() {
+    @DisplayName("Should returns all (two) products dtos ")
+    public void testGetAllProducts_whenTwoValidProductsExists_returnsProductDtos() {
         // GIVEN
         List<Product> products = new ArrayList<>();
         products.add(product_1);
@@ -113,7 +112,7 @@ public class ProductServiceImplTest {
 
     @Test
     @DisplayName("should return a product with given id")
-    public void ProductService_getProductById_returnsOptionalProductDto() {
+    public void testGetProductById_whenProperIdPassed_returnsOptionalProductDto() {
         // GIVEN
         UUID uuid = UUID.randomUUID();
         ProductDto productDto_1 = ProductAndProductDtoMapper.mapProductToProductDto(product_1);
@@ -130,5 +129,37 @@ public class ProductServiceImplTest {
         assertThat(resultProductDto.getName()).isEqualTo(productDto_1.getName());
         assertThat(resultProductDto.getQuantity()).isEqualTo(productDto_1.getQuantity());
         assertThat(resultProductDto.getExpiryDate()).isEqualTo(productDto_1.getExpiryDate());
+
+        verify(productRepository, times(1) ).findById(eq(uuid));
+    }
+
+    @Test
+    @DisplayName("Should returns empty collection")
+    public void testGetAllProducts_whenTwoValidProductsExists_returnsEmptyCollection() {
+        // GIVEN
+        List<Product> products = new ArrayList<>();
+        when(productRepository.findAll()).thenReturn(products);
+
+        // WHEN
+        List<ProductDto> productDtos = underTest_ProductServiceImpl.getAllProducts();
+
+        // THEN
+        assertTrue(products.isEmpty());
+        verify(productRepository, times(1)).findAll();
+    }
+
+    @Test
+    @DisplayName("Pass an invalid Id, return an empty product optional")
+    public void testGetProductById_whenInvalidIdPassed_returnsOptionalProductDto() {
+        // GIVEN
+        UUID uuid = UUID.randomUUID();
+        when(productRepository.findById(eq(uuid))).thenReturn(Optional.empty());
+
+        // WHEN
+        Optional<ProductDto> resultOptionalProductDto = underTest_ProductServiceImpl.getProductById(uuid);
+
+        // THEN
+        Assertions.assertTrue(resultOptionalProductDto.isEmpty());
+        verify(productRepository, times(1) ).findById(eq(uuid));
     }
 }

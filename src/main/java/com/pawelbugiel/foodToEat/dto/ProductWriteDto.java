@@ -1,14 +1,20 @@
 package com.pawelbugiel.foodToEat.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
 
 import java.time.LocalDate;
 
 @Getter
+@ToString
 public class ProductWriteDto {
 
     @NotNull(message = "Product name cannot be empty")
@@ -20,12 +26,17 @@ public class ProductWriteDto {
     private int quantity;
 
     @FutureOrPresent
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate expiryDate;
 
     public static final class ProductWriteDtoBuilder {
-        private @NotNull(message = "Product name cannot be empty") @Size(min = 3, max = 33, message = "The name must be between 3 and 33 characters long") String name;
-        private @Range(min = 1, max = 10_000, message = "Product quantity must be in range from 1 to 10 000") int quantity;
-        private @FutureOrPresent LocalDate expiryDate;
+
+        private  String name;
+
+        private int quantity;
+
+        private LocalDate expiryDate;
 
         private ProductWriteDtoBuilder() {
         }

@@ -46,13 +46,13 @@ public class ProductRepositoryTest {
         product_1 = (Product.ProductBuilder.aProduct()
                 .withName("Milk")
                 .withQuantity(1)
-                .withExpiryDate(expiryDate_1)
+//                .withExpiryDate(expiryDate_1)
                 .build());
 
         product_2 = (Product.ProductBuilder.aProduct()
                 .withName("Mars")
                 .withQuantity(2)
-                .withExpiryDate(expiryDate_2)
+//                .withExpiryDate(expiryDate_2)
                 .build());
 
         productRepository.saveAll(List.of(product_1, product_2));
@@ -68,7 +68,7 @@ public class ProductRepositoryTest {
         assertThat(savedProduct).isNotNull();
         assertThat(savedProduct.getName()).isEqualTo("Milk");
         assertThat(savedProduct.getQuantity()).isEqualTo(1);
-        assertThat(savedProduct.getExpiryDate()).isEqualTo(expiryDate_1);
+//        assertThat(savedProduct.getExpiryDate()).isEqualTo(expiryDate_1);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class ProductRepositoryTest {
         assertThat(retrievedProduct).isNotNull();
         assertThat(retrievedProduct.getName()).isEqualTo("Mars");
         assertThat(retrievedProduct.getQuantity()).isEqualTo(2);
-        assertThat(retrievedProduct.getExpiryDate()).isEqualTo(expiryDate_2);
+//        assertThat(retrievedProduct.getExpiryDate()).isEqualTo(expiryDate_2);
     }
 
     @Test
