@@ -137,14 +137,13 @@ public class ProductServiceImplTest {
     @DisplayName("Should returns empty collection")
     public void testGetAllProducts_whenTwoValidProductsExists_returnsEmptyCollection() {
         // GIVEN
-        List<Product> products = new ArrayList<>();
-        when(productRepository.findAll()).thenReturn(products);
+        when(productRepository.findAll()).thenReturn(new ArrayList<>());
 
         // WHEN
         List<ProductDto> productDtos = underTest_ProductServiceImpl.getAllProducts();
 
         // THEN
-        assertTrue(products.isEmpty());
+        assertTrue(productDtos.isEmpty());
         verify(productRepository, times(1)).findAll();
     }
 
