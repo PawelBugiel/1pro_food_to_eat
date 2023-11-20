@@ -46,13 +46,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductDto> getProductById(UUID id) {
-
-        Optional<ProductDto> result =  productRepository.findById(id)
-                .map(ProductAndProductDtoMapper::mapProductToProductDto);
-
-        return (result.isPresent()) ? result : Optional.empty();
+    public Optional<ProductDto> getProductById(String id) {
+        UUID uuid = UUID.fromString(id);
+        Optional<ProductDto> result;
+        if (isValidUUID(id)) {
+            result = productRepository.findById(uuid)
+                    .map(ProductAndProductDtoMapper::mapProductToProductDto);
+            return result;
+        }
+        return Optional.empty();
     }
 
+    private Optional<UUID> isValidUUID(String string) {
+        Optional<UUID> optionalUUID = Optional.of(UUID.fromString(string));
+        if(optionalUUID.isPresent())
+             return Optional.of(UUID.fromString(string));
+        return Optional.empty();
+    }
 
 }

@@ -115,11 +115,12 @@ public class ProductServiceImplTest {
     public void testGetProductById_whenProperIdPassed_returnsOptionalProductDto() {
         // GIVEN
         UUID uuid = UUID.randomUUID();
+        String stringUUID = uuid.toString();
         ProductDto productDto_1 = ProductAndProductDtoMapper.mapProductToProductDto(product_1);
         when(productRepository.findById(eq(uuid))).thenReturn(Optional.of(product_1));
 
         // WHEN
-        Optional<ProductDto> resultOptionalProductDto = underTest_ProductServiceImpl.getProductById(uuid);
+        Optional<ProductDto> resultOptionalProductDto = underTest_ProductServiceImpl.getProductById(stringUUID);
 
         // THEN
         Assertions.assertTrue(resultOptionalProductDto.isPresent());
@@ -152,10 +153,11 @@ public class ProductServiceImplTest {
     public void testGetProductById_whenInvalidIdPassed_returnsOptionalProductDto() {
         // GIVEN
         UUID uuid = UUID.randomUUID();
+        String stringUUID = uuid.toString();
         when(productRepository.findById(eq(uuid))).thenReturn(Optional.empty());
 
         // WHEN
-        Optional<ProductDto> resultOptionalProductDto = underTest_ProductServiceImpl.getProductById(uuid);
+        Optional<ProductDto> resultOptionalProductDto = underTest_ProductServiceImpl.getProductById(stringUUID);
 
         // THEN
         Assertions.assertTrue(resultOptionalProductDto.isEmpty());

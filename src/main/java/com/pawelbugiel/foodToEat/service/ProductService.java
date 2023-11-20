@@ -5,7 +5,6 @@ import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface ProductService {
 
@@ -18,7 +17,7 @@ public interface ProductService {
 
     List<ProductDto> getAllProducts();
 
-    Optional<ProductDto> getProductById(UUID id);
+    Optional<ProductDto> getProductById(String id);
 
 
 

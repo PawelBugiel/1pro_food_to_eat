@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
 import com.pawelbugiel.foodToEat.service.ProductServiceImpl;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,15 +205,17 @@ class ProductControllerWebLayerTest {
                 "Incorrect HTTP status returned - should be 400");
     }*/
 
-
+    @Disabled
     @Test
     @DisplayName("Get all products with success")
     void testGetAllProducts_whenGoesFine_returnsAllProducts() {
         fail("Not implemented yet");
     }
 
+    @Disabled
     @Test
     void findProductById() {
         fail("Not implemented yet");
     }
 }
+
