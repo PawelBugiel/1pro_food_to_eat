@@ -5,7 +5,9 @@ import java.util.UUID;
 
 public class UUID_Converter {
 
-    public static Optional<UUID> isValidUUID(String stringUUID) {
+    // refactor - to a ternary operator ? or other
+    public static Optional<UUID> convertStringToUUID(String stringUUID) {
+        if (stringUUID == null) return Optional.empty();
         try {
             return Optional.of(UUID.fromString(stringUUID));
         } catch (IllegalArgumentException e) {

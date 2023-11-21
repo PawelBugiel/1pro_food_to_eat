@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
     //Throws: NullPointerException – if the mapping function is null or returns a null result
     @Override
     public Optional<ProductDto> getProductById(String id) {
-        Optional<UUID> uuid = UUID_Converter.isValidUUID(id);
+        Optional<UUID> uuid = UUID_Converter.convertStringToUUID(id);
         if (uuid.isPresent()) {
             return productRepository.findById(uuid.get())
                     .map(ProductAndProductDtoMapper::mapProductToProductDto);
