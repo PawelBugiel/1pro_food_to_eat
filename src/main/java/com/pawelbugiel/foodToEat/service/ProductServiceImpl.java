@@ -25,8 +25,9 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
-    // --- CREATE
-
+    /*
+    * ************* CREATE
+    * */
     @Override
     public ProductDto createProduct(ProductWriteDto productWriteDto) {
 
@@ -35,33 +36,25 @@ public class ProductServiceImpl implements ProductService {
         return mapProductToProductDto(newProduct);
     }
 
-    // --- READ
+    /*
+     * ************* READ
+     * */
     @Override
     public List<ProductDto> getAllProducts() {
-
         return productRepository.findAll()
                 .stream()
                 .map(ProductAndProductDtoMapper::mapProductToProductDto)
                 .toList();
     }
 
+    //Throws: NullPointerException – if the mapping function is null or returns a null result
     @Override
     public Optional<ProductDto> getProductById(String id) {
-        UUID uuid = UUID.fromString(id);
-        Optional<ProductDto> result;
-        if (isValidUUID(id)) {
-            result = productRepository.findById(uuid)
+        Optional<UUID> uuid = UUID_Converter.isValidUUID(id);
+        if (uuid.isPresent()) {
+            return productRepository.findById(uuid.get())
                     .map(ProductAndProductDtoMapper::mapProductToProductDto);
-            return result;
         }
         return Optional.empty();
     }
-
-    private Optional<UUID> isValidUUID(String string) {
-        Optional<UUID> optionalUUID = Optional.of(UUID.fromString(string));
-        if(optionalUUID.isPresent())
-             return Optional.of(UUID.fromString(string));
-        return Optional.empty();
-    }
-
 }
