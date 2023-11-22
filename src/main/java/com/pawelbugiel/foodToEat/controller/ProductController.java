@@ -42,8 +42,9 @@ public class ProductController {
     @GetMapping("product/{id}")
     public ResponseEntity<?> findProductById(@PathVariable String id) {
         Optional<ProductDto> productDtoOptional = productService.getProductById(id);
-        return (productDtoOptional.isEmpty()) ?
-                new ResponseEntity<>("Product not found\n", HttpStatusCode.valueOf(404)) :
-                new ResponseEntity<>(productDtoOptional.get(), HttpStatusCode.valueOf(200));
+        if (productDtoOptional.isEmpty()) {
+            return new ResponseEntity<>("Product not found\n", HttpStatusCode.valueOf(404));
+        }
+        return new ResponseEntity<>(productDtoOptional.get(), HttpStatusCode.valueOf(200));
     }
 }

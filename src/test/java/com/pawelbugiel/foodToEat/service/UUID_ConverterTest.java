@@ -1,5 +1,6 @@
 package com.pawelbugiel.foodToEat.service;
 
+import com.pawelbugiel.foodToEat.utils.UUID_Converter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class UUID_ConverterTest {
     }
 
     @Test
-    @DisplayName("unable to convert a String to an UUID")
+    @DisplayName("unable to convert an invalid String to UUID")
     void testConvertStringToUUID_whenPassInvalidString_returnsEmptyOptional() {
         //GIVEN
         UUID uuid = UUID.randomUUID();
@@ -40,7 +41,21 @@ class UUID_ConverterTest {
     }
 
     @Test
-    @DisplayName("unable to convert a String to an UUID")
+    @DisplayName("unable to convert an invalid String to UUID")
+    void testConvertStringToUUID_whenPassDot_returnsEmptyOptional() {
+        //GIVEN
+        String invalidStringUUID = ".";
+        System.out.println(invalidStringUUID);
+
+        // WHEN
+        Optional<UUID> optionalUUID = UUID_Converter.convertStringToUUID(invalidStringUUID);
+
+        // THEN
+        Assertions.assertTrue(optionalUUID.isEmpty());
+    }
+
+    @Test
+    @DisplayName("unable to convert null String to UUID")
     void testConvertStringToUUID_whenStringIsNull_returnsEmptyOptional() {
         //GIVEN
         String nullString = null;
