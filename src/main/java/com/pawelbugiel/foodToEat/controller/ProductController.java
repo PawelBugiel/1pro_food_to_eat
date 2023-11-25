@@ -36,7 +36,7 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public List<ProductDto> getAllProducts(@RequestParam(required = false) Integer page, Sort.Direction sort) {
+    public List<ProductDto> getAllProducts(@RequestParam(required = false) String page, Sort.Direction sort) {
         return productService.getAllProducts(page, sort);
     }
 

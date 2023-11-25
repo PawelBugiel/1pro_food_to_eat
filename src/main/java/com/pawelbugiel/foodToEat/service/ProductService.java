@@ -16,7 +16,7 @@ public interface ProductService {
 
     // --- READ
 
-    List<ProductDto> getAllProducts(Integer page, Sort.Direction sort);
+    List<ProductDto> getAllProducts(String page, Sort.Direction sort);
 
     Optional<ProductDto> getProductById(String id);
 

@@ -6,6 +6,7 @@ import com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
 import com.pawelbugiel.foodToEat.utils.UUID_Converter;
+import com.pawelbugiel.foodToEat.validators.IntegerValidator;
 import com.pawelbugiel.foodToEat.validators.ObjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -24,12 +25,12 @@ public class ProductServiceImpl implements ProductService {
 
     public static final int DEFAULT_PAGE_SIZE = 3;
     private final ProductRepository productRepository;
-    private final ObjectValidator<Integer> integerObjectValidator;
+    private final IntegerValidator integerValidator;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ObjectValidator<Integer> integerObjectValidator) {
+    public ProductServiceImpl(ProductRepository productRepository, ObjectValidator<Integer> integerObjectValidator, IntegerValidator integerValidator) {
         this.productRepository = productRepository;
-        this.integerObjectValidator = integerObjectValidator;
+        this.integerValidator = integerValidator;
     }
 
     /*
@@ -47,24 +48,15 @@ public class ProductServiceImpl implements ProductService {
      * ************* READ
      * */
     @Override
-    public List<ProductDto> getAllProducts(Integer page, Sort.Direction sort) {
+    public List<ProductDto> getAllProducts(String page, Sort.Direction sort) {
+        int startPage = integerValidator.getValidPage(page);
+        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
 
-/*        int startPage = (page != null && page >= 0) ? page : 0;
-        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;*/
-
-        return productRepository.findAll(PageRequest.of(page, DEFAULT_PAGE_SIZE, Sort.by(sort, "name")))
+        return productRepository.findAll(PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "name")))
                 .stream()
                 .map(ProductAndProductDtoMapper::mapProductToProductDto)
                 .toList();
     }
-
-   /* //    @Override
-    public List<ProductDto> getAllProducts222222222(Integer page, Sort.Direction sort) {
-        return productRepository.findAll(PageRequest.of(page, 3, Sort.by(sort, "name")))
-                .stream()
-                .map(ProductAndProductDtoMapper::mapProductToProductDto)
-                .toList();
-    }*/
 
     //Throws: NullPointerException – if the mapping function is null or returns a null result
     @Override
