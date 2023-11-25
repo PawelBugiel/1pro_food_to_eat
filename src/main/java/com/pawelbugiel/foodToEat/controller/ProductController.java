@@ -5,6 +5,7 @@ import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
 import com.pawelbugiel.foodToEat.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class ProductController {
 
     private final ProductService productService;
+//    private Integer page;
 
     @Autowired
     public ProductController(ProductService productService) {
@@ -34,8 +36,8 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public List<ProductDto> getAllProducts() {
-        return productService.getAllProducts();
+    public List<ProductDto> getAllProducts(@RequestParam(required = false) Integer page, Sort.Direction sort) {
+        return productService.getAllProducts(page, sort);
     }
 
     @ResponseStatus(HttpStatus.FOUND)

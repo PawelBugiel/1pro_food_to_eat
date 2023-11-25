@@ -2,6 +2,7 @@ package com.pawelbugiel.foodToEat.service;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +16,7 @@ public interface ProductService {
 
     // --- READ
 
-    List<ProductDto> getAllProducts();
+    List<ProductDto> getAllProducts(Integer page, Sort.Direction sort);
 
     Optional<ProductDto> getProductById(String id);
 

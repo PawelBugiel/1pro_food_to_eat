@@ -2,6 +2,7 @@ package com.pawelbugiel.foodToEat.handlers;
 
 import com.pawelbugiel.foodToEat.exceptions.IdErrorResponse;
 import com.pawelbugiel.foodToEat.exceptions.IdException;
+import com.pawelbugiel.foodToEat.exceptions.PageException;
 import com.pawelbugiel.foodToEat.exceptions.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +13,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(IdException.class)
-    public ResponseEntity<IdErrorResponse> handleException(IdException exception) {
-
-        IdErrorResponse idErrorResponse = new IdErrorResponse();
-        idErrorResponse.setStatus(HttpStatus.NOT_FOUND.value());
-        idErrorResponse.setMessage("Invalid Id passed");
-        System.out.println(idErrorResponse.getLocalDateTime() + "888888888888888888888888");
+    public ResponseEntity<IdErrorResponse> handleException_2(IdException exception) {
+        String status = HttpStatus.NOT_FOUND.toString();
+        String message = "Invalid Id passed";
+        IdErrorResponse idErrorResponse = IdErrorResponse.create(status, message);
 
         return new ResponseEntity<>(idErrorResponse, HttpStatus.NOT_FOUND);
     }
@@ -28,5 +27,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .badRequest()
                 .body(productNotFoundException.getClass().getSimpleName() + " no such product");
+    }
+
+    @ExceptionHandler(PageException.class)
+    public ResponseEntity<?> pageExceptionHandler(PageException pageException){
+        return new ResponseEntity<>(pageException.getClass().getSimpleName() + ". Invalid page value", HttpStatus.BAD_REQUEST);
     }
 }

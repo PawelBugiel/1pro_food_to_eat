@@ -1,6 +1,6 @@
 package com.pawelbugiel.foodToEat.exceptions;
 
-public class IdException extends RuntimeException{
+public class IdException extends RuntimeException {
 
     public IdException() {
     }
@@ -8,6 +8,7 @@ public class IdException extends RuntimeException{
     public IdException(String message) {
         super(message);
     }
+
     public IdException(Throwable cause) {
         super(cause);
     }

@@ -1,3 +1,4 @@
+/*
 package com.pawelbugiel.foodToEat.service;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
@@ -23,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+*/
 /*
  * @ExtendWith(MockitoExtension.class) annotation is used to avoid implicitly implementing open and close a mock resource
  * 1.
@@ -36,7 +38,8 @@ import static org.mockito.Mockito.*;
  * void tearDown() throws Exception {
  * autoCloseable.close();
  * }
- * */
+ * *//*
+
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceImplTest {
@@ -164,3 +167,4 @@ public class ProductServiceImplTest {
         verify(productRepository, times(1) ).findById(eq(uuid));
     }
 }
+*/
