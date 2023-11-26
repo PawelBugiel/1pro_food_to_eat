@@ -37,16 +37,22 @@ public class ProductController {
 
     @GetMapping("/products")
     public List<ProductDto> getAllProducts(@RequestParam(required = false) String page, Sort.Direction sort) {
-        return productService.getAllProducts(page, sort);
+        return productService.findAllProducts(page, sort);
     }
 
     @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("product/{id}")
     public ResponseEntity<?> findProductById(@PathVariable String id) {
-        Optional<ProductDto> productDtoOptional = productService.getProductById(id);
-        if (productDtoOptional.isEmpty()) {
+        Optional<ProductDto> productDtoOptional = productService.findProductById(id);
+        if (productDtoOptional.isEmpty())
             return new ResponseEntity<>("Product not found\n", HttpStatusCode.valueOf(404));
-        }
         return new ResponseEntity<>(productDtoOptional.get(), HttpStatusCode.valueOf(200));
+    }
+
+    @GetMapping("/product/productByName")
+    public ResponseEntity<?> findProductByName(@RequestParam String name) {
+        List<ProductDto> productDtos = productService.findProductByName(name);
+        if (productDtos.isEmpty()) return new ResponseEntity<>("No product with name : " + name, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(productDtos, HttpStatus.FOUND);
     }
 }

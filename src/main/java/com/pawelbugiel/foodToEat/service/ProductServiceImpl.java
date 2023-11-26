@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
      * ************* READ
      * */
     @Override
-    public List<ProductDto> getAllProducts(String page, Sort.Direction sort) {
+    public List<ProductDto> findAllProducts(String page, Sort.Direction sort) {
         int startPage = pageValidator.getValidPage(page);
         Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
 
@@ -60,12 +60,22 @@ public class ProductServiceImpl implements ProductService {
 
     //Throws: NullPointerException – if the mapping function is null or returns a null result
     @Override
-    public Optional<ProductDto> getProductById(String id) {
+    public Optional<ProductDto> findProductById(String id) {
         Optional<UUID> uuid = UUID_Converter.convertStringToUUID(id);
         if (uuid.isPresent()) {
             return productRepository.findById(uuid.get())
                     .map(ProductAndProductDtoMapper::mapProductToProductDto);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<ProductDto> findProductByName(String name) {
+
+        List<Product> listFetchedByRepository = productRepository.findProductByName(name);
+        List<ProductDto> resultList = listFetchedByRepository.stream()
+                .map(ProductAndProductDtoMapper::mapProductToProductDto)
+                .toList();
+        return resultList;
     }
 }
