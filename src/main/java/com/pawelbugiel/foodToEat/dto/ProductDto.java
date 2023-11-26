@@ -25,7 +25,7 @@ public class ProductDto {
     @Min(1)
     private int quantity;
 
-    @FutureOrPresent
+//    @FutureOrPresent
     private LocalDate expiryDate;
 
 

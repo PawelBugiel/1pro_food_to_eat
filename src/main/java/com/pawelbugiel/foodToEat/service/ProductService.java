@@ -20,7 +20,9 @@ public interface ProductService {
 
     Optional<ProductDto> findProductById(String id);
 
-    List<ProductDto> findProductByName(String name);
+    List<ProductDto> findProductByName(String name, String page, Sort.Direction sort);
+
+    List<ProductDto> findProductsByPartialName(String partialName,  String page, Sort.Direction sort);
 
 
 

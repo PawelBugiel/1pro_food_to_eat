@@ -70,9 +70,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> findProductByName(String name) {
+    public List<ProductDto> findProductByName(String name, String page, Sort.Direction sort) {
+        int startPage = pageValidator.getValidPage(page);
+        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
 
-        List<Product> listFetchedByRepository = productRepository.findProductByName(name);
+        List<Product> listFetchedByRepository = productRepository.findProductByName(name, PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate")));
+        List<ProductDto> resultList = listFetchedByRepository.stream()
+                .map(ProductAndProductDtoMapper::mapProductToProductDto)
+                .toList();
+        return resultList;
+    }
+
+    @Override
+    public List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction sort) {
+        int startPage = pageValidator.getValidPage(page);
+        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
+
+        List<Product> listFetchedByRepository = productRepository.findByPartialName(partialName, PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection)));
         List<ProductDto> resultList = listFetchedByRepository.stream()
                 .map(ProductAndProductDtoMapper::mapProductToProductDto)
                 .toList();

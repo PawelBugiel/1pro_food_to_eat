@@ -1,9 +1,12 @@
 package com.pawelbugiel.foodToEat.service;
 
+import com.pawelbugiel.foodToEat.exceptions.IdException;
 import com.pawelbugiel.foodToEat.utilities.UUID_Converter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+import org.mockito.Mock;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -12,6 +15,8 @@ class UUID_ConverterTest {
 
     private static final UUID uuid = UUID.randomUUID();
     private static final String stringUUID = uuid.toString();
+    @Mock
+    private static final IdException idException = new IdException("Invalid id passed");
 
     @Test
     @DisplayName("convert a String to an UUID with success")
@@ -26,32 +31,28 @@ class UUID_ConverterTest {
     }
 
     @Test
-    @DisplayName("unable to convert an invalid String to UUID")
-    void testConvertStringToUUID_whenPassInvalidString_returnsEmptyOptional() {
+    @DisplayName("unable to convert a to long String to UUID")
+    void testConvertStringToUUID_whenPassToLongString_throwsIdException() {
         //GIVEN
-        UUID uuid = UUID.randomUUID();
-        String invalidStringUUID = stringUUID + "©";
-        System.out.println(invalidStringUUID);
-
+        String toLongStringUUID = stringUUID + "©";
         // WHEN
-        Optional<UUID> optionalUUID = UUID_Converter.convertStringToUUID(invalidStringUUID);
-
+        Executable convert = () -> UUID_Converter.convertStringToUUID(toLongStringUUID);
         // THEN
-        Assertions.assertTrue(optionalUUID.isEmpty());
+        Assertions.assertThrows(IdException.class, convert);
+//        Assertions.assertEquals();
     }
 
     @Test
-    @DisplayName("unable to convert an invalid String to UUID")
-    void testConvertStringToUUID_whenPassDot_returnsEmptyOptional() {
+    @DisplayName("unable to convert a to short String to UUID")
+    void testConvertStringToUUID_whenPassToShort_throwsIdException() {
         //GIVEN
-        String invalidStringUUID = ".";
-        System.out.println(invalidStringUUID);
-
+        String toShortStringUUID = "123";
+//        Mockito.when(idException.getMessage()).thenReturn("Invalid id passed");
         // WHEN
-        Optional<UUID> optionalUUID = UUID_Converter.convertStringToUUID(invalidStringUUID);
-
+        Executable execute = () -> UUID_Converter.convertStringToUUID(toShortStringUUID);
         // THEN
-        Assertions.assertTrue(optionalUUID.isEmpty());
+        Assertions.assertThrows(IdException.class, execute);
+        Assertions.assertEquals("Invalid id passed", idException.getMessage());
     }
 
     @Test
@@ -59,10 +60,8 @@ class UUID_ConverterTest {
     void testConvertStringToUUID_whenStringIsNull_returnsEmptyOptional() {
         //GIVEN
         String nullString = null;
-
         // WHEN
         Optional<UUID> optionalUUID = UUID_Converter.convertStringToUUID(nullString);
-
         // THEN
         Assertions.assertTrue(optionalUUID.isEmpty());
     }
