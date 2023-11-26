@@ -5,8 +5,8 @@ import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
 import com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
-import com.pawelbugiel.foodToEat.utils.UUID_Converter;
-import com.pawelbugiel.foodToEat.validators.IntegerValidator;
+import com.pawelbugiel.foodToEat.utilities.UUID_Converter;
+import com.pawelbugiel.foodToEat.validators.PageValidator;
 import com.pawelbugiel.foodToEat.validators.ObjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -25,12 +25,12 @@ public class ProductServiceImpl implements ProductService {
 
     public static final int DEFAULT_PAGE_SIZE = 3;
     private final ProductRepository productRepository;
-    private final IntegerValidator integerValidator;
+    private final PageValidator pageValidator;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ObjectValidator<Integer> integerObjectValidator, IntegerValidator integerValidator) {
+    public ProductServiceImpl(ProductRepository productRepository, ObjectValidator<Integer> integerObjectValidator, PageValidator pageValidator) {
         this.productRepository = productRepository;
-        this.integerValidator = integerValidator;
+        this.pageValidator = pageValidator;
     }
 
     /*
@@ -49,10 +49,10 @@ public class ProductServiceImpl implements ProductService {
      * */
     @Override
     public List<ProductDto> getAllProducts(String page, Sort.Direction sort) {
-        int startPage = integerValidator.getValidPage(page);
+        int startPage = pageValidator.getValidPage(page);
         Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
 
-        return productRepository.findAll(PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "name")))
+        return productRepository.findAll(PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate")))
                 .stream()
                 .map(ProductAndProductDtoMapper::mapProductToProductDto)
                 .toList();

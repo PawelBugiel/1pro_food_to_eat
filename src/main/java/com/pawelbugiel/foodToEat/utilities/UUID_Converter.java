@@ -1,4 +1,4 @@
-package com.pawelbugiel.foodToEat.utils;
+package com.pawelbugiel.foodToEat.utilities;
 
 import com.pawelbugiel.foodToEat.exceptions.IdException;
 

@@ -1,6 +1,6 @@
 package com.pawelbugiel.foodToEat.service;
 
-import com.pawelbugiel.foodToEat.utils.UUID_Converter;
+import com.pawelbugiel.foodToEat.utilities.UUID_Converter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
