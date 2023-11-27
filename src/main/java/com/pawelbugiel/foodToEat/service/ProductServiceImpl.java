@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
-    @Override
+    @Override    // to refactor
     public Optional<ProductDto> findProductById(String id) {
         Optional<UUID> uuid = UUID_Converter.convertStringToUUID(id);
         if (uuid.isPresent()) {
@@ -104,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto updateProduct(ProductDto productDto) {
         String id = productDto.getId().toString();
         Optional<ProductDto> productToUpdate = findProductById(id);
-        if(productToUpdate.isEmpty()) {
+        if (productToUpdate.isEmpty()) {
             throw new ProductNotFoundException("There is no product with id " + id);
         }
         Product newProduct = Product.ProductBuilder.aProduct()
@@ -119,4 +119,21 @@ public class ProductServiceImpl implements ProductService {
         return mapProductToProductDto(savedProduct);
     }
 
+    /*
+     * ************* DELETE *************
+     */
+
+    @Override
+    public boolean deleteProductById(String id) {
+        UUID_Converter.convertStringToUUID(id);
+
+        Optional<ProductDto> foundProduct = findProductById(id);
+        if (foundProduct.isEmpty()) {
+            throw new ProductNotFoundException("There is no product with id " + id);
+        }
+
+        Product productToDelete = mapProductDtoToProduct(foundProduct.get());
+        productRepository.deleteById(productToDelete.getId());
+        return true;
+    }
 }

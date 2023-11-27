@@ -35,6 +35,7 @@ public class ProductAndProductDtoMapper {
 
     public static Product mapProductDtoToProduct(ProductDto productDto){
         return Product.ProductBuilder.aProduct()
+                .withId(productDto.getId())
                 .withName(productDto.getName())
                 .withQuantity(productDto.getQuantity())
                 .withExpiryDate(productDto.getExpiryDate())

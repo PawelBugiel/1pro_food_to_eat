@@ -57,16 +57,18 @@ public class ProductController {
     }
 
     @GetMapping("/product/partial-name")
-    public ResponseEntity<?> findProductsByPartialName(@RequestParam String partialName, @RequestParam(required = false) String page, Sort.Direction sort){
+    public ResponseEntity<?> findProductsByPartialName(@RequestParam String partialName, @RequestParam(required = false) String page, Sort.Direction sort) {
         List<ProductDto> productDtos = productService.findProductsByPartialName(partialName, page, sort);
-        if(productDtos.isEmpty()) return new ResponseEntity<>("No products with given partial name : " + partialName, HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(productDtos,HttpStatus.FOUND);
+        if (productDtos.isEmpty())
+            return new ResponseEntity<>("No products with given partial name : " + partialName, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(productDtos, HttpStatus.FOUND);
     }
 
     @GetMapping("/product/expired")
-    public ResponseEntity<?> findProductsWithExpiredDate(@RequestParam(required = false) String page, Sort.Direction sort){
+    public ResponseEntity<?> findProductsWithExpiredDate(@RequestParam(required = false) String page, Sort.Direction sort) {
         List<ProductDto> foundProducts = productService.findProductsWithExpiryDateUntilToday(page, sort);
-        if(foundProducts.isEmpty()) return new ResponseEntity<>("No products with expired date found", HttpStatus.NOT_FOUND);
+        if (foundProducts.isEmpty())
+            return new ResponseEntity<>("No products with expired date found", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(foundProducts, HttpStatus.FOUND);
     }
 
@@ -75,12 +77,19 @@ public class ProductController {
      */
 
     @PutMapping("/product")
-    public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDto productDto){
+    public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDto productDto) {
         return new ResponseEntity<>(productService.updateProduct(productDto), HttpStatus.ACCEPTED);
     }
 
     /*
      * ************* DELETE *************
      */
+
+    @DeleteMapping("product")
+    public ResponseEntity<?> deleteProduct(@RequestParam String id) {
+        if (productService.deleteProductById(id))
+            return new ResponseEntity<>("Product with given id successfully deleted. Id : " + id, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Product with given id not deleted. Id : " + id, HttpStatus.NOT_FOUND);
+    }
 }
 

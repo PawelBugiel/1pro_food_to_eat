@@ -22,7 +22,7 @@ public interface ProductService {
 
     Optional<ProductDto> findProductById(String id);
 
-    List<ProductDto> findProductsByPartialName(String partialName,  String page, Sort.Direction sort);
+    List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction sort);
 
     List<ProductDto> findProductsWithExpiryDateUntilToday(String page, Sort.Direction sort);
 
@@ -30,11 +30,12 @@ public interface ProductService {
      * ************* UPDATE *************
      */
 
-    ProductDto updateProduct(ProductDto product);
+    ProductDto updateProduct(ProductDto productDto);
 
     /*
      * ************* DELETE *************
      */
 
+    boolean deleteProductById(String id);
 
 }
