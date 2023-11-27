@@ -54,16 +54,17 @@ public class ProductRepositoryTest {
                 .withQuantity(2)
 //                .withExpiryDate(expiryDate_2)
                 .build());
-
         productRepository.saveAll(List.of(product_1, product_2));
     }
 
+    /*
+     * ************* save product
+     * */
     @Test
     @DisplayName("Successfully saved product")
-    public void productRepository_saveProduct_Product() {
+    public void testSaveProduct_whenValidDataPassed_returnSavedProduct() {
         // when
         Product savedProduct = productRepository.save(product_1);
-
         // then
         assertThat(savedProduct).isNotNull();
         assertThat(savedProduct.getName()).isEqualTo("Milk");
@@ -71,16 +72,18 @@ public class ProductRepositoryTest {
 //        assertThat(savedProduct.getExpiryDate()).isEqualTo(expiryDate_1);
     }
 
+    /*
+     * ************* find product by id
+     * */
+
     @Test
     @DisplayName("Successfully found product by id")
-    public void productRepository_getProduct_aProduct() {
+    public void testFindProductById_whenValidIdPass_returnProduct() {
         // Given
         Product saved = productRepository.save(product_2);
         UUID savedUUID = saved.getId();
-
         // When
         Product retrievedProduct = productRepository.findById(savedUUID).orElse(Product.ProductBuilder.aProduct().withName("UnnamedProduct").build());
-
         // Then
         assertThat(retrievedProduct).isNotNull();
         assertThat(retrievedProduct.getName()).isEqualTo("Mars");
@@ -90,28 +93,33 @@ public class ProductRepositoryTest {
 
     @Test
     @DisplayName("Product not found by id")
-    public void productRepository_getProduct_aProductWithNameUnnamedProduct() {
+    public void testFindProductById_whenValidIdPass_returnOptionalEmpty() {
         // Given
         UUID notPresentUUID = UUID.randomUUID();
-
         // When
         Optional<Product> optionalRetrievedProduct = productRepository.findById(notPresentUUID);
-
         // Then
         assertThat(optionalRetrievedProduct).isEmpty();
     }
 
+    /*
+     * ************* find all products
+     * */
     @Test
     @DisplayName("Successfully retrieved all products")
     public void productRepository_getAllProducts_ListOfProducts() {
         // When
         List<Product> products = productRepository.findAll();
-
         // Then
         assertThat(products).isNotNull();
         assertThat(products).isNotEmpty();
         assertThat(products.size()).isEqualTo(2);
     }
 
-
+    /*
+     * ************* find product by partial name
+     * */
+    @Test
+    void findByPartialName() {
+    }
 }

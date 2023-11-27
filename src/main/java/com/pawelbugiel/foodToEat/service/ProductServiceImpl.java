@@ -23,7 +23,8 @@ import static com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper.mapPr
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    public static final int DEFAULT_PAGE_SIZE = 3;
+    public static final int DEFAULT_PAGE_SIZE = 5;
+    public static final Sort.Direction ASC_SORT_DIRECTION = Sort.Direction.ASC;
     private final ProductRepository productRepository;
     private final PageValidator pageValidator;
 
@@ -50,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> findAllProducts(String page, Sort.Direction sort) {
         int startPage = pageValidator.getValidPage(page);
-        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
+        Sort.Direction sortDirection = sort != null ? sort : ASC_SORT_DIRECTION;
 
         return productRepository.findAll(PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate")))
                 .stream()
@@ -58,7 +59,6 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
-    //Throws: NullPointerException – if the mapping function is null or returns a null result
     @Override
     public Optional<ProductDto> findProductById(String id) {
         Optional<UUID> uuid = UUID_Converter.convertStringToUUID(id);
@@ -70,23 +70,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> findProductByName(String name, String page, Sort.Direction sort) {
-        int startPage = pageValidator.getValidPage(page);
-        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
-
-        List<Product> listFetchedByRepository = productRepository.findProductByName(name, PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate")));
-        List<ProductDto> resultList = listFetchedByRepository.stream()
-                .map(ProductAndProductDtoMapper::mapProductToProductDto)
-                .toList();
-        return resultList;
-    }
-
-    @Override
     public List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction sort) {
         int startPage = pageValidator.getValidPage(page);
         Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
+        PageRequest pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate"));
 
-        List<Product> listFetchedByRepository = productRepository.findByPartialName(partialName, PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection)));
+        List<Product> listFetchedByRepository = productRepository.findByPartialName(partialName, pageRequest);
         List<ProductDto> resultList = listFetchedByRepository.stream()
                 .map(ProductAndProductDtoMapper::mapProductToProductDto)
                 .toList();

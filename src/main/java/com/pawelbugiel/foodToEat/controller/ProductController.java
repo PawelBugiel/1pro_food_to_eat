@@ -49,14 +49,6 @@ public class ProductController {
         return new ResponseEntity<>(productDtoOptional.get(), HttpStatusCode.valueOf(200));
     }
 
-    @GetMapping("/product/name")
-    public ResponseEntity<?> findProductByName(@RequestParam String name, @RequestParam(required = false) String page, Sort.Direction sort) {
-        List<ProductDto> productDtos = productService.findProductByName(name,page, sort);
-        if (productDtos.isEmpty()) return new ResponseEntity<>("No product with name : " + name, HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(productDtos, HttpStatus.FOUND);
-
-    }
-
     @GetMapping("/product/partial-name")
     public ResponseEntity<?> findProductsByPartialName(@RequestParam String partialName, @RequestParam(required = false) String page, Sort.Direction sort){
         List<ProductDto> productDtos = productService.findProductsByPartialName(partialName, page, sort);

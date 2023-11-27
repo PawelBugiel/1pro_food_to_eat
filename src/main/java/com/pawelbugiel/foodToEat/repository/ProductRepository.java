@@ -13,8 +13,7 @@ import java.util.UUID;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
-    List<Product> findProductByName(String name, Pageable pageable);
-
-    @Query(value = "SELECT * FROM products WHERE LOWER(name) LIKE LOWER(CONCAT('%', :partialName, '%'))", nativeQuery = true)
+//    @Query(value = "SELECT * FROM products WHERE LOWER(name) LIKE LOWER(CONCAT('%', :partialName, '%'))", nativeQuery = true)
+    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :partialName, '%'))")
     List<Product> findByPartialName(@Param("partialName") String partialName, Pageable pageable);
 }
