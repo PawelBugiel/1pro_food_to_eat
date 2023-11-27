@@ -6,8 +6,8 @@ import com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
 import com.pawelbugiel.foodToEat.utilities.UUID_Converter;
-import com.pawelbugiel.foodToEat.validators.PageValidator;
 import com.pawelbugiel.foodToEat.validators.ObjectValidator;
+import com.pawelbugiel.foodToEat.validators.PageValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,7 +24,8 @@ import static com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper.mapPr
 public class ProductServiceImpl implements ProductService {
 
     public static final int DEFAULT_PAGE_SIZE = 5;
-    public static final Sort.Direction ASC_SORT_DIRECTION = Sort.Direction.ASC;
+    public static final Sort.Direction ASC_SORTING = Sort.Direction.ASC;
+    public static final Sort.Direction DESC_SORTING = Sort.Direction.DESC;
     private final ProductRepository productRepository;
     private final PageValidator pageValidator;
 
@@ -46,12 +47,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /*
-     * ************* READ
+     * ************* FIND
      * */
     @Override
     public List<ProductDto> findAllProducts(String page, Sort.Direction sort) {
         int startPage = pageValidator.getValidPage(page);
-        Sort.Direction sortDirection = sort != null ? sort : ASC_SORT_DIRECTION;
+        Sort.Direction sortDirection = sort != null ? sort : ASC_SORTING;
 
         return productRepository.findAll(PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate")))
                 .stream()
@@ -79,6 +80,20 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDto> resultList = listFetchedByRepository.stream()
                 .map(ProductAndProductDtoMapper::mapProductToProductDto)
                 .toList();
+        return resultList;
+    }
+
+    @Override
+    public List<ProductDto> findProductsWithExpiryDateUntilToday(String page, Sort.Direction sort) {
+        int startPage = pageValidator.getValidPage(page);
+        Sort.Direction sortDirection = sort != null ? sort : DESC_SORTING;
+
+        PageRequest pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate"));
+        List<Product> foundProducts = productRepository.findProductsWithExpiredDate(pageRequest);
+        List<ProductDto> resultList = foundProducts.stream()
+                .map(ProductAndProductDtoMapper::mapProductToProductDto)
+                .toList();
+
         return resultList;
     }
 }

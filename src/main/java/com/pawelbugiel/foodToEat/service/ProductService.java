@@ -14,13 +14,15 @@ public interface ProductService {
 //    ProductWriteDto createProduct(ProductWriteDto productWriteDto);
     ProductDto createProduct(ProductWriteDto productWriteDto);
 
-    // --- READ
+    // --- FIND
 
     List<ProductDto> findAllProducts(String page, Sort.Direction sort);
 
     Optional<ProductDto> findProductById(String id);
 
     List<ProductDto> findProductsByPartialName(String partialName,  String page, Sort.Direction sort);
+
+    List<ProductDto> findProductsWithExpiryDateUntilToday(String page, Sort.Direction sort);
 
 
 

@@ -27,20 +27,23 @@ public class ProductController {
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
-
+    /*
+     * ************* CREATE
+     * */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/product")
     public ProductDto createProduct(@RequestBody @Valid ProductWriteDto productWriteDto) {
         ProductDto tempProductWriteDto = productService.createProduct(productWriteDto);
         return tempProductWriteDto;
     }
-
+    /*
+     * ************* FIND
+     * */
     @GetMapping("/products")
     public List<ProductDto> getAllProducts(@RequestParam(required = false) String page, Sort.Direction sort) {
         return productService.findAllProducts(page, sort);
     }
 
-    @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("product/id/{id}")
     public ResponseEntity<?> findProductById(@PathVariable String id) {
         Optional<ProductDto> productDtoOptional = productService.findProductById(id);
@@ -54,5 +57,12 @@ public class ProductController {
         List<ProductDto> productDtos = productService.findProductsByPartialName(partialName, page, sort);
         if(productDtos.isEmpty()) return new ResponseEntity<>("No products with given partial name : " + partialName, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(productDtos,HttpStatus.FOUND);
+    }
+
+    @GetMapping("/product/expired")
+    public ResponseEntity<?> findProductsWithExpiredDate(@RequestParam(required = false) String page, Sort.Direction sort){
+        List<ProductDto> foundProducts = productService.findProductsWithExpiryDateUntilToday(page, sort);
+        if(foundProducts.isEmpty()) return new ResponseEntity<>("No products with expired date found", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(foundProducts, HttpStatus.FOUND);
     }
 }

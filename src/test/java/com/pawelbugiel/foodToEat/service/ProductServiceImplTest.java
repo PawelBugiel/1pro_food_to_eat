@@ -1,4 +1,4 @@
-/*
+
 package com.pawelbugiel.foodToEat.service;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
@@ -6,7 +6,6 @@ import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
 import com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,16 +14,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-*/
 /*
  * @ExtendWith(MockitoExtension.class) annotation is used to avoid implicitly implementing open and close a mock resource
  * 1.
@@ -38,8 +31,7 @@ import static org.mockito.Mockito.*;
  * void tearDown() throws Exception {
  * autoCloseable.close();
  * }
- * *//*
-
+*/
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceImplTest {
@@ -67,13 +59,10 @@ public class ProductServiceImplTest {
     public void testCreateProduct_whenAllDetailsPassed_ReturnsProduct() {
         // GIVEN
         ProductWriteDto productWriteDto = ProductAndProductDtoMapper.mapProductToProductWriteDto(product_1);
-
         // set how the productRepository mock should behave
         when(productRepository.save(any(Product.class))).thenReturn(product_1);
-
         // WHEN
         ProductDto savedProductDto = underTest_ProductServiceImpl.createProduct(productWriteDto);
-
         // THEN
         assertThat(savedProductDto).isNotNull();
         assertThat(savedProductDto.getName()).isEqualTo(product_1.getName());
@@ -83,19 +72,16 @@ public class ProductServiceImplTest {
         verify(productRepository, times(1)).save(any(Product.class));
     }
 
-    @Test
+   /* @Test
     @DisplayName("Should returns all (two) products dtos ")
     public void testGetAllProducts_whenTwoValidProductsExists_returnsProductDtos() {
         // GIVEN
         List<Product> products = new ArrayList<>();
         products.add(product_1);
         products.add(product_2);
-
         when(productRepository.findAll()).thenReturn(products);
-
         // WHEN
-        List<ProductDto> productDtos = underTest_ProductServiceImpl.getAllProducts();
-
+        List<ProductDto> productDtos = underTest_ProductServiceImpl.findAllProducts();
         // THEN
         Assertions.assertNotNull(productDtos);
         assertThat(productDtos.size()).isEqualTo(2);
@@ -111,9 +97,9 @@ public class ProductServiceImplTest {
         assertThat(productDtos.get(1).getExpiryDate()).isEqualTo(products.get(1).getExpiryDate());
 
         verify(productRepository, times(1)).findAll();
-    }
+    }*/
 
-    @Test
+    /*@Test
     @DisplayName("should return a product with given id")
     public void testGetProductById_whenProperIdPassed_returnsOptionalProductDto() {
         // GIVEN
@@ -121,10 +107,8 @@ public class ProductServiceImplTest {
         String stringUUID = uuid.toString();
         ProductDto productDto_1 = ProductAndProductDtoMapper.mapProductToProductDto(product_1);
         when(productRepository.findById(eq(uuid))).thenReturn(Optional.of(product_1));
-
         // WHEN
         Optional<ProductDto> resultOptionalProductDto = underTest_ProductServiceImpl.getProductById(stringUUID);
-
         // THEN
         Assertions.assertTrue(resultOptionalProductDto.isPresent());
         ProductDto resultProductDto = resultOptionalProductDto.get();
@@ -135,36 +119,32 @@ public class ProductServiceImplTest {
         assertThat(resultProductDto.getExpiryDate()).isEqualTo(productDto_1.getExpiryDate());
 
         verify(productRepository, times(1) ).findById(eq(uuid));
-    }
+    }*/
 
-    @Test
+   /* @Test
     @DisplayName("Should returns empty collection")
     public void testGetAllProducts_whenTwoValidProductsExists_returnsEmptyCollection() {
         // GIVEN
         when(productRepository.findAll()).thenReturn(new ArrayList<>());
-
         // WHEN
         List<ProductDto> productDtos = underTest_ProductServiceImpl.getAllProducts();
-
         // THEN
         assertTrue(productDtos.isEmpty());
         verify(productRepository, times(1)).findAll();
-    }
+    }*/
 
-    @Test
+   /* @Test
     @DisplayName("Pass an invalid Id, return an empty product optional")
     public void testGetProductById_whenInvalidIdPassed_returnsOptionalProductDto() {
         // GIVEN
         UUID uuid = UUID.randomUUID();
         String stringUUID = uuid.toString();
         when(productRepository.findById(eq(uuid))).thenReturn(Optional.empty());
-
         // WHEN
         Optional<ProductDto> resultOptionalProductDto = underTest_ProductServiceImpl.getProductById(stringUUID);
-
         // THEN
         Assertions.assertTrue(resultOptionalProductDto.isEmpty());
         verify(productRepository, times(1) ).findById(eq(uuid));
-    }
+    }*/
 }
-*/
+

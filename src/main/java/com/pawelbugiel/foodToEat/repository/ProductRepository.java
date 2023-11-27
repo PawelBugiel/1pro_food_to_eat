@@ -13,7 +13,9 @@ import java.util.UUID;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
-//    @Query(value = "SELECT * FROM products WHERE LOWER(name) LIKE LOWER(CONCAT('%', :partialName, '%'))", nativeQuery = true)
     @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :partialName, '%'))")
     List<Product> findByPartialName(@Param("partialName") String partialName, Pageable pageable);
+
+    @Query("SELECT p FROM Product p WHERE p.expiryDate <= CURRENT_DATE")
+    List<Product> findProductsWithExpiredDate(Pageable pageable);
 }
