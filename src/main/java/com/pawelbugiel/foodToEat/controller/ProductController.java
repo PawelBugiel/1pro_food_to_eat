@@ -27,18 +27,22 @@ public class ProductController {
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
+
     /*
-     * ************* CREATE
-     * */
+     * ************* CREATE *************
+     */
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/product")
-    public ProductDto createProduct(@RequestBody @Valid ProductWriteDto productWriteDto) {
-        ProductDto tempProductWriteDto = productService.createProduct(productWriteDto);
+    public ProductWriteDto createProduct(@RequestBody @Valid ProductWriteDto productWriteDto) {
+        ProductWriteDto tempProductWriteDto = productService.createProduct(productWriteDto);
         return tempProductWriteDto;
     }
+
     /*
-     * ************* FIND
-     * */
+     * ************* FIND *************
+     */
+
     @GetMapping("/products")
     public List<ProductDto> getAllProducts(@RequestParam(required = false) String page, Sort.Direction sort) {
         return productService.findAllProducts(page, sort);
@@ -65,4 +69,18 @@ public class ProductController {
         if(foundProducts.isEmpty()) return new ResponseEntity<>("No products with expired date found", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(foundProducts, HttpStatus.FOUND);
     }
+
+    /*
+     * ************* UPDATE *************
+     */
+
+    @PutMapping("/product")
+    public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDto productDto){
+        return new ResponseEntity<>(productService.updateProduct(productDto), HttpStatus.ACCEPTED);
+    }
+
+    /*
+     * ************* DELETE *************
+     */
 }
+

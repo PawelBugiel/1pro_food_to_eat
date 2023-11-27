@@ -1,6 +1,7 @@
 package com.pawelbugiel.foodToEat.service;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
+import com.pawelbugiel.foodToEat.exceptions.ProductNotFoundException;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
 import com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper;
 import com.pawelbugiel.foodToEat.model.Product;
@@ -17,8 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper.mapProductToProductDto;
-import static com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper.mapProductWriteDtoToProduct;
+import static com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper.*;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -36,19 +36,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /*
-     * ************* CREATE
-     * */
+     * ************* CREATE *************
+     */
     @Override
-    public ProductDto createProduct(ProductWriteDto productWriteDto) {
-
-        Product product = mapProductWriteDtoToProduct(productWriteDto);
-        Product newProduct = productRepository.save(product);
-        return mapProductToProductDto(newProduct);
+    public ProductWriteDto createProduct(ProductWriteDto productWriteDto) {
+        Product passedProduct = mapProductWriteDtoToProduct(productWriteDto);
+        Product savedProduct = productRepository.save(passedProduct);
+        return mapProductToProductWriteDto(savedProduct);
     }
 
     /*
-     * ************* FIND
-     * */
+     * ************* FIND *************
+     */
     @Override
     public List<ProductDto> findAllProducts(String page, Sort.Direction sort) {
         int startPage = pageValidator.getValidPage(page);
@@ -96,4 +95,28 @@ public class ProductServiceImpl implements ProductService {
 
         return resultList;
     }
+
+    /*
+     * ************* UPDATE *************
+     */
+
+    @Override
+    public ProductDto updateProduct(ProductDto productDto) {
+        String id = productDto.getId().toString();
+        Optional<ProductDto> productToUpdate = findProductById(id);
+        if(productToUpdate.isEmpty()) {
+            throw new ProductNotFoundException("There is no product with id " + id);
+        }
+        Product newProduct = Product.ProductBuilder.aProduct()
+                .withId(productDto.getId())
+                .withName(productDto.getName())
+                .withQuantity(productDto.getQuantity())
+                .withExpiryDate(productDto.getExpiryDate())
+                .build();
+
+        Product savedProduct = productRepository.save(newProduct);
+
+        return mapProductToProductDto(savedProduct);
+    }
+
 }

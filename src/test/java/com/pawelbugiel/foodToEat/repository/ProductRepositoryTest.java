@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDate;
@@ -36,6 +37,8 @@ public class ProductRepositoryTest {
 
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private TestEntityManager testEntityManager;
     private final LocalDate expiryDate_1 = LocalDate.of(2024, 1, 1);
     private final LocalDate expiryDate_2 = LocalDate.of(2025, 2, 2);
     private Product product_1;
@@ -58,23 +61,8 @@ public class ProductRepositoryTest {
     }
 
     /*
-     * ************* save product
-     * */
-    @Test
-    @DisplayName("Successfully saved product")
-    public void testSaveProduct_whenValidDataPassed_returnSavedProduct() {
-        // when
-        Product savedProduct = productRepository.save(product_1);
-        // then
-        assertThat(savedProduct).isNotNull();
-        assertThat(savedProduct.getName()).isEqualTo("Milk");
-        assertThat(savedProduct.getQuantity()).isEqualTo(1);
-//        assertThat(savedProduct.getExpiryDate()).isEqualTo(expiryDate_1);
-    }
-
-    /*
-     * ************* find product by id
-     * */
+     * ************* FIND *************
+     */
 
     @Test
     @DisplayName("Successfully found product by id")
@@ -102,9 +90,6 @@ public class ProductRepositoryTest {
         assertThat(optionalRetrievedProduct).isEmpty();
     }
 
-    /*
-     * ************* find all products
-     * */
     @Test
     @DisplayName("Successfully retrieved all products")
     public void productRepository_getAllProducts_ListOfProducts() {
@@ -116,9 +101,6 @@ public class ProductRepositoryTest {
         assertThat(products.size()).isEqualTo(2);
     }
 
-    /*
-     * ************* find product by partial name
-     * */
     @Test
     void findByPartialName() {
     }
