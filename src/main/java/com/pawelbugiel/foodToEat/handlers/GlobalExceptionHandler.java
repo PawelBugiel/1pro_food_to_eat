@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(IdException.class)
-    public ResponseEntity<IdErrorResponse> handleException_2(IdException exception) {
+    public ResponseEntity<IdErrorResponse> idExceptionHandler(IdException exception) {
         String status = HttpStatus.NOT_FOUND.toString();
         String message = "Invalid Id passed";
         IdErrorResponse idErrorResponse = IdErrorResponse.create(status, message);
@@ -23,14 +23,14 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<?> handleException(ProductNotFoundException productNotFoundException) {
+    public ResponseEntity<?> productNotFoundExceptionHandler(ProductNotFoundException productNotFoundException) {
         return ResponseEntity
                 .badRequest()
                 .body(productNotFoundException.getClass().getSimpleName() + " no such product");
     }
 
     @ExceptionHandler(PageException.class)
-    public ResponseEntity<?> pageExceptionHandler(PageException pageException){
+    public ResponseEntity<?> pageNotFoundExceptionHandler(PageException pageException){
         return new ResponseEntity<>(pageException.getClass().getSimpleName() + ". Invalid page value", HttpStatus.BAD_REQUEST);
     }
 }

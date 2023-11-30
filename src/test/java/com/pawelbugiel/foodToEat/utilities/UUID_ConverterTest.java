@@ -1,7 +1,6 @@
-package com.pawelbugiel.foodToEat.service;
+package com.pawelbugiel.foodToEat.utilities;
 
 import com.pawelbugiel.foodToEat.exceptions.IdException;
-import com.pawelbugiel.foodToEat.utilities.UUID_Converter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

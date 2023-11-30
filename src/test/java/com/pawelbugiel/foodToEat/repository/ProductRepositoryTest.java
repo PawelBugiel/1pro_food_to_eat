@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /*
  * When to write tests for @Repository ?  Only for methods implemented on my own
@@ -102,6 +103,8 @@ public class ProductRepositoryTest {
     }
 
     @Test
+    @DisplayName("Successfully retrieved all products")
     void findByPartialName() {
+        fail("Not implemented yet");
     }
 }

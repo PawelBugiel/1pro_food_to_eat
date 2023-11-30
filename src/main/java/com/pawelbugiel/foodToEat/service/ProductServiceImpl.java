@@ -35,9 +35,8 @@ public class ProductServiceImpl implements ProductService {
         this.pageValidator = pageValidator;
     }
 
-    /*
-     * ************* CREATE *************
-     */
+//************** CREATE *************
+
     @Override
     public ProductWriteDto createProduct(ProductWriteDto productWriteDto) {
         Product passedProduct = mapProductWriteDtoToProduct(productWriteDto);
@@ -45,9 +44,8 @@ public class ProductServiceImpl implements ProductService {
         return mapProductToProductWriteDto(savedProduct);
     }
 
-    /*
-     * ************* FIND *************
-     */
+//************** FIND *************
+
     @Override
     public List<ProductDto> findAllProducts(String page, Sort.Direction sort) {
         int startPage = pageValidator.getValidPage(page);
@@ -83,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> findProductsWithExpiryDateUntilToday(String page, Sort.Direction sort) {
+    public List<ProductDto> findProductsWithExpiredDate(String page, Sort.Direction sort) {
         int startPage = pageValidator.getValidPage(page);
         Sort.Direction sortDirection = sort != null ? sort : DESC_SORTING;
 
@@ -96,9 +94,7 @@ public class ProductServiceImpl implements ProductService {
         return resultList;
     }
 
-    /*
-     * ************* UPDATE *************
-     */
+//************** UPDATE *************
 
     @Override
     public ProductDto updateProduct(ProductDto productDto) {
@@ -119,9 +115,7 @@ public class ProductServiceImpl implements ProductService {
         return mapProductToProductDto(savedProduct);
     }
 
-    /*
-     * ************* DELETE *************
-     */
+//************** DELETE *************
 
     @Override
     public boolean deleteProductById(String id) {

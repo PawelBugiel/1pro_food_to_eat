@@ -9,32 +9,25 @@ import java.util.Optional;
 
 public interface ProductService {
 
-    /*
-     * ************* CREATE *************
-     */
-//    ProductWriteDto createProduct(ProductWriteDto productWriteDto);
+//************** CREATE *************
+
     ProductWriteDto createProduct(ProductWriteDto productWriteDto);
 
-    /*
-     * ************* FIND *************
-     */
+//************** FIND *************
+
     List<ProductDto> findAllProducts(String page, Sort.Direction sort);
 
     Optional<ProductDto> findProductById(String id);
 
     List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction sort);
 
-    List<ProductDto> findProductsWithExpiryDateUntilToday(String page, Sort.Direction sort);
+    List<ProductDto> findProductsWithExpiredDate(String page, Sort.Direction sort);
 
-    /*
-     * ************* UPDATE *************
-     */
+//************** UPDATE *************
 
     ProductDto updateProduct(ProductDto productDto);
 
-    /*
-     * ************* DELETE *************
-     */
+//************** DELETE *************
 
     boolean deleteProductById(String id);
 

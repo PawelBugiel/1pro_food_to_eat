@@ -28,9 +28,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    /*
-     * ************* CREATE *************
-     */
+//************** CREATE *************
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/product")
@@ -39,12 +37,11 @@ public class ProductController {
         return tempProductWriteDto;
     }
 
-    /*
-     * ************* FIND *************
-     */
+//************** FIND *************
 
     @GetMapping("/products")
-    public List<ProductDto> getAllProducts(@RequestParam(required = false) String page, Sort.Direction sort) {
+    public List<ProductDto> findAllProducts(@RequestParam(required = false) String page,
+                                           @RequestParam(required=false) Sort.Direction sort) {
         return productService.findAllProducts(page, sort);
     }
 
@@ -66,24 +63,20 @@ public class ProductController {
 
     @GetMapping("/product/expired")
     public ResponseEntity<?> findProductsWithExpiredDate(@RequestParam(required = false) String page, Sort.Direction sort) {
-        List<ProductDto> foundProducts = productService.findProductsWithExpiryDateUntilToday(page, sort);
+        List<ProductDto> foundProducts = productService.findProductsWithExpiredDate(page, sort);
         if (foundProducts.isEmpty())
             return new ResponseEntity<>("No products with expired date found", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(foundProducts, HttpStatus.FOUND);
     }
 
-    /*
-     * ************* UPDATE *************
-     */
+//************** UPDATE *************
 
     @PutMapping("/product")
     public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDto productDto) {
         return new ResponseEntity<>(productService.updateProduct(productDto), HttpStatus.ACCEPTED);
     }
 
-    /*
-     * ************* DELETE *************
-     */
+//************** DELETE *************
 
     @DeleteMapping("product")
     public ResponseEntity<?> deleteProduct(@RequestParam String id) {
