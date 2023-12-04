@@ -19,5 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     List<Product> findByPartialName(@Param("partialName") String partialName, Pageable pageable);
 
     @Query("SELECT p FROM Product p WHERE p.expiryDate <= CURRENT_DATE")
-    List<Product> findProductsWithExpiredDate(Pageable pageable);
+    List<Product> findWithExpiredDate(Pageable pageable);
+
+
 }

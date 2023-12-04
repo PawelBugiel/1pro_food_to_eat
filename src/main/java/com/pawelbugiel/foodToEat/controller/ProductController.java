@@ -41,7 +41,7 @@ public class ProductController {
 
     @GetMapping("/products")
     public List<ProductDto> findAllProducts(@RequestParam(required = false) String page,
-                                           @RequestParam(required=false) Sort.Direction sort) {
+                                            @RequestParam(required = false) Sort.Direction sort) {
         return productService.findAllProducts(page, sort);
     }
 
@@ -54,14 +54,15 @@ public class ProductController {
     }
 
     @GetMapping("/product/partial-name")
-    public ResponseEntity<?> findProductsByPartialName(@RequestParam String partialName, @RequestParam(required = false) String page, Sort.Direction sort) {
+    public ResponseEntity<?> findProductsByPartialName(@RequestParam String partialName,
+                                                       @RequestParam(required = false) String page, Sort.Direction sort) {
         List<ProductDto> productDtos = productService.findProductsByPartialName(partialName, page, sort);
         if (productDtos.isEmpty())
             return new ResponseEntity<>("No products with given partial name : " + partialName, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(productDtos, HttpStatus.FOUND);
     }
 
-    @GetMapping("/product/expired")
+    @GetMapping("/products/expired")
     public ResponseEntity<?> findProductsWithExpiredDate(@RequestParam(required = false) String page, Sort.Direction sort) {
         List<ProductDto> foundProducts = productService.findProductsWithExpiredDate(page, sort);
         if (foundProducts.isEmpty())
@@ -69,8 +70,8 @@ public class ProductController {
         return new ResponseEntity<>(foundProducts, HttpStatus.FOUND);
     }
 
-//************** UPDATE *************
-
+    //************** UPDATE *************
+    // including ID in Path: This aligns more with RESTful conventions, where the resource identifier (ID) is part of the URL. It makes the URL more descriptive and is often used for update operations.
     @PutMapping("/product")
     public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDto productDto) {
         return new ResponseEntity<>(productService.updateProduct(productDto), HttpStatus.ACCEPTED);

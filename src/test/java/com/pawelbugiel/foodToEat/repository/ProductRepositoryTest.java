@@ -107,4 +107,10 @@ public class ProductRepositoryTest {
     void findByPartialName() {
         fail("Not implemented yet");
     }
+
+
+    @Test
+    void findWithExpiredDate() {
+        fail("Not implemented yet");
+    }
 }

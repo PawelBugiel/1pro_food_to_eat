@@ -21,7 +21,7 @@ public class Product {
     @Column(name = "name")
     private String name;
 
-    @Column (name = "quantity")
+    @Column(name = "quantity")
     private int quantity;
 
     @Column(name = "expiry_date")

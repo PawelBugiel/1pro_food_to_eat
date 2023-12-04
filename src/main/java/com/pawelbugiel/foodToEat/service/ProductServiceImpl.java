@@ -9,6 +9,7 @@ import com.pawelbugiel.foodToEat.repository.ProductRepository;
 import com.pawelbugiel.foodToEat.utilities.UUID_Converter;
 import com.pawelbugiel.foodToEat.validators.ObjectValidator;
 import com.pawelbugiel.foodToEat.validators.PageValidator;
+import com.pawelbugiel.foodToEat.validators.SortingValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,15 +25,15 @@ import static com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper.*;
 public class ProductServiceImpl implements ProductService {
 
     public static final int DEFAULT_PAGE_SIZE = 5;
-    public static final Sort.Direction ASC_SORTING = Sort.Direction.ASC;
-    public static final Sort.Direction DESC_SORTING = Sort.Direction.DESC;
     private final ProductRepository productRepository;
     private final PageValidator pageValidator;
+    private final SortingValidator sortingValidator;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ObjectValidator<Integer> integerObjectValidator, PageValidator pageValidator) {
+    public ProductServiceImpl(ProductRepository productRepository, ObjectValidator<Integer> integerObjectValidator, PageValidator pageValidator, SortingValidator sortingValidator) {
         this.productRepository = productRepository;
         this.pageValidator = pageValidator;
+        this.sortingValidator = sortingValidator;
     }
 
 //************** CREATE *************
@@ -49,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> findAllProducts(String page, Sort.Direction sort) {
         int startPage = pageValidator.getValidPage(page);
-        Sort.Direction sortDirection = sort != null ? sort : ASC_SORTING;
+        Sort.Direction sortDirection = sortingValidator.validSortingType(sort);
 
         return productRepository.findAll(PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate")))
                 .stream()
@@ -70,7 +71,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction sort) {
         int startPage = pageValidator.getValidPage(page);
-        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
+        Sort.Direction sortDirection = sortingValidator.validSortingType(sort);
+
         PageRequest pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate"));
 
         List<Product> listFetchedByRepository = productRepository.findByPartialName(partialName, pageRequest);
@@ -83,10 +85,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> findProductsWithExpiredDate(String page, Sort.Direction sort) {
         int startPage = pageValidator.getValidPage(page);
-        Sort.Direction sortDirection = sort != null ? sort : DESC_SORTING;
+        sort = sortingValidator.setDescending();
 
-        PageRequest pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate"));
-        List<Product> foundProducts = productRepository.findProductsWithExpiredDate(pageRequest);
+        PageRequest pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sort, "expiryDate"));
+        List<Product> foundProducts = productRepository.findWithExpiredDate(pageRequest);
         List<ProductDto> resultList = foundProducts.stream()
                 .map(ProductAndProductDtoMapper::mapProductToProductDto)
                 .toList();
