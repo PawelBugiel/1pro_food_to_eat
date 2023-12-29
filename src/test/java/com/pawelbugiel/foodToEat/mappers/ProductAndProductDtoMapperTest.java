@@ -14,7 +14,7 @@ class ProductAndProductDtoMapperTest {
 
     private final UUID tempUUID = UUID.randomUUID();
     private final LocalDate expiryDate_1 = LocalDate.of(2077, 7, 7);
-    private final Product product_1 = Product.ProductBuilder.aProduct()
+    private final Product validProductEntity_1 = Product.ProductBuilder.aProduct()
             .withName("Water")
             .withQuantity(5)
             .withExpiryDate(expiryDate_1)
@@ -69,18 +69,20 @@ class ProductAndProductDtoMapperTest {
     * */
 
     @Test
-    @DisplayName("Product correctly mapped to Product Dto")
+    @DisplayName("Product to Product Dto - valid params")
     void testMapProductToProductDto_whenPassValidDetails_returnsProperProductDto() {
         // GIVEN
         // WHEN
-        ProductDto productDto = ProductAndProductDtoMapper.mapProductToProductDto(product_1);
+        ProductDto productDto = ProductAndProductDtoMapper.mapProductToProductDto(validProductEntity_1);
 
         // THEN
-        Assertions.assertThat(productDto.getQuantity()).isEqualTo(product_1.getQuantity());
-        Assertions.assertThat(productDto.getExpiryDate()).isEqualTo(product_1.getExpiryDate());
-        Assertions.assertThat(productDto.getName()).isEqualTo(product_1.getName());
+        Assertions.assertThat(productDto.getQuantity()).isEqualTo(validProductEntity_1.getQuantity());
+        Assertions.assertThat(productDto.getExpiryDate()).isEqualTo(validProductEntity_1.getExpiryDate());
+        Assertions.assertThat(productDto.getName()).isEqualTo(validProductEntity_1.getName());
         Assertions.assertThat(productDto.getId()).isEqualTo(tempUUID);
     }
+
+
 
     @Test
     @DisplayName("Map Product with default values to a Product Dto")
@@ -105,12 +107,12 @@ class ProductAndProductDtoMapperTest {
     void testMapProductToProductWriteDto_whenPassValidDetails_returnsProperProductWriteDto() {
         // GIVEN
         // WHEN
-        ProductWriteDto productWriteDto = ProductAndProductDtoMapper.mapProductToProductWriteDto(product_1);
+        ProductWriteDto productWriteDto = ProductAndProductDtoMapper.mapProductToProductWriteDto(validProductEntity_1);
 
         // THEN
-        Assertions.assertThat(productWriteDto.getName()).isEqualTo(product_1.getName());
-        Assertions.assertThat(productWriteDto.getExpiryDate()).isEqualTo(product_1.getExpiryDate());
-        Assertions.assertThat(productWriteDto.getQuantity()).isEqualTo(product_1.getQuantity());
+        Assertions.assertThat(productWriteDto.getName()).isEqualTo(validProductEntity_1.getName());
+        Assertions.assertThat(productWriteDto.getExpiryDate()).isEqualTo(validProductEntity_1.getExpiryDate());
+        Assertions.assertThat(productWriteDto.getQuantity()).isEqualTo(validProductEntity_1.getQuantity());
     }
 
     @Test

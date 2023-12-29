@@ -18,6 +18,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api/products")
 @Validated
+@CrossOrigin("http://localhost:8080/")
 public class ProductController {
 
     private final ProductService productService;
@@ -30,11 +31,10 @@ public class ProductController {
 
 //************** CREATE *************
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/product")
-    public ProductWriteDto createProduct(@RequestBody @Valid ProductWriteDto productWriteDto) {
-        ProductWriteDto tempProductWriteDto = productService.createProduct(productWriteDto);
-        return tempProductWriteDto;
+    @PostMapping(value = "/product")
+    public ResponseEntity<ProductWriteDto> createProduct(@RequestBody @Valid ProductWriteDto productWriteDto) {
+        ProductWriteDto resultProductWriteDto = productService.createProduct(productWriteDto);
+        return new ResponseEntity<>(resultProductWriteDto, HttpStatus.CREATED);
     }
 
 //************** FIND *************
@@ -70,7 +70,7 @@ public class ProductController {
         return new ResponseEntity<>(foundProducts, HttpStatus.FOUND);
     }
 
-    //************** UPDATE *************
+//************** UPDATE *************
     // including ID in Path: This aligns more with RESTful conventions, where the resource identifier (ID) is part of the URL. It makes the URL more descriptive and is often used for update operations.
     @PutMapping("/product")
     public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDto productDto) {

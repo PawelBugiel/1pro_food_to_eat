@@ -1,4 +1,3 @@
-/*
 
 package com.pawelbugiel.foodToEat.service;
 
@@ -13,21 +12,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
-*/
-/*
- * @ExtendWith(MockitoExtension.class) annotation is used to avoid implicitly implementing open and close a mock resource
+/* @ExtendWith(MockitoExtension.class) annotation is used to avoid implicitly implementing open and close a mock resource
  * 1.
  *
  * @BeforeEach
@@ -39,8 +35,7 @@ import static org.mockito.Mockito.*;
  * void tearDown() throws Exception {
  * autoCloseable.close();
  * }
-*/
-/*
+ */
 
 
 @ExtendWith(MockitoExtension.class)
@@ -52,37 +47,74 @@ public class ProductServiceImplTest {
     @InjectMocks
     private ProductServiceImpl underTest_ProductServiceImpl;
 
-    private final Product product_1 = Product.ProductBuilder.aProduct()
+    private final Product validProductEntity_1 = Product.ProductBuilder.aProduct()
             .withName("Milk")
             .withQuantity(1)
             .withExpiryDate(LocalDate.of(2024, 1, 1))
             .build();
 
-    private final Product product_2 = Product.ProductBuilder.aProduct()
+    private final Product validProductEntity_2 = Product.ProductBuilder.aProduct()
             .withName("Bread")
             .withQuantity(4)
             .withExpiryDate(LocalDate.of(2044, 4, 4))
             .build();
 
+//************** CREATE *************
+
     @Test
-    @DisplayName("should create Product and Return Product Write Dto")
-    public void testCreateProduct_whenAllDetailsPassed_ReturnsProduct() {
+    @DisplayName("Should create Product and Return Product Write Dto")
+    public void testCreateProduct_whenValidDetailsPassed_ReturnsProduct() {
         // GIVEN
-        ProductWriteDto productWriteDto = ProductAndProductDtoMapper.mapProductToProductWriteDto(product_1);
+        ProductWriteDto productWriteDto = ProductAndProductDtoMapper.mapProductToProductWriteDto(validProductEntity_1);
         // set how the productRepository mock should behave
-        when(productRepository.save(any(Product.class))).thenReturn(product_1);
+        Mockito.<Product>when(productRepository.save(any(Product.class))).thenReturn(validProductEntity_1);
         // WHEN
         ProductWriteDto savedProductDto = underTest_ProductServiceImpl.createProduct(productWriteDto);
         // THEN
         assertThat(savedProductDto).isNotNull();
-        assertThat(savedProductDto.getName()).isEqualTo(product_1.getName());
-        assertThat(savedProductDto.getQuantity()).isEqualTo(product_1.getQuantity());
-        assertThat(savedProductDto.getExpiryDate()).isEqualTo(product_1.getExpiryDate());
+        assertThat(savedProductDto.getName()).isEqualTo(validProductEntity_1.getName());
+        assertThat(savedProductDto.getQuantity()).isEqualTo(validProductEntity_1.getQuantity());
+        assertThat(savedProductDto.getExpiryDate()).isEqualTo(validProductEntity_1.getExpiryDate());
 
         verify(productRepository, times(1)).save(any(Product.class));
     }
 
-   @Test
+    @Test
+    @DisplayName("Create Product : Invalid details should throw MethodArgumentNotValidException")
+    public void testCreateProduct_whenInvalidDetailPassed_throwsMethodArgumentNotValidException() {
+        //GIVEN
+        Product invalidProduct = Product.ProductBuilder.aProduct()
+                .withName("some name")
+                .withQuantity(11)
+                .withExpiryDate(LocalDate.of(2023, 12, 22))
+                .build();
+
+        ProductWriteDto productWriteDto = ProductAndProductDtoMapper.mapProductToProductWriteDto(invalidProduct);
+        Assertions.assertThrows(MethodArgumentNotValidException.class, () -> underTest_ProductServiceImpl.createProduct(productWriteDto));
+
+        Mockito.<ProductRepository>verify(productRepository, never()).save(any());
+        //WHEN
+    }
+
+    @Test
+    @DisplayName("Create Product : Invalid details should throw MethodArgumentNotValidException")
+    public void testCreateProduct_whenInvalidDetailPassed_throwsMethodArgumentNotValidException222222() {
+        //GIVEN
+        ProductWriteDto invalidProductDto = ProductWriteDto.ProductWriteDtoBuilder.aProductWriteDto()
+                .withName("some name")
+                .withExpiryDate(LocalDate.of(2023, 12, 12))
+                .build();
+
+        ProductWriteDto productWriteDto = underTest_ProductServiceImpl.createProduct(invalidProductDto);
+
+        // Assert
+//        Assertions.assertThrows(MethodArgumentNotValidException.class, () -> underTest_ProductServiceImpl.createProduct(productWriteDto));
+
+        Mockito.<ProductRepository>verify(productRepository, never()).save(any());
+        //WHEN
+    }
+
+ /*  @Test
     @DisplayName("Should returns all (two) products dtos ")
     public void testGetAllProducts_whenTwoValidProductsExists_returnsProductDtos() {
         // GIVEN
@@ -107,7 +139,7 @@ public class ProductServiceImplTest {
         assertThat(productDtos.get(1).getExpiryDate()).isEqualTo(products.get(1).getExpiryDate());
 
         verify(productRepository, times(1)).findAll();
-    }
+    }*/
 
     @Test
     @DisplayName("should return a product with given id")
@@ -115,8 +147,8 @@ public class ProductServiceImplTest {
         // GIVEN
         UUID uuid = UUID.randomUUID();
         String stringUUID = uuid.toString();
-        ProductDto productDto_1 = ProductAndProductDtoMapper.mapProductToProductDto(product_1);
-        when(productRepository.findById(eq(uuid))).thenReturn(Optional.of(product_1));
+        ProductDto productDto_1 = ProductAndProductDtoMapper.mapProductToProductDto(validProductEntity_1);
+        when(productRepository.findById(eq(uuid))).thenReturn(Optional.of(validProductEntity_1));
         // WHEN
         Optional<ProductDto> resultOptionalProductDto = underTest_ProductServiceImpl.findProductById(stringUUID);
         // THEN
@@ -128,10 +160,10 @@ public class ProductServiceImplTest {
         assertThat(resultProductDto.getQuantity()).isEqualTo(productDto_1.getQuantity());
         assertThat(resultProductDto.getExpiryDate()).isEqualTo(productDto_1.getExpiryDate());
 
-        verify(productRepository, times(1) ).findById(eq(uuid));
+        verify(productRepository, times(1)).findById(eq(uuid));
     }
 
-   @Test
+  /* @Test
     @DisplayName("Should returns empty collection")
     public void testGetAllProducts_whenTwoValidProductsExists_returnsEmptyCollection() {
         // GIVEN
@@ -141,9 +173,9 @@ public class ProductServiceImplTest {
         // THEN
         assertTrue(productDtos.isEmpty());
         verify(productRepository, times(1)).findAll();
-    }
+    }*/
 
-   @Test
+    @Test
     @DisplayName("Pass an invalid Id, return an empty product optional")
     public void testGetProductById_whenInvalidIdPassed_returnsOptionalProductDto() {
         // GIVEN
@@ -154,8 +186,7 @@ public class ProductServiceImplTest {
         Optional<ProductDto> resultOptionalProductDto = underTest_ProductServiceImpl.findProductById(stringUUID);
         // THEN
         Assertions.assertTrue(resultOptionalProductDto.isEmpty());
-        verify(productRepository, times(1) ).findById(eq(uuid));
+        verify(productRepository, times(1)).findById(eq(uuid));
     }
 }
 
-*/
