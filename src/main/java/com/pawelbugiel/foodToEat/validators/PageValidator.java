@@ -23,6 +23,7 @@ public class PageValidator {
         }
     }
 
+    // what if a value of page is above possible range ?
     public int usePageValueOrDefault(Integer page) {
         return (page >= MIN_PAGE) ? page : MIN_PAGE;
     }

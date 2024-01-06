@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class SortingValidator {
 
+    // which field do we want to sort by ?
+
     public static final Sort.Direction ASC_SORTING = Sort.Direction.ASC;
     public static final Sort.Direction DESC_SORTING = Sort.Direction.ASC;
 

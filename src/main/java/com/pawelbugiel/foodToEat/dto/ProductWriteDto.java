@@ -21,7 +21,6 @@ public class ProductWriteDto {
     @Size(min = 3, max = 33, message = "The name must be between 3 and 33 characters long")
     private String name;
 
-
     @Range(min = 1, max = 10_000,  message = "Product quantity must be in range from 1 to 10 000")
     private int quantity;
 
@@ -33,9 +32,7 @@ public class ProductWriteDto {
     public static final class ProductWriteDtoBuilder {
 
         private  String name;
-
         private int quantity;
-
         private LocalDate expiryDate;
 
         private ProductWriteDtoBuilder() {

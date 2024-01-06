@@ -24,7 +24,7 @@ import static com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper.*;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    public static final int DEFAULT_PAGE_SIZE = 5;
+    public static final int DEFAULT_PAGE_SIZE = 10;
     private final ProductRepository productRepository;
     private final PageValidator pageValidator;
     private final SortingValidator sortingValidator;

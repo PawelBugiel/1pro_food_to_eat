@@ -66,7 +66,7 @@ public class ProductController {
     public ResponseEntity<?> findProductsWithExpiredDate(@RequestParam(required = false) String page, Sort.Direction sort) {
         List<ProductDto> foundProducts = productService.findProductsWithExpiredDate(page, sort);
         if (foundProducts.isEmpty())
-            return new ResponseEntity<>("No products with expired date found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No products with expired date found", HttpStatus.NOT_FOUND);  // change status-code 404
         return new ResponseEntity<>(foundProducts, HttpStatus.FOUND);
     }
 
