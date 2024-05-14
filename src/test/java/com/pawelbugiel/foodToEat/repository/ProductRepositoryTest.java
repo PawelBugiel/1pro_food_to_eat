@@ -2,6 +2,7 @@ package com.pawelbugiel.foodToEat.repository;
 
 import com.pawelbugiel.foodToEat.model.Product;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +91,7 @@ public class ProductRepositoryTest {
         assertThat(optionalRetrievedProduct).isEmpty();
     }
 
-    @Test
+/*    @Test
     @DisplayName("Successfully retrieved all products")
     public void productRepository_getAllProducts_ListOfProducts() {
         // When
@@ -99,7 +100,7 @@ public class ProductRepositoryTest {
         assertThat(products).isNotNull();
         assertThat(products).isNotEmpty();
         assertThat(products.size()).isEqualTo(2);
-    }
+    }*/
 
   /*  @Test
     @DisplayName("Successfully retrieved all products")

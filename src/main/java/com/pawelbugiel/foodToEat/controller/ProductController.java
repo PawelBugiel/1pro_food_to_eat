@@ -18,11 +18,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api/products")
 @Validated
-@CrossOrigin("http://localhost:8080/")
 public class ProductController {
 
     private final ProductService productService;
-//    private Integer page;
 
     @Autowired
     public ProductController(ProductService productService) {
@@ -70,7 +68,7 @@ public class ProductController {
         return new ResponseEntity<>(foundProducts, HttpStatus.FOUND);
     }
 
-//************** UPDATE *************
+    //************** UPDATE *************
     // including ID in Path: This aligns more with RESTful conventions, where the resource identifier (ID) is part of the URL. It makes the URL more descriptive and is often used for update operations.
     @PutMapping("/product")
     public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDto productDto) {

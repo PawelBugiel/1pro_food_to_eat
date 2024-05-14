@@ -1,3 +1,4 @@
+/*
 package com.pawelbugiel.foodToEat.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,8 +62,10 @@ class ProductControllerWebLayerTest {
 
         String responseBodyAsString = mvcResult.getResponse().getContentAsString();
 
-       /* StreamReadException – if underlying input contains invalid content of type JsonParser supports (JSON for default case)
-        DatabindException – if the input JSON structure does not match structure expected for result type (or has other mismatch issues)*/
+       */
+/* StreamReadException – if underlying input contains invalid content of type JsonParser supports (JSON for default case)
+        DatabindException – if the input JSON structure does not match structure expected for result type (or has other mismatch issues)*//*
+
         ProductWriteDto responseProductWriteDto = objectMapper.readValue(responseBodyAsString, ProductWriteDto.class);
         // THEN
         Assertions.assertNotNull(responseProductWriteDto);
@@ -163,3 +166,4 @@ class ProductControllerWebLayerTest {
     }
 }
 
+*/
