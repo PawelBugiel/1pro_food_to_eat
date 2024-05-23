@@ -24,9 +24,10 @@ public class ProductWriteDto {
     @Range(min = 1, max = 10_000,  message = "Product quantity must be in range from 1 to 10 000")
     private int quantity;
 
+    @NotNull(message = "Product expiry date cannot be empty")
     @FutureOrPresent
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
+//    @JsonDeserialize(using = LocalDateDeserializer.class)
+//    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate expiryDate;
 
     public static final class ProductWriteDtoBuilder {

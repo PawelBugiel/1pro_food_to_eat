@@ -18,13 +18,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IdException.class)
     public ResponseEntity<IdErrorResponse> idExceptionHandler(IdException exception) {
-        String status = HttpStatus.NOT_FOUND.toString();
+        String status = HttpStatus.BAD_REQUEST.toString();
         String message = "Invalid Id passed";
         IdErrorResponse idErrorResponse = IdErrorResponse.create(status, message);
 
         return new ResponseEntity<>(idErrorResponse, HttpStatus.NOT_FOUND);
     }
-
+    // #q to define other errors response classes - as above
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<?> productNotFoundExceptionHandler(ProductNotFoundException productNotFoundException) {
         return ResponseEntity
