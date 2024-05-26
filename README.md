@@ -6,7 +6,7 @@
 <br><br>
 3. [What I experienced](#What-I-experienced) - what are my experiences that I took out of it.
 <br><br>
-4. [To do list](#4.-To-do-list) - What is done and what still to do
+4. [To do list](#To-do-list) - What is done and what still to do
 <br><br>
 5. [Appendix](#Appendix) - A bit more information about my approach to write this application. 
 
@@ -37,6 +37,8 @@
 </details>
 
 > #### About the application
+
+Use http://localhost:8081/swagger-ui/index.html#/ to try the application rest API
 
 A CRUD application whose main goals are:
 - combine different learned aspects, previously used in separate tiny training applications
@@ -79,12 +81,11 @@ A CRUD application whose main goals are:
 - work with LocalDate.class as an entity property
 - ... and couple others
 
-> To do list
+> #### To do list
+- [x] Database
 - [ ] rest API
 - [ ] Tests
-- [x] Database
 - [ ] Integration with Open Food Facts API
-- [ ] Refactor
 
 > #### Appendix
 Do tego projektu podchodziłem kilka razy. Mam kilka jego wersji. Wersja przedstawiona tutaj jest:
