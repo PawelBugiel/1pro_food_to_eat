@@ -1,9 +1,9 @@
 package com.pawelbugiel.foodToEat.service;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
-import com.pawelbugiel.foodToEat.exceptions.ProductNotFoundException;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
-import com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper;
+import com.pawelbugiel.foodToEat.exceptions.ProductNotFoundException;
+import com.pawelbugiel.foodToEat.mappers.ProductMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
 import com.pawelbugiel.foodToEat.utilities.UUID_Converter;
@@ -16,10 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import static com.pawelbugiel.foodToEat.mappers.ProductAndProductDtoMapper.*;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -40,9 +38,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductWriteDto createProduct(ProductWriteDto productWriteDto) {
-        Product passedProduct = mapProductWriteDtoToProduct(productWriteDto);
-        Product savedProduct = productRepository.save(passedProduct);
-        return mapProductToProductWriteDto(savedProduct);
+        Product passedProduct = ProductMapper.toProduct(productWriteDto);
+        productRepository.save(passedProduct);
+        return productWriteDto;
     }
 
 //************** FIND *************
@@ -54,18 +52,15 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.findAll(PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate")))
                 .stream()
-                .map(ProductAndProductDtoMapper::mapProductToProductDto)
+                .map(ProductMapper::toProductDto)
                 .toList();
     }
 
-    @Override    // to refactor
-    public Optional<ProductDto> findProductById(String id) {
-        Optional<UUID> uuid = UUID_Converter.convertStringToUUID(id);
-        if (uuid.isPresent()) {
-            return productRepository.findById(uuid.get())
-                    .map(ProductAndProductDtoMapper::mapProductToProductDto);
-        }
-        return Optional.empty();
+    @Override
+    public ProductDto findProductById(String id) {
+        UUID uuid = UUID_Converter.convertStringToUUID(id);
+        Product product = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(uuid));
+        return ProductMapper.toProductDto(product);
     }
 
     @Override
@@ -77,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<Product> listFetchedByRepository = productRepository.findByPartialName(partialName, pageRequest);
         List<ProductDto> resultList = listFetchedByRepository.stream()
-                .map(ProductAndProductDtoMapper::mapProductToProductDto)
+                .map(ProductMapper::toProductDto)
                 .toList();
         return resultList;
     }
@@ -90,20 +85,26 @@ public class ProductServiceImpl implements ProductService {
         PageRequest pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sort, "expiryDate"));
         List<Product> foundProducts = productRepository.findWithExpiredDate(pageRequest);
         List<ProductDto> resultList = foundProducts.stream()
-                .map(ProductAndProductDtoMapper::mapProductToProductDto)
+                .map(ProductMapper::toProductDto)
                 .toList();
 
         return resultList;
     }
 
-//************** UPDATE *************
-
     @Override
     public ProductDto updateProduct(ProductDto productDto) {
+        return null;
+    }
+
+
+//************** UPDATE *************
+
+/*    @Override
+    public ProductDto updateProduct2(ProductDto productDto) {
         String id = productDto.getId().toString();
         Optional<ProductDto> productToUpdate = findProductById(id);
         if (productToUpdate.isEmpty()) {
-            throw new ProductNotFoundException("There is no product with id " + id);
+            throw new ProductNotFoundException(UUID.fromString("There is no product with id " + id));
         }
         Product newProduct = Product.ProductBuilder.aProduct()
                 .withId(productDto.getId())
@@ -115,21 +116,16 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = productRepository.save(newProduct);
 
         return mapProductToProductDto(savedProduct);
-    }
+    }*/
 
 //************** DELETE *************
 
     @Override
-    public boolean deleteProductById(String id) {
-        UUID_Converter.convertStringToUUID(id);
-
-        Optional<ProductDto> foundProduct = findProductById(id);
-        if (foundProduct.isEmpty()) {
-            throw new ProductNotFoundException("There is no product with id " + id);
-        }
-
-        Product productToDelete = mapProductDtoToProduct(foundProduct.get());
-        productRepository.deleteById(productToDelete.getId());
-        return true;
+    public ProductDto deleteProductById(String id) {
+        UUID uuid = UUID_Converter.convertStringToUUID(id);
+        Product foundProduct = productRepository.findById(uuid).orElseThrow(()-> new ProductNotFoundException(uuid));
+        ProductDto productDto = ProductMapper.toProductDto(foundProduct);
+        productRepository.deleteById(uuid);
+        return productDto;
     }
 }

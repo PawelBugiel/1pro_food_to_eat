@@ -5,7 +5,6 @@ import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductService {
 
@@ -17,7 +16,7 @@ public interface ProductService {
 
     List<ProductDto> findAllProducts(String page, Sort.Direction sort);
 
-    Optional<ProductDto> findProductById(String id);
+    ProductDto findProductById(String id);
 
     List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction sort);
 
@@ -29,6 +28,6 @@ public interface ProductService {
 
 //************** DELETE *************
 
-    boolean deleteProductById(String id);
+    ProductDto deleteProductById(String id);
 
 }

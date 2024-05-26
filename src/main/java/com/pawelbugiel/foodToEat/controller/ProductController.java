@@ -75,11 +75,9 @@ public class ProductController {
 
 //************** DELETE *************
 
-    @DeleteMapping("products")
-    public ResponseEntity<?> deleteProduct(@RequestParam String id) {
-        if (productService.deleteProductById(id))
-            return new ResponseEntity<>("Product with given id successfully deleted. Id : " + id, HttpStatus.NO_CONTENT);
-        return new ResponseEntity<>("Product with given id not deleted. Id : " + id, HttpStatus.NOT_FOUND);
+    @DeleteMapping("products/id/{id}")
+    public ResponseEntity<ProductDto> deleteProduct(@PathVariable String id) {
+        return new ResponseEntity<>(productService.deleteProductById(id) , HttpStatusCode.valueOf(200));
     }
 }
 
