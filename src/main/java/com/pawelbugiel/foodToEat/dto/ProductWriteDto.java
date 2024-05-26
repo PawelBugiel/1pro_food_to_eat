@@ -1,9 +1,5 @@
 package com.pawelbugiel.foodToEat.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -26,10 +22,9 @@ public class ProductWriteDto {
 
     @NotNull(message = "Product expiry date cannot be empty")
     @FutureOrPresent
-//    @JsonDeserialize(using = LocalDateDeserializer.class)
-//    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate expiryDate;
 
+    // #q instead the builder use StreamAPI to create a product ?
     public static final class ProductWriteDtoBuilder {
 
         private  String name;
