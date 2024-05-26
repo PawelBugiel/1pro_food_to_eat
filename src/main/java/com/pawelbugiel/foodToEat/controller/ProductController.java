@@ -13,10 +13,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("api/products")
+@RequestMapping("api/")
 @Validated
 public class ProductController {
 
@@ -29,7 +28,7 @@ public class ProductController {
 
 //************** CREATE *************
 
-    @PostMapping(value = "/product")
+    @PostMapping(value = "/products")
     public ResponseEntity<ProductWriteDto> createProduct(@RequestBody @Valid ProductWriteDto productWriteDto) {
         ProductWriteDto resultProductWriteDto = productService.createProduct(productWriteDto);
         return new ResponseEntity<>(resultProductWriteDto, HttpStatus.CREATED);
@@ -38,20 +37,18 @@ public class ProductController {
 //************** FIND *************
 
     @GetMapping("/products")
-    public List<ProductDto> findAllProducts(@RequestParam(required = false) String page,
+    public List<ProductDto> findAllProducts(@RequestParam(required = false)  String page,
                                             @RequestParam(required = false) Sort.Direction sort) {
         return productService.findAllProducts(page, sort);
     }
 
-    @GetMapping("product/id/{id}")
-    public ResponseEntity<?> findProductById(@PathVariable String id) {
-        Optional<ProductDto> productDtoOptional = productService.findProductById(id);
-        if (productDtoOptional.isEmpty())
-            return new ResponseEntity<>("Product not found\n", HttpStatusCode.valueOf(404));
-        return new ResponseEntity<>(productDtoOptional.get(), HttpStatusCode.valueOf(200));
+    @GetMapping("products/id/{id}")
+    public ResponseEntity<ProductDto> findProductById(@PathVariable String id) {
+        ProductDto productDto = productService.findProductById(id);
+        return new ResponseEntity<>(productDto, HttpStatusCode.valueOf(200));
     }
 
-    @GetMapping("/product/partial-name")
+    @GetMapping("/products/partial-name")
     public ResponseEntity<?> findProductsByPartialName(@RequestParam String partialName,
                                                        @RequestParam(required = false) String page, Sort.Direction sort) {
         List<ProductDto> productDtos = productService.findProductsByPartialName(partialName, page, sort);
@@ -69,15 +66,16 @@ public class ProductController {
     }
 
     //************** UPDATE *************
+
     // including ID in Path: This aligns more with RESTful conventions, where the resource identifier (ID) is part of the URL. It makes the URL more descriptive and is often used for update operations.
-    @PutMapping("/product")
+    @PutMapping("/products")
     public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDto productDto) {
         return new ResponseEntity<>(productService.updateProduct(productDto), HttpStatus.ACCEPTED);
     }
 
 //************** DELETE *************
 
-    @DeleteMapping("product")
+    @DeleteMapping("products")
     public ResponseEntity<?> deleteProduct(@RequestParam String id) {
         if (productService.deleteProductById(id))
             return new ResponseEntity<>("Product with given id successfully deleted. Id : " + id, HttpStatus.NO_CONTENT);
