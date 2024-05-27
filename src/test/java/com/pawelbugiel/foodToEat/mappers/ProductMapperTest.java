@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.UUID;
 
-class ProductAndProductDtoMapperTest {
+class ProductMapperTest {
 
     private final UUID tempUUID = UUID.randomUUID();
     private final LocalDate expiryDate_1 = LocalDate.of(2077, 7, 7);
@@ -42,7 +42,7 @@ class ProductAndProductDtoMapperTest {
                 .build();
 
         // WHEN
-        Product product = ProductAndProductDtoMapper.mapProductWriteDtoToProduct(productWriteDto);
+        Product product = ProductMapper.toProduct(productWriteDto);
 
         // THEN
         Assertions.assertThat(productWriteDto.getName()).isEqualTo(product.getName());
@@ -55,7 +55,7 @@ class ProductAndProductDtoMapperTest {
     void testMapProductWriteDtoToProduct_whenPassProductWriteDtoWithDefaultValues_returnsProductWithDefaultValues() {
         // GIVEN
         // WHEN
-        Product product = ProductAndProductDtoMapper.mapProductWriteDtoToProduct(productWriteDtoWithDefaultValues);
+        Product product = ProductMapper.toProduct(productWriteDtoWithDefaultValues);
 
         // THEN
         Assertions.assertThat(product.getName()).isNull();
@@ -73,7 +73,7 @@ class ProductAndProductDtoMapperTest {
     void testMapProductToProductDto_whenPassValidDetails_returnsProperProductDto() {
         // GIVEN
         // WHEN
-        ProductDto productDto = ProductAndProductDtoMapper.mapProductToProductDto(validProductEntity_1);
+        ProductDto productDto = ProductMapper.toProductDto(validProductEntity_1);
 
         // THEN
         Assertions.assertThat(productDto.getQuantity()).isEqualTo(validProductEntity_1.getQuantity());
@@ -89,7 +89,7 @@ class ProductAndProductDtoMapperTest {
     void testMapProductToProductDto_whenPassProductWithDefaultValues_returnsProductDtoDefaultValues() {
         // GIVEN
         // WHEN
-        ProductDto productDto = ProductAndProductDtoMapper.mapProductToProductDto(productWithDefaultValues);
+        ProductDto productDto = ProductMapper.toProductDto(productWithDefaultValues);
 
         // THEN
         Assertions.assertThat(productDto.getName()).isNull();
@@ -107,7 +107,7 @@ class ProductAndProductDtoMapperTest {
     void testMapProductToProductWriteDto_whenPassValidDetails_returnsProperProductWriteDto() {
         // GIVEN
         // WHEN
-        ProductWriteDto productWriteDto = ProductAndProductDtoMapper.mapProductToProductWriteDto(validProductEntity_1);
+        ProductWriteDto productWriteDto = ProductMapper.toProductWriteDto(validProductEntity_1);
 
         // THEN
         Assertions.assertThat(productWriteDto.getName()).isEqualTo(validProductEntity_1.getName());
@@ -120,7 +120,7 @@ class ProductAndProductDtoMapperTest {
     void testMapProductToProductWriteDto_whenPassProductWithDefaultValues_returnsProductWriteDtoDefaultValues() {
         // GIVEN
         // WHEN
-        ProductWriteDto productWriteDto = ProductAndProductDtoMapper.mapProductToProductWriteDto(productWithDefaultValues);
+        ProductWriteDto productWriteDto = ProductMapper.toProductWriteDto(productWithDefaultValues);
 
         // THEN
         Assertions.assertThat(productWriteDto.getName()).isNull();
