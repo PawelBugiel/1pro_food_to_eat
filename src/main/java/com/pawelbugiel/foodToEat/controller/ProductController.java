@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @RestController
 @RequestMapping("api/")
 @Validated
@@ -29,9 +30,9 @@ public class ProductController {
 //************** CREATE *************
 
     @PostMapping(value = "/products")
-    public ResponseEntity<ProductWriteDto> createProduct(@RequestBody @Valid ProductWriteDto productWriteDto) {
-        ProductWriteDto resultProductWriteDto = productService.createProduct(productWriteDto);
-        return new ResponseEntity<>(resultProductWriteDto, HttpStatus.CREATED);
+    public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductWriteDto productWriteDto) {
+        ProductDto resultProductDto = productService.createProduct(productWriteDto);
+        return new ResponseEntity<>(resultProductDto, HttpStatus.CREATED);
     }
 
 //************** FIND *************

@@ -1,8 +1,6 @@
 package com.pawelbugiel.foodToEat.dto;
 
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
@@ -13,7 +11,9 @@ import java.time.LocalDate;
 @ToString
 public class ProductWriteDto {
 
+    @NotBlank(message = "Product name cannot consists with whitespaces only")
     @NotNull(message = "Product name cannot be empty")
+    @Pattern(regexp = "^[a-zA-Z0-9]{3}.*$")
     @Size(min = 3, max = 33, message = "The name must be between 3 and 33 characters long")
     private String name;
 

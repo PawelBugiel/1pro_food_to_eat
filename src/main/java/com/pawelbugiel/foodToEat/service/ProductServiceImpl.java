@@ -6,10 +6,9 @@ import com.pawelbugiel.foodToEat.exceptions.ProductNotFoundException;
 import com.pawelbugiel.foodToEat.mappers.ProductMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
-import com.pawelbugiel.foodToEat.utilities.UUID_Converter;
-import com.pawelbugiel.foodToEat.validators.ObjectValidator;
 import com.pawelbugiel.foodToEat.validators.PageValidator;
 import com.pawelbugiel.foodToEat.validators.SortingValidator;
+import com.pawelbugiel.foodToEat.validators.UUID_Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
     private final SortingValidator sortingValidator;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ObjectValidator<Integer> integerObjectValidator, PageValidator pageValidator, SortingValidator sortingValidator) {
+    public ProductServiceImpl(ProductRepository productRepository, PageValidator pageValidator, SortingValidator sortingValidator) {
         this.productRepository = productRepository;
         this.pageValidator = pageValidator;
         this.sortingValidator = sortingValidator;
@@ -37,10 +36,10 @@ public class ProductServiceImpl implements ProductService {
 //************** CREATE *************
 
     @Override
-    public ProductWriteDto createProduct(ProductWriteDto productWriteDto) {
+    public ProductDto createProduct(ProductWriteDto productWriteDto) {
         Product passedProduct = ProductMapper.toProduct(productWriteDto);
-        productRepository.save(passedProduct);
-        return productWriteDto;
+        Product savedProduct = productRepository.save(passedProduct);
+        return ProductMapper.toProductDto(savedProduct);
     }
 
 //************** FIND *************
@@ -58,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto findProductById(String id) {
-        UUID uuid = UUID_Converter.convertStringToUUID(id);
+        UUID uuid = UUID_Validator.convertStringToUUID(id);
         Product product = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(uuid));
         return ProductMapper.toProductDto(product);
     }
@@ -71,10 +70,9 @@ public class ProductServiceImpl implements ProductService {
         PageRequest pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate"));
 
         List<Product> listFetchedByRepository = productRepository.findByPartialName(partialName, pageRequest);
-        List<ProductDto> resultList = listFetchedByRepository.stream()
+        return listFetchedByRepository.stream()
                 .map(ProductMapper::toProductDto)
                 .toList();
-        return resultList;
     }
 
     @Override
@@ -84,11 +82,9 @@ public class ProductServiceImpl implements ProductService {
 
         PageRequest pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sort, "expiryDate"));
         List<Product> foundProducts = productRepository.findWithExpiredDate(pageRequest);
-        List<ProductDto> resultList = foundProducts.stream()
+        return foundProducts.stream()
                 .map(ProductMapper::toProductDto)
                 .toList();
-
-        return resultList;
     }
 
     @Override
@@ -122,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto deleteProductById(String id) {
-        UUID uuid = UUID_Converter.convertStringToUUID(id);
+        UUID uuid = UUID_Validator.convertStringToUUID(id);
         Product foundProduct = productRepository.findById(uuid).orElseThrow(()-> new ProductNotFoundException(uuid));
         ProductDto productDto = ProductMapper.toProductDto(foundProduct);
         productRepository.deleteById(uuid);
