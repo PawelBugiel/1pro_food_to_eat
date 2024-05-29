@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
         return ProductMapper.toProductDto(savedProduct);
     }
 
-//************** FIND *************
+//************** READ *************
 
     @Override
     public List<ProductDto> findAllProducts(String page, Sort.Direction sort) {

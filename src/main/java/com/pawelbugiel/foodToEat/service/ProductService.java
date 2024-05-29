@@ -12,7 +12,7 @@ public interface ProductService {
 
     ProductDto createProduct(ProductWriteDto productWriteDto);
 
-//************** FIND *************
+//************** READ *************
 
     List<ProductDto> findAllProducts(String page, Sort.Direction sort);
 

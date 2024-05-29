@@ -35,7 +35,7 @@ public class ProductController {
         return new ResponseEntity<>(resultProductDto, HttpStatus.CREATED);
     }
 
-//************** FIND *************
+//************** READ *************
 
     @GetMapping("/products")
     public List<ProductDto> findAllProducts(@RequestParam(required = false)  String page,
