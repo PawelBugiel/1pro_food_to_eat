@@ -3,6 +3,7 @@ package com.pawelbugiel.foodToEat.controller;
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
 import com.pawelbugiel.foodToEat.service.ProductService;
+import com.pawelbugiel.foodToEat.validators.ProductProperties;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -38,9 +39,10 @@ public class ProductController {
 //************** READ *************
 
     @GetMapping("/products")
-    public List<ProductDto> findAllProducts(@RequestParam(required = false)  String page,
-                                            @RequestParam(required = false) Sort.Direction sort) {
-        return productService.findAllProducts(page, sort);
+    public List<ProductDto> findAllProducts(@RequestParam(required = false) String page,
+                                            @RequestParam(required = false) Sort.Direction sortDirection,
+                                            @RequestParam(required = false) ProductProperties sortBy) {
+        return productService.findAllProducts(page, sortDirection, sortBy);
     }
 
     @GetMapping("products/id/{id}")
@@ -51,7 +53,8 @@ public class ProductController {
 
     @GetMapping("/products/partial-name")
     public ResponseEntity<?> findProductsByPartialName(@RequestParam String partialName,
-                                                       @RequestParam(required = false) String page, Sort.Direction sort) {
+                                                       @RequestParam(required = false) String page,
+                                                       @RequestParam(required = false) Sort.Direction sort) {
         List<ProductDto> productDtos = productService.findProductsByPartialName(partialName, page, sort);
         if (productDtos.isEmpty())
             return new ResponseEntity<>("No products with given partial name : " + partialName, HttpStatus.NOT_FOUND);
@@ -68,7 +71,6 @@ public class ProductController {
 
     //************** UPDATE *************
 
-    // including ID in Path: This aligns more with RESTful conventions, where the resource identifier (ID) is part of the URL. It makes the URL more descriptive and is often used for update operations.
     @PutMapping("/products")
     public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDto productDto) {
         return new ResponseEntity<>(productService.updateProduct(productDto), HttpStatus.ACCEPTED);
@@ -78,7 +80,7 @@ public class ProductController {
 
     @DeleteMapping("products/id/{id}")
     public ResponseEntity<ProductDto> deleteProduct(@PathVariable String id) {
-        return new ResponseEntity<>(productService.deleteProductById(id) , HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(productService.deleteProductById(id), HttpStatusCode.valueOf(200));
     }
 }
 

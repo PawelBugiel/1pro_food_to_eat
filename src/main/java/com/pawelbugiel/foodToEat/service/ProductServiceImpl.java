@@ -6,9 +6,7 @@ import com.pawelbugiel.foodToEat.exceptions.ProductNotFoundException;
 import com.pawelbugiel.foodToEat.mappers.ProductMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
-import com.pawelbugiel.foodToEat.validators.PageValidator;
-import com.pawelbugiel.foodToEat.validators.SortingValidator;
-import com.pawelbugiel.foodToEat.validators.UUID_Validator;
+import com.pawelbugiel.foodToEat.validators.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,20 +15,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-
 @Service
 public class ProductServiceImpl implements ProductService {
 
     public static final int DEFAULT_PAGE_SIZE = 10;
     private final ProductRepository productRepository;
-    private final PageValidator pageValidator;
-    private final SortingValidator sortingValidator;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, PageValidator pageValidator, SortingValidator sortingValidator) {
+    public ProductServiceImpl(ProductRepository productRepository, PageValidator pageValidator, SortDirectionValidator sortDirectionValidator, SortByValidator sortByValidator) {
         this.productRepository = productRepository;
-        this.pageValidator = pageValidator;
-        this.sortingValidator = sortingValidator;
     }
 
 //************** CREATE *************
@@ -45,11 +38,12 @@ public class ProductServiceImpl implements ProductService {
 //************** READ *************
 
     @Override
-    public List<ProductDto> findAllProducts(String page, Sort.Direction sort) {
-        int startPage = pageValidator.getValidPage(page);
-        Sort.Direction sortDirection = sortingValidator.validSortingType(sort);
+    public List<ProductDto> findAllProducts(String page, Sort.Direction sortDirection, ProductProperties sortBy) {
+        var startPage = PageValidator.getValidPage(page);
+        var direction = SortDirectionValidator.validDirection(sortDirection);
+        var validSortByValue = SortByValidator.valid(sortBy);
 
-        return productRepository.findAll(PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate")))
+        return productRepository.findAll(PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(direction, validSortByValue)))
                 .stream()
                 .map(ProductMapper::toProductDto)
                 .toList();
@@ -64,8 +58,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction sort) {
-        int startPage = pageValidator.getValidPage(page);
-        Sort.Direction sortDirection = sortingValidator.validSortingType(sort);
+        int startPage = PageValidator.getValidPage(page);
+        Sort.Direction sortDirection = SortDirectionValidator.validDirection(sort);
 
         PageRequest pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate"));
 
@@ -77,8 +71,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> findProductsWithExpiredDate(String page, Sort.Direction sort) {
-        int startPage = pageValidator.getValidPage(page);
-        sort = sortingValidator.setDescending();
+        int startPage = PageValidator.getValidPage(page);
+        sort = SortDirectionValidator.setDescending();
 
         PageRequest pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sort, "expiryDate"));
         List<Product> foundProducts = productRepository.findWithExpiredDate(pageRequest);
@@ -119,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto deleteProductById(String id) {
         UUID uuid = UUID_Validator.convertStringToUUID(id);
-        Product foundProduct = productRepository.findById(uuid).orElseThrow(()-> new ProductNotFoundException(uuid));
+        Product foundProduct = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(uuid));
         ProductDto productDto = ProductMapper.toProductDto(foundProduct);
         productRepository.deleteById(uuid);
         return productDto;
