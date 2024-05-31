@@ -20,7 +20,7 @@ public interface ProductService {
 
     ProductDto findProductById(String id);
 
-    List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction sort);
+    List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction sort, ProductProperties sortBy);
 
     List<ProductDto> findProductsWithExpiredDate(String page, Sort.Direction sort);
 

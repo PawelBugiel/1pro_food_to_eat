@@ -18,11 +18,11 @@ import java.util.UUID;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    public static final int DEFAULT_PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 10;
     private final ProductRepository productRepository;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, PageValidator pageValidator, SortDirectionValidator sortDirectionValidator, SortByValidator sortByValidator) {
+    public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
@@ -30,8 +30,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto createProduct(ProductWriteDto productWriteDto) {
-        Product passedProduct = ProductMapper.toProduct(productWriteDto);
-        Product savedProduct = productRepository.save(passedProduct);
+        var passedProduct = ProductMapper.toProduct(productWriteDto);
+        var savedProduct = productRepository.save(passedProduct);
+
         return ProductMapper.toProductDto(savedProduct);
     }
 
@@ -41,9 +42,11 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDto> findAllProducts(String page, Sort.Direction sortDirection, ProductProperties sortBy) {
         var startPage = PageValidator.getValidPage(page);
         var direction = SortDirectionValidator.validDirection(sortDirection);
-        var validSortByValue = SortByValidator.valid(sortBy);
+        var sortByValue = SortByValidator.valid(sortBy);
 
-        return productRepository.findAll(PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(direction, validSortByValue)))
+        var pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(direction, sortByValue));
+
+        return productRepository.findAll(pageRequest)
                 .stream()
                 .map(ProductMapper::toProductDto)
                 .toList();
@@ -51,30 +54,32 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto findProductById(String id) {
-        UUID uuid = UUID_Validator.convertStringToUUID(id);
-        Product product = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(uuid));
+        var uuid = UUID_Validator.convertStringToUUID(id);
+        var product = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(uuid));
+
         return ProductMapper.toProductDto(product);
     }
 
     @Override
-    public List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction sort) {
-        int startPage = PageValidator.getValidPage(page);
-        Sort.Direction sortDirection = SortDirectionValidator.validDirection(sort);
+    public List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction sort, ProductProperties sortBy) {
+        var startPage = PageValidator.getValidPage(page);
+        var sortDirection = SortDirectionValidator.validDirection(sort);
+        var sortByValue = SortByValidator.valid(sortBy);
 
-        PageRequest pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "expiryDate"));
+        var pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(sortDirection, sortByValue));
+        var resultList = productRepository.findByPartialName(partialName, pageRequest);
 
-        List<Product> listFetchedByRepository = productRepository.findByPartialName(partialName, pageRequest);
-        return listFetchedByRepository.stream()
+        return resultList.stream()
                 .map(ProductMapper::toProductDto)
                 .toList();
     }
 
     @Override
     public List<ProductDto> findProductsWithExpiredDate(String page, Sort.Direction sort) {
-        int startPage = PageValidator.getValidPage(page);
+        var startPage = PageValidator.getValidPage(page);
         sort = SortDirectionValidator.setDescending();
 
-        PageRequest pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(sort, "expiryDate"));
+        PageRequest pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(sort, "expiryDate"));
         List<Product> foundProducts = productRepository.findWithExpiredDate(pageRequest);
         return foundProducts.stream()
                 .map(ProductMapper::toProductDto)

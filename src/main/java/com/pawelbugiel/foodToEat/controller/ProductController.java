@@ -5,6 +5,7 @@ import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
 import com.pawelbugiel.foodToEat.service.ProductService;
 import com.pawelbugiel.foodToEat.validators.ProductProperties;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final String PARTIAL_NAME_REGEX = "^[a-zA-Z0-9].*";
 
     @Autowired
     public ProductController(ProductService productService) {
@@ -62,10 +64,11 @@ public class ProductController {
     }
 
     @GetMapping("/products/partial-name")
-    public ResponseEntity<?> findProductsByPartialName(@RequestParam String partialName,
+    public ResponseEntity<?> findProductsByPartialName(@RequestParam @Pattern(regexp = PARTIAL_NAME_REGEX ) String partialName,
                                                        @RequestParam(required = false) String page,
-                                                       @RequestParam(required = false) Sort.Direction sort) {
-        List<ProductDto> productDtos = productService.findProductsByPartialName(partialName, page, sort);
+                                                       @RequestParam(required = false) Sort.Direction sortDirection,
+                                                       @RequestParam(required = false) ProductProperties sortBy) {
+        List<ProductDto> productDtos = productService.findProductsByPartialName(partialName, page, sortDirection, sortBy);
         if (productDtos.isEmpty())
             return new ResponseEntity<>("No products with given partial name : " + partialName, HttpStatus.NOT_FOUND);
         return ResponseEntity.status(200)

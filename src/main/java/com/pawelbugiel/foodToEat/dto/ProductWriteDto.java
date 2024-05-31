@@ -11,9 +11,11 @@ import java.time.LocalDate;
 @ToString
 public class ProductWriteDto {
 
+    private final String productNameRegex = "^[a-zA-Z0-9]{3}.*$";
+
     @NotBlank(message = "Product name cannot consists with whitespaces only")
     @NotNull(message = "Product name cannot be empty")
-    @Pattern(regexp = "^[a-zA-Z0-9]{3}.*$")
+    @Pattern(regexp = productNameRegex)
     @Size(min = 3, max = 33, message = "The name must be between 3 and 33 characters long")
     private String name;
 
