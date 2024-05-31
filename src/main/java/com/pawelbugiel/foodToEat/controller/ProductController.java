@@ -8,10 +8,10 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -31,9 +31,18 @@ public class ProductController {
 //************** CREATE *************
 
     @PostMapping(value = "/products")
-    public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductWriteDto productWriteDto) {
+    public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductWriteDto productWriteDto, UriComponentsBuilder uriBuilder) {
         ProductDto resultProductDto = productService.createProduct(productWriteDto);
-        return new ResponseEntity<>(resultProductDto, HttpStatus.CREATED);
+        String resourceUri = getResourceUri(uriBuilder, resultProductDto);
+        return ResponseEntity.status(200)
+                .header("Location", resourceUri)
+                .body(resultProductDto);
+    }
+
+    private static String getResourceUri(UriComponentsBuilder uriBuilder, ProductDto resultProductDto) {
+        return uriBuilder.path("/api/products/{id}")
+                .buildAndExpand(resultProductDto.getId())
+                .toUriString();
     }
 
 //************** READ *************
@@ -48,7 +57,8 @@ public class ProductController {
     @GetMapping("products/id/{id}")
     public ResponseEntity<ProductDto> findProductById(@PathVariable String id) {
         ProductDto productDto = productService.findProductById(id);
-        return new ResponseEntity<>(productDto, HttpStatusCode.valueOf(200));
+        return ResponseEntity.status(200)
+                .body(productDto);
     }
 
     @GetMapping("/products/partial-name")
@@ -58,29 +68,35 @@ public class ProductController {
         List<ProductDto> productDtos = productService.findProductsByPartialName(partialName, page, sort);
         if (productDtos.isEmpty())
             return new ResponseEntity<>("No products with given partial name : " + partialName, HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(productDtos, HttpStatus.FOUND);
+        return ResponseEntity.status(200)
+                .body(productDtos);
     }
 
     @GetMapping("/products/expired")
     public ResponseEntity<?> findProductsWithExpiredDate(@RequestParam(required = false) String page, Sort.Direction sort) {
         List<ProductDto> foundProducts = productService.findProductsWithExpiredDate(page, sort);
         if (foundProducts.isEmpty())
-            return new ResponseEntity<>("No products with expired date found", HttpStatus.NOT_FOUND);  // change status-code 404
-        return new ResponseEntity<>(foundProducts, HttpStatus.FOUND);
+            return new ResponseEntity<>("No products with expired date found", HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(200)
+                .body(foundProducts);
     }
 
     //************** UPDATE *************
 
     @PutMapping("/products")
     public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDto productDto) {
-        return new ResponseEntity<>(productService.updateProduct(productDto), HttpStatus.ACCEPTED);
+        ProductDto updatedProductDto = productService.updateProduct(productDto);
+        return ResponseEntity.status(200)
+                .body(updatedProductDto);
     }
 
 //************** DELETE *************
 
     @DeleteMapping("products/id/{id}")
     public ResponseEntity<ProductDto> deleteProduct(@PathVariable String id) {
-        return new ResponseEntity<>(productService.deleteProductById(id), HttpStatusCode.valueOf(200));
+        ProductDto deletedProductDto = productService.deleteProductById(id);
+        return ResponseEntity.status(200)
+                .body(deletedProductDto);
     }
 }
 
