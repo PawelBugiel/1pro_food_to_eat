@@ -1,7 +1,6 @@
-package com.pawelbugiel.foodToEat.handlers;
+package com.pawelbugiel.foodToEat.exceptions;
 
-import com.pawelbugiel.foodToEat.exceptions.IdException;
-import com.pawelbugiel.foodToEat.exceptions.ProductNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -38,5 +37,11 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         return errors;
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String regexValidationExceptionHandler(ConstraintViolationException ex) {
+        return "Invalid data passed ( regex violating )";
     }
 }
