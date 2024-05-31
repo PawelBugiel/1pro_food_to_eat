@@ -2,6 +2,7 @@ package com.pawelbugiel.foodToEat.service;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
+import com.pawelbugiel.foodToEat.exceptions.PageException;
 import com.pawelbugiel.foodToEat.exceptions.ProductNotFoundException;
 import com.pawelbugiel.foodToEat.mappers.ProductMapper;
 import com.pawelbugiel.foodToEat.model.Product;
@@ -37,19 +38,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
 //************** READ *************
-
+// #q rename and unify variable names. Today it is too late - 12:49 AM.
     @Override
-    public List<ProductDto> findAllProducts(String page, Sort.Direction sortDirection, ProductProperties sortBy) {
+    public List<ProductDto> findAllProducts(String page, Sort.Direction direction, ProductProperties sortBy) {
         var startPage = PageValidator.getValidPage(page);
-        var direction = SortDirectionValidator.validDirection(sortDirection);
+        var aValidDirection = SortDirectionValidator.validDirection(direction);
         var sortByValue = SortByValidator.valid(sortBy);
 
-        var pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(direction, sortByValue));
+        var pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(aValidDirection, sortByValue));
 
-        return productRepository.findAll(pageRequest)
+        var resultList = productRepository.findAll(pageRequest)
                 .stream()
                 .map(ProductMapper::toProductDto)
                 .toList();
+        if(resultList.isEmpty()) throw new PageException(page);
+        return resultList;
     }
 
     @Override
@@ -61,13 +64,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction sort, ProductProperties sortBy) {
+    public List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction direction, ProductProperties sortBy) {
         var startPage = PageValidator.getValidPage(page);
-        var sortDirection = SortDirectionValidator.validDirection(sort);
+        var validSortDirection = SortDirectionValidator.validDirection(direction);
         var sortByValue = SortByValidator.valid(sortBy);
+        // #q valid partialName
 
-        var pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(sortDirection, sortByValue));
+        var pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(validSortDirection, sortByValue));
         var resultList = productRepository.findByPartialName(partialName, pageRequest);
+
+        if(resultList.isEmpty()) throw new PageException(page);
 
         return resultList.stream()
                 .map(ProductMapper::toProductDto)
@@ -75,13 +81,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> findProductsWithExpiredDate(String page, Sort.Direction sort) {
+    public List<ProductDto> findProductsWithExpiredDate(String page, Sort.Direction direction) {
         var startPage = PageValidator.getValidPage(page);
-        sort = SortDirectionValidator.setDescending();
+        var validDirection = SortDirectionValidator.validDirection(direction);
 
-        PageRequest pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(sort, "expiryDate"));
-        List<Product> foundProducts = productRepository.findWithExpiredDate(pageRequest);
-        return foundProducts.stream()
+        var pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(validDirection, "expiryDate"));
+        var resultList = productRepository.findWithExpiredDate(pageRequest);
+
+        // #q simplify to Stream API ?
+        if (resultList.isEmpty()) throw new PageException(page);
+
+        return resultList.stream()
                 .map(ProductMapper::toProductDto)
                 .toList();
     }

@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +32,8 @@ public class ProductController {
 //************** CREATE *************
 
     @PostMapping(value = "/products")
-    public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductWriteDto productWriteDto, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductWriteDto productWriteDto,
+                                                    UriComponentsBuilder uriBuilder) {
         ProductDto resultProductDto = productService.createProduct(productWriteDto);
         String resourceUri = getResourceUri(uriBuilder, resultProductDto);
         return ResponseEntity.status(200)
@@ -64,22 +64,21 @@ public class ProductController {
     }
 
     @GetMapping("/products/partial-name")
-    public ResponseEntity<?> findProductsByPartialName(@RequestParam @Pattern(regexp = PARTIAL_NAME_REGEX ) String partialName,
+    public ResponseEntity<?> findProductsByPartialName(@RequestParam @Pattern(regexp = PARTIAL_NAME_REGEX) String partialName,
                                                        @RequestParam(required = false) String page,
                                                        @RequestParam(required = false) Sort.Direction sortDirection,
                                                        @RequestParam(required = false) ProductProperties sortBy) {
-        List<ProductDto> productDtos = productService.findProductsByPartialName(partialName, page, sortDirection, sortBy);
-        if (productDtos.isEmpty())
-            return new ResponseEntity<>("No products with given partial name : " + partialName, HttpStatus.NOT_FOUND);
+        var productDtos = productService.findProductsByPartialName(partialName, page, sortDirection, sortBy);
+
         return ResponseEntity.status(200)
                 .body(productDtos);
     }
 
     @GetMapping("/products/expired")
-    public ResponseEntity<?> findProductsWithExpiredDate(@RequestParam(required = false) String page, Sort.Direction sort) {
-        List<ProductDto> foundProducts = productService.findProductsWithExpiredDate(page, sort);
-        if (foundProducts.isEmpty())
-            return new ResponseEntity<>("No products with expired date found", HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> findProductsWithExpiredDate(@RequestParam(required = false) String page,
+                                                         @RequestParam(required = false) Sort.Direction sortDirection) {
+        var foundProducts = productService.findProductsWithExpiredDate(page, sortDirection);
+
         return ResponseEntity.status(200)
                 .body(foundProducts);
     }

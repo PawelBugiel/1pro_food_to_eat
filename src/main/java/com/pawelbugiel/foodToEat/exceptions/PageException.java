@@ -4,16 +4,10 @@ public class PageException extends RuntimeException{
     public PageException() {
     }
 
-    public PageException(String message) {
-        super(message);
+    public PageException(String pageNumber) {
+        super("Page "  + pageNumber + " is out of bounds.");
     }
 
-    public PageException(String message, Throwable cause) {
-        super(message, cause);
-    }
 
-    public PageException(Throwable cause) {
-        super(cause);
-    }
 }
 

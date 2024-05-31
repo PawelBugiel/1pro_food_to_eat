@@ -44,4 +44,10 @@ public class GlobalExceptionHandler {
     public String regexValidationExceptionHandler(ConstraintViolationException ex) {
         return "Invalid data passed ( regex violating )";
     }
+
+    @ExceptionHandler(PageException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String pageValidationExceptionHandler(PageException ex){
+        return(ex.getMessage());
+    }
 }
