@@ -9,9 +9,5 @@ public class SortDirectionValidator {
                 ? Sort.Direction.ASC
                 : direction;
     }
-
-    public static Sort.Direction setDescending() {
-        return Sort.Direction.DESC;
-    }
 }
 
