@@ -86,8 +86,9 @@ public class ProductController {
     //************** UPDATE *************
 
     @PutMapping("/products")
-    public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDto productDto) {
-        ProductDto updatedProductDto = productService.updateProduct(productDto);
+    public ResponseEntity<?> updateProduct(@RequestParam String id,
+                                           @RequestBody @Valid ProductDto productDto) {
+        ProductDto updatedProductDto = productService.updateProduct(id, productDto);
         return ResponseEntity.status(200)
                 .body(updatedProductDto);
     }

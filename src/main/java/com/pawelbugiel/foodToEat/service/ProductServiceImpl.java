@@ -8,6 +8,8 @@ import com.pawelbugiel.foodToEat.mappers.ProductMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
 import com.pawelbugiel.foodToEat.validators.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -21,6 +23,8 @@ public class ProductServiceImpl implements ProductService {
 
     public static final int PAGE_SIZE = 10;
     private final ProductRepository productRepository;
+
+    private final static Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository) {
@@ -37,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
         return ProductMapper.toProductDto(savedProduct);
     }
 
-//************** READ *************
+    //************** READ *************
 // #q rename and unify variable names. Today it is too late - 12:49 AM.
     @Override
     public List<ProductDto> findAllProducts(String page, Sort.Direction direction, ProductProperties sortBy) {
@@ -51,14 +55,14 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .map(ProductMapper::toProductDto)
                 .toList();
-        if(resultList.isEmpty()) throw new PageException(page);
+        if (resultList.isEmpty()) throw new PageException(page);
         return resultList;
     }
 
     @Override
     public ProductDto findProductById(String id) {
         var uuid = UUID_Validator.convertStringToUUID(id);
-        var product = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(uuid));
+        var product = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(id));
 
         return ProductMapper.toProductDto(product);
     }
@@ -68,12 +72,13 @@ public class ProductServiceImpl implements ProductService {
         var startPage = PageValidator.getValidPage(page);
         var validSortDirection = SortDirectionValidator.validDirection(direction);
         var sortByValue = SortByValidator.valid(sortBy);
-        // #q valid partialName
+        // #q to implement a validation of the partialName param
 
         var pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(validSortDirection, sortByValue));
         var resultList = productRepository.findByPartialName(partialName, pageRequest);
-
-        if(resultList.isEmpty()) throw new PageException(page);
+        // #q if there are no results at all, also throws the exception. This approach is not as good as it should
+        // All similar cases works the same.
+        if (resultList.isEmpty()) throw new PageException(page);
 
         return resultList.stream()
                 .map(ProductMapper::toProductDto)
@@ -96,23 +101,26 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
-    @Override
+/*    @Override
     public ProductDto updateProduct(ProductDto productDto) {
         return null;
-    }
+    }*/
 
 
 //************** UPDATE *************
 
-/*    @Override
-    public ProductDto updateProduct2(ProductDto productDto) {
-        String id = productDto.getId().toString();
-        Optional<ProductDto> productToUpdate = findProductById(id);
-        if (productToUpdate.isEmpty()) {
-            throw new ProductNotFoundException(UUID.fromString("There is no product with id " + id));
-        }
+    @Override
+    public ProductDto updateProduct(String id, ProductDto productDto) {
+
+        var validUUID = UUID_Validator.convertStringToUUID(id);
+        var productToUpdate = productRepository.findById(validUUID)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+        // #q Find out what to do with passed id and id from productDto ? Tonight is too late for me, to do that.
+        if (!id.equals(productDto.getId().toString()))
+            throw new ProductNotFoundException("A conflict between passed id and found id");
+
         Product newProduct = Product.ProductBuilder.aProduct()
-                .withId(productDto.getId())
+                .withId(productToUpdate.getId())
                 .withName(productDto.getName())
                 .withQuantity(productDto.getQuantity())
                 .withExpiryDate(productDto.getExpiryDate())
@@ -120,15 +128,15 @@ public class ProductServiceImpl implements ProductService {
 
         Product savedProduct = productRepository.save(newProduct);
 
-        return mapProductToProductDto(savedProduct);
-    }*/
+        return ProductMapper.toProductDto(savedProduct);
+    }
 
 //************** DELETE *************
 
     @Override
     public ProductDto deleteProductById(String id) {
         UUID uuid = UUID_Validator.convertStringToUUID(id);
-        Product foundProduct = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(uuid));
+        Product foundProduct = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(id));
         ProductDto productDto = ProductMapper.toProductDto(foundProduct);
         productRepository.deleteById(uuid);
         return productDto;

@@ -26,7 +26,7 @@ public interface ProductService {
 
 //************** UPDATE *************
 
-    ProductDto updateProduct(ProductDto productDto);
+    ProductDto updateProduct(String id, ProductDto productDto);
 
 //************** DELETE *************
 
