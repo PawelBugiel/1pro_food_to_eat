@@ -2,12 +2,13 @@ package com.pawelbugiel.foodToEat.service;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
-import com.pawelbugiel.foodToEat.exceptions.PageException;
-import com.pawelbugiel.foodToEat.exceptions.ProductNotFoundException;
-import com.pawelbugiel.foodToEat.mappers.ProductMapper;
+import com.pawelbugiel.foodToEat.exception.PageException;
+import com.pawelbugiel.foodToEat.exception.ProductNotFoundException;
+import com.pawelbugiel.foodToEat.mapper.ProductMapper;
 import com.pawelbugiel.foodToEat.model.Product;
+import com.pawelbugiel.foodToEat.model.ProductProperties;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
-import com.pawelbugiel.foodToEat.validators.*;
+import com.pawelbugiel.foodToEat.validator.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

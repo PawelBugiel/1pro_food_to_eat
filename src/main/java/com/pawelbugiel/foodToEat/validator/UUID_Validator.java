@@ -1,6 +1,6 @@
-package com.pawelbugiel.foodToEat.validators;
+package com.pawelbugiel.foodToEat.validator;
 
-import com.pawelbugiel.foodToEat.exceptions.IdException;
+import com.pawelbugiel.foodToEat.exception.IdException;
 
 import java.util.UUID;
 

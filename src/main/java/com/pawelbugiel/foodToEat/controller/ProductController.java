@@ -3,7 +3,7 @@ package com.pawelbugiel.foodToEat.controller;
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
 import com.pawelbugiel.foodToEat.service.ProductService;
-import com.pawelbugiel.foodToEat.validators.ProductProperties;
+import com.pawelbugiel.foodToEat.model.ProductProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +17,12 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @RestController
-@RequestMapping("api/")
+@RequestMapping("api/v1")
 @Validated
 public class ProductController {
 
     private final ProductService productService;
-    private final String PARTIAL_NAME_REGEX = "^[a-zA-Z0-9].*";
+    private static final String PARTIAL_NAME_REGEX = "^[a-zA-Z0-9].*";
 
     @Autowired
     public ProductController(ProductService productService) {
@@ -36,7 +36,7 @@ public class ProductController {
                                                     UriComponentsBuilder uriBuilder) {
         ProductDto resultProductDto = productService.createProduct(productWriteDto);
         String resourceUri = getResourceUri(uriBuilder, resultProductDto);
-        return ResponseEntity.status(200)
+        return ResponseEntity.status(201)
                 .header("Location", resourceUri)
                 .body(resultProductDto);
     }

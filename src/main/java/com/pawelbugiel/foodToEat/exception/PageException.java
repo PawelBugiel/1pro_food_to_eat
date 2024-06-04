@@ -1,4 +1,4 @@
-package com.pawelbugiel.foodToEat.exceptions;
+package com.pawelbugiel.foodToEat.exception;
 
 public class PageException extends RuntimeException{
     public PageException() {

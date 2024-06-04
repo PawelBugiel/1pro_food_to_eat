@@ -1,4 +1,4 @@
-package com.pawelbugiel.foodToEat.validators;
+package com.pawelbugiel.foodToEat.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

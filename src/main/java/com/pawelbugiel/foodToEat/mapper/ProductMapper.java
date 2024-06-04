@@ -1,4 +1,4 @@
-package com.pawelbugiel.foodToEat.mappers;
+package com.pawelbugiel.foodToEat.mapper;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;

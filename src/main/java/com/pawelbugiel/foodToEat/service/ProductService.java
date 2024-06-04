@@ -2,7 +2,7 @@ package com.pawelbugiel.foodToEat.service;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
-import com.pawelbugiel.foodToEat.validators.ProductProperties;
+import com.pawelbugiel.foodToEat.model.ProductProperties;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;

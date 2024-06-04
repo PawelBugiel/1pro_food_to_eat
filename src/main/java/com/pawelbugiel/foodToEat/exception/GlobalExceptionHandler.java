@@ -1,4 +1,4 @@
-package com.pawelbugiel.foodToEat.exceptions;
+package com.pawelbugiel.foodToEat.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;

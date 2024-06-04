@@ -1,4 +1,4 @@
-package com.pawelbugiel.foodToEat.validators;
+package com.pawelbugiel.foodToEat.validator;
 
 import org.springframework.data.domain.Sort;
 

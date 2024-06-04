@@ -1,4 +1,4 @@
-package com.pawelbugiel.foodToEat.exceptions;
+package com.pawelbugiel.foodToEat.exception;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

@@ -3,11 +3,10 @@ package com.pawelbugiel.foodToEat.service;
 
 import com.pawelbugiel.foodToEat.dto.ProductDto;
 import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
-import com.pawelbugiel.foodToEat.mappers.ProductMapper;
+import com.pawelbugiel.foodToEat.mapper.ProductMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
@@ -44,22 +46,29 @@ public class ProductServiceImplTest {
     @InjectMocks
     private ProductServiceImpl underTest_ProductServiceImpl;
 
+//    private final UUID VALID_UUID_1 = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+//    private final UUID VALID_UUID_2 = UUID.fromString("99185f55-4417-3362-f1fc-g1e63f66afa6");
+    private final static Logger log = LoggerFactory.getLogger(ProductServiceImplTest.class);
+
     private final Product validProductEntity_1 = Product.ProductBuilder.aProduct()
+            .withId(UUID.randomUUID())
             .withName("Milk")
             .withQuantity(1)
             .withExpiryDate(LocalDate.of(2025, 1, 1))
             .build();
 
     private final Product validProductEntity_2 = Product.ProductBuilder.aProduct()
+//            .withId(VALID_UUID_2)
             .withName("Bread")
             .withQuantity(4)
             .withExpiryDate(LocalDate.of(2044, 4, 4))
             .build();
 
+
 //************** CREATE *************
 
     @Test
-    @DisplayName("Should create Product and Return Product Dto")
+    @DisplayName("CREATE: Should create Product and Return Product Dto")
     public void testCreateProduct_whenValidDetailsPassed_ReturnsProductDto() {
 
         // GIVEN
@@ -79,44 +88,38 @@ public class ProductServiceImplTest {
         verify(productRepository, times(1)).save(any(Product.class));
     }
 
-    @Test
-    @Disabled
-    @DisplayName("Create Product : Invalid details should throw MethodArgumentNotValidException")
-    public void testCreateProduct_whenInvalidDetailPassed_throwsNullPointerException() {
+   /* @Test
+    @DisplayName("CREATE: Invalid name value should throw NullPointerException")
+    public void testCreateProduct_whenInvalidNamePassed_throwsNullPointerException() {
         //GIVEN
+        Product invalidProduct = Product.ProductBuilder.aProduct()
+                .withName("abcn")
+                .withQuantity(11)
+                .withExpiryDate(LocalDate.of(2055, 12, 22))
+                .withId(UUID.randomUUID())
+                .build();
+
+        Mockito.when(productRepository.save(invalidProduct)).thenThrow(NullPointerException.class);
+
+        log.info(invalidProduct.toString());
+
+        ProductWriteDto invalidProductWriteDto = ProductMapper.toProductWriteDto(invalidProduct);
+
+        log.info(invalidProductWriteDto.toString());
+        // WHEN, THEN
+        Assertions.assertThrows(NullPointerException.class, () -> underTest_ProductServiceImpl.createProduct(invalidProductWriteDto));
+        verify(productRepository, times(1)).save(any(Product.class));
+    }*/
+
+    @Test
+    @DisplayName("CREATE: Invalid name value should throw NullPointerException")
+    public void testCreateProduct_henInvalidQuantityPassed_throwsNullPointerException() {
         Product invalidProduct = Product.ProductBuilder.aProduct()
                 .withName("some name")
                 .withQuantity(11)
-                .withExpiryDate(LocalDate.of(2000, 12, 22))
+                .withExpiryDate(LocalDate.of(2055, 12, 22))
                 .build();
-
-        ProductWriteDto productWriteDto = ProductMapper.toProductWriteDto(invalidProduct);
-        Assertions.assertThrows(NullPointerException.class, () -> underTest_ProductServiceImpl.createProduct(productWriteDto));
-
-        verify(productRepository, times(1)).save(any(Product.class));
-        //WHEN
     }
-
-    //************** CREATE *************
-
-    @Test
-    @Disabled
-    @DisplayName("Create Product : Invalid details should throw MethodArgumentNotValidException")
-    public void testCreateProduct_whenInvalidDetailPassed_throwsMethodArgumentNotValidException222222() {
-        //GIVEN
-        ProductWriteDto invalidProductDto = ProductWriteDto.ProductWriteDtoBuilder.aProductWriteDto()
-                .withName("some name")
-                .withExpiryDate(LocalDate.of(2023, 12, 12))
-                .build();
-
-        ProductDto productDto = underTest_ProductServiceImpl.createProduct(invalidProductDto);
-
-//        Assertions.assertThrows(MethodArgumentNotValidException.class, () -> underTest_ProductServiceImpl.createProduct(productWriteDto));
-
-        Mockito.<ProductRepository>verify(productRepository, never()).save(any());
-        //WHEN
-    }
-
     //************** READ *************
 
  /*  @Test
