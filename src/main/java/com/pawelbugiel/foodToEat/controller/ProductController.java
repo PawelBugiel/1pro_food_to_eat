@@ -1,7 +1,7 @@
 package com.pawelbugiel.foodToEat.controller;
 
-import com.pawelbugiel.foodToEat.dto.ProductDto;
-import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
+import com.pawelbugiel.foodToEat.dto.ProductResponse;
+import com.pawelbugiel.foodToEat.dto.ProductRequest;
 import com.pawelbugiel.foodToEat.service.ProductService;
 import com.pawelbugiel.foodToEat.model.ProductProperties;
 import jakarta.validation.Valid;
@@ -32,35 +32,35 @@ public class ProductController {
 //************** CREATE *************
 
     @PostMapping(value = "/products")
-    public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductWriteDto productWriteDto,
-                                                    UriComponentsBuilder uriBuilder) {
-        ProductDto resultProductDto = productService.createProduct(productWriteDto);
-        String resourceUri = getResourceUri(uriBuilder, resultProductDto);
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid ProductRequest productRequest,
+                                                         UriComponentsBuilder uriBuilder) {
+        ProductResponse resultProductResponse = productService.createProduct(productRequest);
+        String resourceUri = getResourceUri(uriBuilder, resultProductResponse);
         return ResponseEntity.status(201)
                 .header("Location", resourceUri)
-                .body(resultProductDto);
+                .body(resultProductResponse);
     }
 
-    private static String getResourceUri(UriComponentsBuilder uriBuilder, ProductDto resultProductDto) {
+    private static String getResourceUri(UriComponentsBuilder uriBuilder, ProductResponse resultProductResponse) {
         return uriBuilder.path("/api/products/{id}")
-                .buildAndExpand(resultProductDto.getId())
+                .buildAndExpand(resultProductResponse.getId())
                 .toUriString();
     }
 
 //************** READ *************
 
     @GetMapping("/products")
-    public List<ProductDto> findAllProducts(@RequestParam(required = false) String page,
-                                            @RequestParam(required = false) Sort.Direction sortDirection,
-                                            @RequestParam(required = false) ProductProperties sortBy) {
+    public List<ProductResponse> findAllProducts(@RequestParam(required = false) String page,
+                                                 @RequestParam(required = false) Sort.Direction sortDirection,
+                                                 @RequestParam(required = false) ProductProperties sortBy) {
         return productService.findAllProducts(page, sortDirection, sortBy);
     }
 
     @GetMapping("products/id/{id}")
-    public ResponseEntity<ProductDto> findProductById(@PathVariable String id) {
-        ProductDto productDto = productService.findProductById(id);
+    public ResponseEntity<ProductResponse> findProductById(@PathVariable String id) {
+        ProductResponse productResponse = productService.findProductById(id);
         return ResponseEntity.status(200)
-                .body(productDto);
+                .body(productResponse);
     }
 
     @GetMapping("/products/partial-name")
@@ -87,19 +87,19 @@ public class ProductController {
 
     @PutMapping("/products")
     public ResponseEntity<?> updateProduct(@RequestParam String id,
-                                           @RequestBody @Valid ProductDto productDto) {
-        ProductDto updatedProductDto = productService.updateProduct(id, productDto);
+                                           @RequestBody @Valid ProductResponse productResponse) {
+        ProductResponse updatedProductResponse = productService.updateProduct(id, productResponse);
         return ResponseEntity.status(200)
-                .body(updatedProductDto);
+                .body(updatedProductResponse);
     }
 
 //************** DELETE *************
 
     @DeleteMapping("products/id/{id}")
-    public ResponseEntity<ProductDto> deleteProduct(@PathVariable String id) {
-        ProductDto deletedProductDto = productService.deleteProductById(id);
+    public ResponseEntity<ProductResponse> deleteProduct(@PathVariable String id) {
+        ProductResponse deletedProductResponse = productService.deleteProductById(id);
         return ResponseEntity.status(200)
-                .body(deletedProductDto);
+                .body(deletedProductResponse);
     }
 }
 

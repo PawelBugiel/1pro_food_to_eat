@@ -1,7 +1,7 @@
 package com.pawelbugiel.foodToEat.service;
 
-import com.pawelbugiel.foodToEat.dto.ProductDto;
-import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
+import com.pawelbugiel.foodToEat.dto.ProductResponse;
+import com.pawelbugiel.foodToEat.dto.ProductRequest;
 import com.pawelbugiel.foodToEat.exception.PageException;
 import com.pawelbugiel.foodToEat.exception.ProductNotFoundException;
 import com.pawelbugiel.foodToEat.mapper.ProductMapper;
@@ -35,17 +35,18 @@ public class ProductServiceImpl implements ProductService {
 //************** CREATE *************
 
     @Override
-    public ProductDto createProduct(ProductWriteDto productWriteDto) {
-        var passedProduct = ProductMapper.toProduct(productWriteDto);
+    public ProductResponse createProduct(ProductRequest productRequest) {
+        var passedProduct = ProductMapper.toProduct(productRequest);
+
         var savedProduct = productRepository.save(passedProduct);
 
-        return ProductMapper.toProductDto(savedProduct);
+        return ProductMapper.toProductResponse(savedProduct);
     }
 
     //************** READ *************
 // #q rename and unify variable names. Today it is too late - 12:49 AM.
     @Override
-    public List<ProductDto> findAllProducts(String page, Sort.Direction direction, ProductProperties sortBy) {
+    public List<ProductResponse> findAllProducts(String page, Sort.Direction direction, ProductProperties sortBy) {
         var startPage = PageValidator.getValidPage(page);
         var aValidDirection = SortDirectionValidator.validDirection(direction);
         var sortByValue = SortByValidator.valid(sortBy);
@@ -54,22 +55,22 @@ public class ProductServiceImpl implements ProductService {
 
         var resultList = productRepository.findAll(pageRequest)
                 .stream()
-                .map(ProductMapper::toProductDto)
+                .map(ProductMapper::toProductResponse)
                 .toList();
         if (resultList.isEmpty()) throw new PageException(page);
         return resultList;
     }
 
     @Override
-    public ProductDto findProductById(String id) {
+    public ProductResponse findProductById(String id) {
         var uuid = UUID_Validator.convertStringToUUID(id);
         var product = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(id));
 
-        return ProductMapper.toProductDto(product);
+        return ProductMapper.toProductResponse(product);
     }
 
     @Override
-    public List<ProductDto> findProductsByPartialName(String partialName, String page, Sort.Direction direction, ProductProperties sortBy) {
+    public List<ProductResponse> findProductsByPartialName(String partialName, String page, Sort.Direction direction, ProductProperties sortBy) {
         var startPage = PageValidator.getValidPage(page);
         var validSortDirection = SortDirectionValidator.validDirection(direction);
         var sortByValue = SortByValidator.valid(sortBy);
@@ -82,12 +83,12 @@ public class ProductServiceImpl implements ProductService {
         if (resultList.isEmpty()) throw new PageException(page);
 
         return resultList.stream()
-                .map(ProductMapper::toProductDto)
+                .map(ProductMapper::toProductResponse)
                 .toList();
     }
 
     @Override
-    public List<ProductDto> findProductsWithExpiredDate(String page, Sort.Direction direction) {
+    public List<ProductResponse> findProductsWithExpiredDate(String page, Sort.Direction direction) {
         var startPage = PageValidator.getValidPage(page);
         var validDirection = SortDirectionValidator.validDirection(direction);
 
@@ -98,12 +99,12 @@ public class ProductServiceImpl implements ProductService {
         if (resultList.isEmpty()) throw new PageException(page);
 
         return resultList.stream()
-                .map(ProductMapper::toProductDto)
+                .map(ProductMapper::toProductResponse)
                 .toList();
     }
 
 /*    @Override
-    public ProductDto updateProduct(ProductDto productDto) {
+    public ProductResponse updateProduct(ProductResponse productDto) {
         return null;
     }*/
 
@@ -111,35 +112,35 @@ public class ProductServiceImpl implements ProductService {
 //************** UPDATE *************
 
     @Override
-    public ProductDto updateProduct(String id, ProductDto productDto) {
+    public ProductResponse updateProduct(String id, ProductResponse productResponse) {
 
         var validUUID = UUID_Validator.convertStringToUUID(id);
         var productToUpdate = productRepository.findById(validUUID)
                 .orElseThrow(() -> new ProductNotFoundException(id));
-        // #q Find out what to do with passed id and id from productDto ? Tonight is too late for me, to do that.
-        if (!id.equals(productDto.getId().toString()))
+        // #q Find out what to do with passed id and id from productResponse ? Tonight is too late for me, to do that.
+        if (!id.equals(productResponse.getId().toString()))
             throw new ProductNotFoundException("A conflict between passed id and found id");
 
         Product newProduct = Product.ProductBuilder.aProduct()
                 .withId(productToUpdate.getId())
-                .withName(productDto.getName())
-                .withQuantity(productDto.getQuantity())
-                .withExpiryDate(productDto.getExpiryDate())
+                .withName(productResponse.getName())
+                .withQuantity(productResponse.getQuantity())
+                .withExpiryDate(productResponse.getExpiryDate())
                 .build();
 
         Product savedProduct = productRepository.save(newProduct);
 
-        return ProductMapper.toProductDto(savedProduct);
+        return ProductMapper.toProductResponse(savedProduct);
     }
 
 //************** DELETE *************
 
     @Override
-    public ProductDto deleteProductById(String id) {
+    public ProductResponse deleteProductById(String id) {
         UUID uuid = UUID_Validator.convertStringToUUID(id);
         Product foundProduct = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(id));
-        ProductDto productDto = ProductMapper.toProductDto(foundProduct);
+        ProductResponse productResponse = ProductMapper.toProductResponse(foundProduct);
         productRepository.deleteById(uuid);
-        return productDto;
+        return productResponse;
     }
 }

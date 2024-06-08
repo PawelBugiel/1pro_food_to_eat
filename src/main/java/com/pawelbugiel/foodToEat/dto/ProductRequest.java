@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
-public class ProductWriteDto {
+public class ProductRequest {
 
     private static final String PRODUCT_NAME_REGEX = "^[a-zA-Z0-9]{3}.*$";
 
@@ -27,40 +27,40 @@ public class ProductWriteDto {
     private LocalDate expiryDate;
 
     // #q instead the builder use StreamAPI to create a product ?
-    public static final class ProductWriteDtoBuilder {
+    public static final class ProductRequestBuilder {
 
         private  String name;
         private int quantity;
         private LocalDate expiryDate;
 
-        private ProductWriteDtoBuilder() {
+        private ProductRequestBuilder() {
         }
 
-        public static ProductWriteDtoBuilder aProductWriteDto() {
-            return new ProductWriteDtoBuilder();
+        public static ProductRequestBuilder aProductWriteDto() {
+            return new ProductRequestBuilder();
         }
 
-        public ProductWriteDtoBuilder withName(String name) {
+        public ProductRequestBuilder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public ProductWriteDtoBuilder withQuantity(int quantity) {
+        public ProductRequestBuilder withQuantity(int quantity) {
             this.quantity = quantity;
             return this;
         }
 
-        public ProductWriteDtoBuilder withExpiryDate(LocalDate expiryDate) {
+        public ProductRequestBuilder withExpiryDate(LocalDate expiryDate) {
             this.expiryDate = expiryDate;
             return this;
         }
 
-        public ProductWriteDto build() {
-            ProductWriteDto productWriteDto = new ProductWriteDto();
-            productWriteDto.expiryDate = this.expiryDate;
-            productWriteDto.quantity = this.quantity;
-            productWriteDto.name = this.name;
-            return productWriteDto;
+        public ProductRequest build() {
+            ProductRequest productRequest = new ProductRequest();
+            productRequest.expiryDate = this.expiryDate;
+            productRequest.quantity = this.quantity;
+            productRequest.name = this.name;
+            return productRequest;
         }
     }
 }

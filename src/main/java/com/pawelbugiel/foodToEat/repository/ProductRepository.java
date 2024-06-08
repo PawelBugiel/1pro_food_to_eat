@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -21,5 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Query("SELECT p FROM Product p WHERE p.expiryDate <= CURRENT_DATE")
     List<Product> findWithExpiredDate(Pageable pageable);
 
+    Optional<Product> findByNameAndExpiryDate(String name, LocalDate expiryDate);
 
 }

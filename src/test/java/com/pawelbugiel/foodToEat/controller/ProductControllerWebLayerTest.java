@@ -2,7 +2,7 @@
 package com.pawelbugiel.foodToEat.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pawelbugiel.foodToEat.dto.ProductWriteDto;
+import com.pawelbugiel.foodToEat.dto.ProductRequest;
 import com.pawelbugiel.foodToEat.service.ProductServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -37,8 +37,8 @@ class ProductControllerWebLayerTest {
 
     @MockBean
     private ProductServiceImpl productServiceMock;
-    private final ProductWriteDto validProductDto_1 = ProductWriteDto.ProductWriteDtoBuilder
-            .aProductWriteDto()
+    private final ProductRequest validProductResponse_1 = ProductRequest.ProductRequestBuilder
+            .aProductRequest()
             .withName("Maslanka")
             .withQuantity(66)
             .withExpiryDate(LocalDate.of(2066, 6, 6))
@@ -49,14 +49,14 @@ class ProductControllerWebLayerTest {
     void testCreateProduct_whenPassValidDetails_returnsCreatedProduct() throws Exception {
         // GIVEN
         //////////////////////    MOCK a HTTP REQUEST
-        String requestBody = objectMapper.writeValueAsString(validProductDto_1);
+        String requestBody = objectMapper.writeValueAsString(validProductResponse_1);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/products/product")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(requestBody);
 
-        Mockito.<ProductWriteDto>when(productServiceMock.createProduct(any(ProductWriteDto.class))).thenReturn(validProductDto_1);
+        Mockito.<ProductRequest>when(productServiceMock.createProduct(any(ProductRequest.class))).thenReturn(validProductResponse_1);
         // WHEN
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -66,9 +66,9 @@ class ProductControllerWebLayerTest {
 /* StreamReadException – if underlying input contains invalid content of type JsonParser supports (JSON for default case)
         DatabindException – if the input JSON structure does not match structure expected for result type (or has other mismatch issues)*//*
 
-        ProductWriteDto responseProductWriteDto = objectMapper.readValue(responseBodyAsString, ProductWriteDto.class);
+        ProductRequest responseProductRequest = objectMapper.readValue(responseBodyAsString, ProductRequest.class);
         // THEN
-        Assertions.assertNotNull(responseProductWriteDto);
+        Assertions.assertNotNull(responseProductRequest);
         Assertions.assertEquals(requestBody, responseBodyAsString);
         Assertions.assertEquals(mvcResult.getResponse().getStatus(), HttpStatus.CREATED.value());
     }
@@ -78,20 +78,20 @@ class ProductControllerWebLayerTest {
     void testCreateProduct_whenPassValidLowEdgeDetails_returnsCreatedProduct() throws Exception {
         // GIVEN
         //////////////////////    MOCK a HTTP REQUEST
-        ProductWriteDto validProductWriteDto = ProductWriteDto.ProductWriteDtoBuilder.aProductWriteDto()
+        ProductRequest validProductRequest = ProductRequest.ProductRequestBuilder.aProductRequest()
                 .withName("sol")
                 .withQuantity(1)
                 .withExpiryDate(LocalDate.of(2023,12,05))
                 .build();
 
-        String requestBody = objectMapper.writeValueAsString(validProductWriteDto);
+        String requestBody = objectMapper.writeValueAsString(validProductRequest);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/products/product")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(requestBody);
 
-        Mockito.<ProductWriteDto>when(productServiceMock.createProduct(any(ProductWriteDto.class))).thenReturn(validProductWriteDto);
+        Mockito.<ProductRequest>when(productServiceMock.createProduct(any(ProductRequest.class))).thenReturn(validProductRequest);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -106,14 +106,14 @@ class ProductControllerWebLayerTest {
     void testCreateProduct_3() throws Exception {
         // GIVEN
         //////////////////////    MOCK a HTTP REQUEST
-        String requestBody = objectMapper.writeValueAsString(validProductDto_1);
+        String requestBody = objectMapper.writeValueAsString(validProductResponse_1);
 
         RequestBuilder requestBuilder = post("/api/products/product")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(requestBody);
         // the mock behavior
-        Mockito.<ProductWriteDto>when(productServiceMock.createProduct(any(ProductWriteDto.class))).thenReturn(validProductDto_1);
+        Mockito.<ProductRequest>when(productServiceMock.createProduct(any(ProductRequest.class))).thenReturn(validProductResponse_1);
         // WHEN, THEN
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         String resultContent = mvcResult.getResponse().getContentAsString();
@@ -130,25 +130,25 @@ class ProductControllerWebLayerTest {
     void testCreateProduct_4() throws Exception {
         // GIVEN
         //////////////////////    MOCK a HTTP REQUEST
-        String requestBody = objectMapper.writeValueAsString(validProductDto_1);
+        String requestBody = objectMapper.writeValueAsString(validProductResponse_1);
 
         RequestBuilder requestBuilder = post("/api/products/product")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(requestBody);
 
-//        ProductWriteDto productWriteDto = objectMapper.readValue(requestBody, ProductWriteDto.class);
+//        ProductRequest ProductRequest = objectMapper.readValue(requestBody, ProductRequest.class);
 
         // WHEN
-        Mockito.<ProductWriteDto>when(productServiceMock.createProduct(any(ProductWriteDto.class))).thenReturn(validProductDto_1);
+        Mockito.<ProductRequest>when(productServiceMock.createProduct(any(ProductRequest.class))).thenReturn(validProductResponse_1);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         String resultContent = mvcResult.getResponse().getContentAsString();
         System.out.println("===============" + resultContent);
 
-        ProductWriteDto createduProductWriteDto = objectMapper.readValue(resultContent, ProductWriteDto.class);
+        ProductRequest createduProductRequest = objectMapper.readValue(resultContent, ProductRequest.class);
 
-        Assertions.assertNotNull(createduProductWriteDto);
+        Assertions.assertNotNull(createduProductRequest);
     }
 
 
