@@ -26,7 +26,6 @@ public class ProductRequest {
     @FutureOrPresent
     private LocalDate expiryDate;
 
-    // #q instead the builder use StreamAPI to create a product ?
     public static final class ProductRequestBuilder {
 
         private  String name;

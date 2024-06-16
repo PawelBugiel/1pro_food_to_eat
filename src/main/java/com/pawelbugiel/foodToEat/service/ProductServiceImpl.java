@@ -1,14 +1,17 @@
 package com.pawelbugiel.foodToEat.service;
 
-import com.pawelbugiel.foodToEat.dto.ProductResponse;
 import com.pawelbugiel.foodToEat.dto.ProductRequest;
+import com.pawelbugiel.foodToEat.dto.ProductResponse;
 import com.pawelbugiel.foodToEat.exception.PageException;
 import com.pawelbugiel.foodToEat.exception.ProductNotFoundException;
 import com.pawelbugiel.foodToEat.mapper.ProductMapper;
 import com.pawelbugiel.foodToEat.model.Product;
 import com.pawelbugiel.foodToEat.model.ProductProperties;
 import com.pawelbugiel.foodToEat.repository.ProductRepository;
-import com.pawelbugiel.foodToEat.validator.*;
+import com.pawelbugiel.foodToEat.validator.PageValidator;
+import com.pawelbugiel.foodToEat.validator.SortByValidator;
+import com.pawelbugiel.foodToEat.validator.SortDirectionValidator;
+import com.pawelbugiel.foodToEat.validator.UUID_Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -36,10 +40,23 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse createProduct(ProductRequest productRequest) {
-        var passedProduct = ProductMapper.toProduct(productRequest);
+        Optional<Product> existingProduct = productRepository.findByNameAndExpiryDate(productRequest.getName(), productRequest.getExpiryDate());
 
-        var savedProduct = productRepository.save(passedProduct);
+        Product savedProduct;
 
+        if (existingProduct.isEmpty()) {
+            Product passedProduct = ProductMapper.toProduct(productRequest);
+            savedProduct = productRepository.save(passedProduct);
+        } else {
+            Product actualProduct = existingProduct.get();
+            actualProduct = Product.ProductBuilder.aProduct()
+                    .withId(actualProduct.getId())
+                    .withName(actualProduct.getName())
+                    .withQuantity(actualProduct.getQuantity() + productRequest.getQuantity())
+                    .withExpiryDate(actualProduct.getExpiryDate())
+                    .build();
+            savedProduct = productRepository.save(actualProduct);
+        }
         return ProductMapper.toProductResponse(savedProduct);
     }
 
@@ -103,7 +120,13 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
-/*    @Override
+
+/*    private Optional<ProductResponse> findByNameAndExpiryDate(String name, LocalDate date) {
+        Optional<Product> foundProduct = productRepository.findByNameAndExpiryDate(name, date);
+        return (foundProduct.isEmpty()) ? Optional.empty() : foundProduct.map(ProductMapper::toProductResponse);
+    }*/
+    
+    /*    @Override
     public ProductResponse updateProduct(ProductResponse productDto) {
         return null;
     }*/

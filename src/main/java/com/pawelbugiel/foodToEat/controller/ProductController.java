@@ -1,9 +1,9 @@
 package com.pawelbugiel.foodToEat.controller;
 
-import com.pawelbugiel.foodToEat.dto.ProductResponse;
 import com.pawelbugiel.foodToEat.dto.ProductRequest;
-import com.pawelbugiel.foodToEat.service.ProductService;
+import com.pawelbugiel.foodToEat.dto.ProductResponse;
 import com.pawelbugiel.foodToEat.model.ProductProperties;
+import com.pawelbugiel.foodToEat.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
