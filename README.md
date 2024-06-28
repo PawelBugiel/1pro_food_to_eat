@@ -1,14 +1,14 @@
-### Food_to_eat. A CRUD training project.
+### Food_to_eat. The very first CRUD training project.
 
 1. [About the application](#About-the-application) - Short description of the project
 <br><br>
-2. [Used technologies, tools](#Used-technologies,-tools) - as it says
+2. [Used technologies and tools](#Used-technologies-and-tools) - as it says
 <br><br>
-3. [What I experienced](#What-I-experienced) - what are my experiences that I took out of it.
+3. [New experiences during coding](#New-experiences-during-coding) - what are my experiences that I took out of it.
 <br><br>
-4. [To do list](#To-do-list) - What is done and what still to do
+4. [To do list](#To-do-list) - what is done and what still to do
 <br><br>
-5. [Appendix](#Appendix) - A bit more information about my approach to write this application. 
+5. [Appendix](#Appendix) - a bit more information about my approach to write this application. 
 
 <details>
 
@@ -36,11 +36,21 @@
 
 </details>
 
-> #### About the application
+#### About the application
 
-Use http://localhost:8081/swagger-ui/index.html#/ to try the application rest API
+Download :
+* the latest java SDK and install it
+* download foodtoeat.jar 
+* using a Windows or Linux CLI :
+  * go to a folder that contains the downloaded file 
+  * run it using  
+  ~~~
+  java foodtoeat.jar
+  ~~~
+* test the application using http://localhost:8081/swagger-ui/index.html#/ with a web browser
 
-A CRUD application whose main goals are:
+
+A CRUD application which main goals are:
 - combine different learned aspects, previously used in separate tiny training applications
 - encounter problems and solving them
 - build a layered application
@@ -48,7 +58,7 @@ A CRUD application whose main goals are:
 - cover the code with tests
 - get experience
 
-> #### Used technologies, tools
+#### Used technologies and tools
 
 * Java 8 - mainly
 * Spring Boot 
@@ -56,7 +66,7 @@ A CRUD application whose main goals are:
 * Database:
   * at the very beginning MySQL, 
   * then AWS RDS
-  * finally an in-memory H2
+  * finally in-memory H2
 * Lombok
 * JUnit 
 * Mocikto
@@ -67,50 +77,33 @@ A CRUD application whose main goals are:
 * Maven
 * GitBash
 
-> #### What I experienced
-#### Encountered problems or what was new for me : 
+#### New experiences during coding
 
-- configuring the spring boot logging levels in different ways 
-- using UUID 
-- deploying the application to AWS RDS
+- using UUID
 - knowledge about the n+1 problem
+- work with LocalDate.class as an entity property
+- configuring the spring boot logging levels in different ways 
+- mapping objects
+- deploying the database to AWS RDS
 - handling exceptions in a different way - AOP
-- mapping objects 
+- using the Java Code Coverage tool
 - debugging
 - using the Builder pattern
-- work with LocalDate.class as an entity property
 - ... and couple others
 
 > #### To do list
 - [x] Database
-- [ ] rest API
+- [x] Rest API
 - [ ] Tests
 - [ ] Integration with Open Food Facts API
-
+- [ ] Create the Thymeleaf based frontend
+ 
 > #### Appendix
 Do tego projektu podchodziłem kilka razy. Mam kilka jego wersji. Wersja przedstawiona tutaj jest:
-* najbardziej zaawansowana, jeśli chodzi o kompletność jej kodu
-* najprostsza, jeśli chodzi o złożoność biznesową, funkcjonalności
+* najbardziej zaawansowana, jeśli chodzi o kompletność kodu
+* najprostsza, jeśli chodzi o złożoność biznesową
   <br>
 
-Powyższe wyniknęło z "pomysłowości" nowicjusza. Mianowicie.
-Na samym początku myślałem, że napiszę aplikację do zarządzania zasobami produktów spożywczych w domu, z takimi "bajerami" jak :
-<br>
-Encje: Product, Location,
-<br>
-Bazową funkcjonalnością miało być rejestrowanie produktów spożywczych, z datą ich przydatności do użycia oraz możliwością wyszukiwania produktów, których data przydatności jest bliska upłynięcia.
-<br>
-<br>
-Dodatkowo planowałem tworzenie fizycznych lokalizacji w domu, do których można było przypisywać produkty. Po to aby móc je w domu odnaleźć.
-<br>
-Baza danych miała być opart na kilku tabelach, z relacjami między tabelami: 1:1 , N :1, N:M
-
-n+1  problem
-<br> <br>
-LocalDate.class serialization
-<br> <br>
-Problem with UUID
-~~~
-"...ERROR o.h.e.jdbc.spi.SqlExceptionHelper- Incorrect string value: '\xE5ENi\x81L...' for column 'id' at row 1..."
-~~~
-Stackoverflow - w pierwotnej wersji aplikacji, na bazie danych z bi-relacyjnie powiązanymi tabelami. Zapętlało pobieranie danych.
+Kilkukrotne rozpoczynanie wyniknęło z "pomysłowości" nowicjusza. Mianowicie na początku sądziłem, że napiszę aplikację rozszerzoną o dodatkowe funkcjonalności, związane z magzynowaniem produktów, z bazą danych opartą na kilku tabelach powiązanych relacjami 1:1, N:1, N:M.
+Pierwszy projekt, doświadczenie na poziomie nowicjusza, zbytnia złożoność oraz ograniczony czas zmusiły mnie do jej uproszczenia do obecnej postaci. 
+Natomiast już mam pomysł na poboczny własny projekt, którego podejmę się w późniejszym czasie. 
