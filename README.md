@@ -4,15 +4,15 @@
 <p id="top-of-this-page">List of contents:</p>
 
 1. [About the project](#About-the-project)
-   <br>
+
 2. [Used technologies and tools](#Used-technologies-and-tools)
-<br>
+
 3. [My new experiences during coding](#My-new-experiences-during-coding)
-<br>
+
 4. [To do list](#To-do-list)
-<br>
+
 5. [How to run the application](#How-to-run-the-application)
- <br>
+
 6. [Appendix](#Appendix) - a bit more information about my approach to write this application.
 
 ### About the project
