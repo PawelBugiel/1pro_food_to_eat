@@ -1,4 +1,5 @@
 ### Food to eat
+
 #### My very first training project.
 
 <p id="top-of-this-page">List of contents:</p>
@@ -18,6 +19,7 @@
 ### About the project
 
 It is a CRUD application that serves me as a development sandbox. Its main goals are:
+
 - combining various aspects previously learned and used in separate tiny training applications
 - encountering problems and solving them
 - building a layered application
@@ -25,7 +27,7 @@ It is a CRUD application that serves me as a development sandbox. Its main goals
 - covering the code with tests
 - gaining experiences
 
-Its business goal is to manage food products in terms of their suitability for consumption.   
+Its business goal is to manage food products in terms of their suitability for consumption.
 
 ### Used technologies and tools
 
@@ -33,7 +35,7 @@ Its business goal is to manage food products in terms of their suitability for c
     * at the very beginning MySQL,
     * finally in-memory H2
 * Java 8+
-* Spring Boot 
+* Spring Boot
 * Hibernate
 * Lombok
 * JUnit
@@ -54,7 +56,7 @@ Its business goal is to manage food products in terms of their suitability for c
 - LocalDate.class as an entity property
 - configuring of login levels
 - stack overflow exception caused by bidirectional table relations
-- DTOs 
+- DTOs
 - deploying MySQL database to Amazon Web Services - RDS
 - handling exceptions with AOP approach
 - Java Code Coverage tool
@@ -63,10 +65,11 @@ Its business goal is to manage food products in terms of their suitability for c
 - ... and couple others
 
 ### To do list
+
 - [x] Database
 - [x] REST API
 - [ ] Improve overall consistency
-- [ ] Tests 
+- [ ] Tests
 - [ ] Integration with Open Food Facts API
 - [ ] Logging
 - [ ] Any others that I don't know about yet ;)
@@ -74,10 +77,11 @@ Its business goal is to manage food products in terms of their suitability for c
 ### How to run the application
 
 Windows, Linux, macOS, Android.  
-*(In case of Android I recommend [Termux](https://play.google.com/store/apps/details?id=com.termux "Java Runtime Environment") as a  CLI.)* 
+*(In case of Android I
+recommend [Termux](https://play.google.com/store/apps/details?id=com.termux "Java Runtime Environment") as a CLI.)*
 
-
-1. Download and install the latest [Java Runtime Enviroment (JRE)](https://www.example.com "Java Runtime Environment")
+1. Download and install the
+   latest [Java Runtime Enviroment (JRE)](https://www.oracle.com/java/technologies/downloads/ "Java Runtime Environment")
 
 2. Use the chosen CLI to verify if the installation passed successfully, by typing
    ~~~
@@ -95,22 +99,25 @@ Windows, Linux, macOS, Android.
     java -jar foodToEat-0.0.1-SNAPSHOT.jar
    ~~~
 5. Use the following URL with a web browser http://localhost:8081/swagger-ui/index.html#/
-6. You should see a similar page. Use it to test the application.   
-   <img class=border-image src="https://github.com/PawelBugiel/markdown-file-template/blob/main/.idea/resources/food_to_eat_openApi_UI.png?raw=true?raw=true" alt="Spring Boot" width="44%">
-  
+6. You should see a similar page. Use it to test the application.
+
+
+<img src="https://github.com/PawelBugiel/markdown-file-template/blob/main/.idea/resources/food_to_eat_openApi_UI.png?raw=true?raw=true" alt="Spring Boot" width="44%">
+ 
 7. To stop the application press CTRL + C in the CLI.
 
-
-
-To get a default Spring Boot - Open API documentation click the link just below the application title - (/v3/api-docs) 
+To get a default Spring Boot - Open API documentation click the link just below the application title - (/v3/api-docs)
 
 ### Appendix
 
 I approached this project several times.
-At the very beginning, I thought that I would immediately develop an application that goes beyond a typical CRUD functionality, with a database structured on several tables connected by 1:1, N:1, N:M relationships.
-However, the first project, novice-level experience, too much complexity for the first application and limited time forced me to simplify it to its current form.
+At the very beginning, I thought that I would immediately develop an application that goes beyond a typical CRUD
+functionality, with a database structured on several tables connected by 1:1, N:1, N:M relationships.
+However, the first project, novice-level experience, too much complexity for the first application and limited time
+forced me to simplify it to its current form.
 
 The version presented here is:
+
 * the most advanced in terms of code completeness
 * the simplest in terms of business complexity
   <br>
