@@ -63,7 +63,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--		swagger -->
+		<!--		OpenApi (swagger)  -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -75,12 +75,6 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>2.0.7</version>
 		</dependency>
-
-		<!--		<dependency>-->
-		<!--			<groupId>org.yaml</groupId>-->
-		<!--			<artifactId>snakeyaml</artifactId>-->
-		<!--			<version>2.2</version>-->
-		<!--		</dependency>-->
 
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
