@@ -1,13 +1,13 @@
-### Food to eat. 
+### Food to eat
 #### My very first training project.
 
-<p id="top-of-this-page">List of contents:</p>  
+<p id="top-of-this-page">List of contents:</p>
 
 1. [About the project](#About-the-project)
    <br>
 2. [Used technologies and tools](#Used-technologies-and-tools)
 <br>
-3. [My new experiences during coding](#My-new-experiences-during-coding) 
+3. [My new experiences during coding](#My-new-experiences-during-coding)
 <br>
 4. [To do list](#To-do-list)
 <br>
@@ -118,21 +118,5 @@ The version presented here is:
 The first step is done. There are still some work to do.
 And for the future, I already feel more comfortable approaching a new personal project that I have in mind :).
 
-<table class="table-border-zero">
-    <tr>
-        <td><a href="#top-of-this-page">^ Go to the top of the page ^</a></td>
-        <td>&#169; All rights and lefts reserved ;)</td>
-        <td>Partly⛅Cloudy™ ;)</td>
-    </tr>
-</table>
+<a href="#top-of-this-page">^ Go to the top of the page ^</a>
 
-[//]: # (--------------------nested css--------------------------)
-
-<style>
-.border-image{
-border: 1px solid lightgray;
-}
-.table-border-zero{
-border: 0px solid green;
-}
-</style>
