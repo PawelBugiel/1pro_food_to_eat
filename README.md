@@ -102,7 +102,7 @@ recommend [Termux](https://play.google.com/store/apps/details?id=com.termux "Jav
 6. You should see a similar page. Use it to test the application.
 
 
-<img src="https://github.com/PawelBugiel/markdown-file-template/blob/main/.idea/resources/food_to_eat_openApi_UI.png?raw=true?raw=true" alt="Spring Boot" width="44%">
+<img src="https://github.com/PawelBugiel/markdown-file-template/blob/main/.idea/resources/food_to_eat_openApi_UI.png?raw=true" alt="Spring Boot" width="44%">
  
 7. To stop the application press CTRL + C in the CLI.
 
@@ -113,6 +113,7 @@ To get a default Spring Boot - Open API documentation click the link just below 
 I approached this project several times.
 At the very beginning, I thought that I would immediately develop an application that goes beyond a typical CRUD
 functionality, with a database structured on several tables connected by 1:1, N:1, N:M relationships.
+<br>
 However, the first project, novice-level experience, too much complexity for the first application and limited time
 forced me to simplify it to its current form.
 
@@ -123,6 +124,7 @@ The version presented here is:
   <br>
 
 The first step is done. There are still some work to do.
+<br>
 And for the future, I already feel more comfortable approaching a new personal project that I have in mind :).
 
 <a href="#top-of-this-page">^ Go to the top of the page ^</a>
