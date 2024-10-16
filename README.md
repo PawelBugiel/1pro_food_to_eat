@@ -55,7 +55,7 @@ Its business goal is to manage food products in terms of their suitability for c
 - n+1 problem
 - LocalDate.class as an entity property
 - configuring of login levels
-- stack overflow exception caused by bidirectional table relations
+- stack overflow exception caused by bidirectional tables relations
 - DTOs
 - deploying MySQL database to Amazon Web Services - RDS
 - handling exceptions with AOP approach
@@ -125,7 +125,7 @@ The version presented here is:
 
 The first step is done. There are still some work to do.
 <br>
-And for the future, I already feel more comfortable approaching a new personal project that I have in mind :).
+And for the future, I already feel more comfortable approaching a side personal project that I have in my plans :).
 
 <a href="#top-of-this-page">^ Go to the top of the page ^</a>
 

@@ -1,8 +1,10 @@
 package com.pawelbugiel.foodtoeat.services;
 
+import com.pawelbugiel.foodtoeat.dtos.ProductDTO;
 import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
-import com.pawelbugiel.foodtoeat.dtos.ProductResponse;
-import com.pawelbugiel.foodtoeat.models.ProductProperties;
+import com.pawelbugiel.foodtoeat.dtos.QueryParams;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -11,24 +13,24 @@ public interface ProductService {
 
 //************** CREATE *************
 
-    ProductResponse createProduct(ProductRequest productRequest);
+    ProductDTO createProduct(ProductRequest productRequest);
 
 //************** READ *************
 
-    List<ProductResponse> findAllProducts(String page, Sort.Direction sort, ProductProperties sortBy);
+    Page<ProductDTO> findAllProducts(QueryParams params, Pageable pageable);
 
-    ProductResponse findProductById(String id);
+    ProductDTO findProductById(String id);
 
-    List<ProductResponse> findProductsByPartialName(String partialName, String page, Sort.Direction sort, ProductProperties sortBy);
+    List<ProductDTO> findProductsByPartialName(String partialName, QueryParams params);
 
-    List<ProductResponse> findProductsWithExpiredDate(String page, Sort.Direction sort);
+    List<ProductDTO> findProductsWithExpiredDate(String page, Sort.Direction sort);
 
 //************** UPDATE *************
 
-    ProductResponse updateProduct(String id, ProductResponse productResponse);
+    ProductDTO updateProduct(String id, ProductDTO productDTO);
 
 //************** DELETE *************
 
-    ProductResponse deleteProductById(String id);
+    ProductDTO deleteProductById(String id);
 
 }

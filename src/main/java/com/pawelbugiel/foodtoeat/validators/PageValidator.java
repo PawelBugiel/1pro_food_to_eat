@@ -12,7 +12,7 @@ public class PageValidator {
         return usePageValueOrDefault(result);
     }
 
-    public static Optional<Integer> checkIfIsInteger(String obj) {
+    private static Optional<Integer> checkIfIsInteger(String obj) {
         try {
             return Optional.of(Integer.valueOf(obj));
         } catch (NumberFormatException e) {

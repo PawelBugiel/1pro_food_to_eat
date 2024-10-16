@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ProductResponse {
+public class ProductDTO {
 
     private UUID id;
 
@@ -29,46 +29,46 @@ public class ProductResponse {
     private LocalDate expiryDate;
 
 
-    public static final class ProductResponseBuilder {
+    public static final class ProductDTOBuilder {
         private UUID id;
         private String name;
         private int quantity;
         private LocalDate expiryDate;
 
-        private ProductResponseBuilder() {
+        private ProductDTOBuilder() {
         }
 
-        public static ProductResponseBuilder aProductDto() {
-            return new ProductResponseBuilder();
+        public static ProductDTOBuilder aProductDto() {
+            return new ProductDTOBuilder();
         }
 
-        public ProductResponseBuilder withId(UUID id) {
+        public ProductDTOBuilder withId(UUID id) {
             this.id = id;
             return this;
         }
 
-        public ProductResponseBuilder withName(String name) {
+        public ProductDTOBuilder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public ProductResponseBuilder withQuantity(int quantity) {
+        public ProductDTOBuilder withQuantity(int quantity) {
             this.quantity = quantity;
             return this;
         }
 
-        public ProductResponseBuilder withExpiryDate(LocalDate expiryDate) {
+        public ProductDTOBuilder withExpiryDate(LocalDate expiryDate) {
             this.expiryDate = expiryDate;
             return this;
         }
 
-        public ProductResponse build() {
-            ProductResponse productResponse = new ProductResponse();
-            productResponse.id = this.id;
-            productResponse.name = this.name;
-            productResponse.expiryDate = this.expiryDate;
-            productResponse.quantity = this.quantity;
-            return productResponse;
+        public ProductDTO build() {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.id = this.id;
+            productDTO.name = this.name;
+            productDTO.expiryDate = this.expiryDate;
+            productDTO.quantity = this.quantity;
+            return productDTO;
         }
     }
 }

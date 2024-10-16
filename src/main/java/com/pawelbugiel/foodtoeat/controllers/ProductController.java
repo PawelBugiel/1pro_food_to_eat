@@ -1,19 +1,21 @@
 package com.pawelbugiel.foodtoeat.controllers;
 
+import com.pawelbugiel.foodtoeat.dtos.ProductDTO;
 import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
-import com.pawelbugiel.foodtoeat.dtos.ProductResponse;
-import com.pawelbugiel.foodtoeat.models.ProductProperties;
+import com.pawelbugiel.foodtoeat.dtos.QueryParams;
 import com.pawelbugiel.foodtoeat.services.ProductService;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.List;
 
 @SuppressWarnings("unused")
 @RestController
@@ -32,43 +34,46 @@ public class ProductController {
 //************** CREATE *************
 
     @PostMapping(value = "/products")
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid ProductRequest productRequest,
-                                                         UriComponentsBuilder uriBuilder) {
-        ProductResponse resultProductResponse = productService.createProduct(productRequest);
-        String resourceUri = getResourceUri(uriBuilder, resultProductResponse);
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid  ProductRequest productRequest,
+                                                    UriComponentsBuilder uriBuilder) {
+        ProductDTO resultProductDTO = productService.createProduct(productRequest);
+        String resourceUri = getResourceUri(uriBuilder, resultProductDTO);
         return ResponseEntity.status(201)
                 .header("Location", resourceUri)
-                .body(resultProductResponse);
+                .body(resultProductDTO);
     }
 
-    private static String getResourceUri(UriComponentsBuilder uriBuilder, ProductResponse resultProductResponse) {
+    private static String getResourceUri(UriComponentsBuilder uriBuilder, ProductDTO resultProductDTO) {
         return uriBuilder.path("/api/products/{id}")
-                .buildAndExpand(resultProductResponse.getId())
+                .buildAndExpand(resultProductDTO.getId())
                 .toUriString();
     }
 
 //************** READ *************
 
     @GetMapping("/products")
-    public List<ProductResponse> findAllProducts(@RequestParam(required = false) String page,
-                                                 @RequestParam(required = false) Sort.Direction sortDirection,
-                                                 @RequestParam(required = false) ProductProperties sortBy) {
-        return productService.findAllProducts(page, sortDirection, sortBy);
+    public Page<ProductDTO> findAllProducts(@Valid @Nullable QueryParams queryParams) {
+        Pageable pageable = PageRequest.of(
+                Integer.parseInt(queryParams.getPage()), 10, // Liczba wyników na stronie (10)
+                Sort.by(queryParams.getSortDirection(), queryParams.getSortBy())
+        );
+        return productService.findAllProducts(queryParams, pageable);
     }
 
     @GetMapping("products/id/{id}")
-    public ResponseEntity<ProductResponse> findProductById(@PathVariable String id) {
-        ProductResponse productResponse = productService.findProductById(id);
+    public ResponseEntity<ProductDTO> findProductById(@PathVariable String id) {
+        ProductDTO productDTO = productService.findProductById(id);
         return ResponseEntity.status(200)
-                .body(productResponse);
+                .body(productDTO);
     }
 
     @GetMapping("/products/partial-name")
     public ResponseEntity<?> findProductsByPartialName(@RequestParam @Pattern(regexp = PARTIAL_NAME_REGEX) String partialName,
-                                                       @RequestParam(required = false) String page,
-                                                       @RequestParam(required = false) Sort.Direction sortDirection,
-                                                       @RequestParam(required = false) ProductProperties sortBy) {
-        var productDtos = productService.findProductsByPartialName(partialName, page, sortDirection, sortBy);
+                                                       @RequestBody QueryParams queryParams) {
+        var productDtos = productService.findProductsByPartialName(
+                partialName,
+                queryParams
+        );
 
         return ResponseEntity.status(200)
                 .body(productDtos);
@@ -87,19 +92,19 @@ public class ProductController {
 
     @PutMapping("/products")
     public ResponseEntity<?> updateProduct(@RequestParam String id,
-                                           @RequestBody @Valid ProductResponse productResponse) {
-        ProductResponse updatedProductResponse = productService.updateProduct(id, productResponse);
+                                           @RequestBody @Valid ProductDTO productDTO) {
+        ProductDTO updatedProductDTO = productService.updateProduct(id, productDTO);
         return ResponseEntity.status(200)
-                .body(updatedProductResponse);
+                .body(updatedProductDTO);
     }
 
 //************** DELETE *************
 
     @DeleteMapping("products/id/{id}")
-    public ResponseEntity<ProductResponse> deleteProduct(@PathVariable String id) {
-        ProductResponse deletedProductResponse = productService.deleteProductById(id);
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable String id) {
+        ProductDTO deletedProductDTO = productService.deleteProductById(id);
         return ResponseEntity.status(200)
-                .body(deletedProductResponse);
+                .body(deletedProductDTO);
     }
 }
 

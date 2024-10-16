@@ -1,21 +1,23 @@
 package com.pawelbugiel.foodtoeat.services;
 
+import com.pawelbugiel.foodtoeat.dtos.ProductDTO;
 import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
-import com.pawelbugiel.foodtoeat.dtos.ProductResponse;
+import com.pawelbugiel.foodtoeat.dtos.QueryParams;
 import com.pawelbugiel.foodtoeat.exceptions.PageException;
 import com.pawelbugiel.foodtoeat.exceptions.ProductNotFoundException;
 import com.pawelbugiel.foodtoeat.mappers.ProductMapper;
 import com.pawelbugiel.foodtoeat.models.Product;
-import com.pawelbugiel.foodtoeat.models.ProductProperties;
 import com.pawelbugiel.foodtoeat.repositories.ProductRepository;
 import com.pawelbugiel.foodtoeat.validators.PageValidator;
-import com.pawelbugiel.foodtoeat.validators.SortByValidator;
+import com.pawelbugiel.foodtoeat.validators.ProductSearchCriteriaValidator;
 import com.pawelbugiel.foodtoeat.validators.SortDirectionValidator;
 import com.pawelbugiel.foodtoeat.validators.UUID_Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,7 @@ import java.util.UUID;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    public static final int PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 5;
     private final ProductRepository productRepository;
 
     private final static Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
@@ -39,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 //************** CREATE *************
 
     @Override
-    public ProductResponse createProduct(ProductRequest productRequest) {
+    public ProductDTO createProduct(ProductRequest productRequest) {
         Optional<Product> existingProduct = productRepository.findByNameAndExpiryDate(productRequest.getName(), productRequest.getExpiryDate());
 
         Product savedProduct;
@@ -61,25 +63,37 @@ public class ProductServiceImpl implements ProductService {
     }
 
     //************** READ *************
-// #q rename and unify variable names. Today it is too late - 12:49 AM.
     @Override
-    public List<ProductResponse> findAllProducts(String page, Sort.Direction direction, ProductProperties sortBy) {
-        var startPage = PageValidator.getValidPage(page);
-        var aValidDirection = SortDirectionValidator.validDirection(direction);
-        var sortByValue = SortByValidator.valid(sortBy);
+    public Page<ProductDTO> findAllProducts(QueryParams params, Pageable pageable) {
+//        params = ProductSearchCriteriaValidator.valid(params);
+//
+//        var pageRequest = getPageRequest(params);
+//
+//        var resultList = productRepository.findAll(pageRequest)
+//                .stream()
+//                .map(ProductMapper_old::toProductResponse)
+//                .toList();
+//        if (resultList.isEmpty()) throw new PageException(params.getPage());
+//        return resultList;
+        return productRepository.findAll(pageable).map(product -> {
+            ProductDTO dto = ProductDTO.ProductDTOBuilder.aProductDto()
+                    .withId(product.getId())
+                    .withExpiryDate(product.getExpiryDate())
+                    .withName(product.getName())
+                    .withQuantity(product.getQuantity())
+                    .build();
+            return dto;
+        });
+    }
 
-        var pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(aValidDirection, sortByValue));
-
-        var resultList = productRepository.findAll(pageRequest)
-                .stream()
-                .map(ProductMapper::toProductResponse)
-                .toList();
-        if (resultList.isEmpty()) throw new PageException(page);
-        return resultList;
+    private static PageRequest getPageRequest(QueryParams queryParams) {
+        return PageRequest.of(Integer.parseInt(queryParams.getPage()),
+                PAGE_SIZE,
+                Sort.by(queryParams.getSortDirection(), queryParams.getSortBy()));
     }
 
     @Override
-    public ProductResponse findProductById(String id) {
+    public ProductDTO findProductById(String id) {
         var uuid = UUID_Validator.convertStringToUUID(id);
         var product = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(id));
 
@@ -87,17 +101,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> findProductsByPartialName(String partialName, String page, Sort.Direction direction, ProductProperties sortBy) {
-        var startPage = PageValidator.getValidPage(page);
-        var validSortDirection = SortDirectionValidator.validDirection(direction);
-        var sortByValue = SortByValidator.valid(sortBy);
+    public List<ProductDTO> findProductsByPartialName(String partialName, QueryParams params) {
+        params = ProductSearchCriteriaValidator.valid(params);
         // #q to implement a validation of the partialName param
 
-        var pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(validSortDirection, sortByValue));
+        var pageRequest = getPageRequest(params);
         var resultList = productRepository.findByPartialName(partialName, pageRequest);
         // #q if there are no results at all, also throws the exception. This approach is not as good as it should
         // All similar cases works the same.
-        if (resultList.isEmpty()) throw new PageException(page);
+        if (resultList.isEmpty()) throw new PageException(params.getPage());
 
         return resultList.stream()
                 .map(ProductMapper::toProductResponse)
@@ -105,14 +117,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> findProductsWithExpiredDate(String page, Sort.Direction direction) {
+    public List<ProductDTO> findProductsWithExpiredDate(String page, Sort.Direction direction) {
         var startPage = PageValidator.getValidPage(page);
         var validDirection = SortDirectionValidator.validDirection(direction);
 
         var pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(validDirection, "expiryDate"));
         var resultList = productRepository.findWithExpiredDate(pageRequest);
 
-        // #q simplify to Stream API ?
         if (resultList.isEmpty()) throw new PageException(page);
 
         return resultList.stream()
@@ -121,13 +132,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-/*    private Optional<ProductResponse> findByNameAndExpiryDate(String name, LocalDate date) {
+/*    private Optional<ProductDTO> findByNameAndExpiryDate(String name, LocalDate date) {
         Optional<Product> foundProduct = productRepository.findByNameAndExpiryDate(name, date);
-        return (foundProduct.isEmpty()) ? Optional.empty() : foundProduct.map(ProductMapper::toProductResponse);
+        return (foundProduct.isEmpty()) ? Optional.empty() : foundProduct.map(ProductMapper_old::toProductResponse);
     }*/
     
     /*    @Override
-    public ProductResponse updateProduct(ProductResponse productDto) {
+    public ProductDTO updateProduct(ProductDTO productDto) {
         return null;
     }*/
 
@@ -135,20 +146,20 @@ public class ProductServiceImpl implements ProductService {
 //************** UPDATE *************
 
     @Override
-    public ProductResponse updateProduct(String id, ProductResponse productResponse) {
+    public ProductDTO updateProduct(String id, ProductDTO productDTO) {
 
         var validUUID = UUID_Validator.convertStringToUUID(id);
         var productToUpdate = productRepository.findById(validUUID)
                 .orElseThrow(() -> new ProductNotFoundException(id));
-        // #q Find out what to do with passed id and id from productResponse ? Tonight is too late for me, to do that.
-        if (!id.equals(productResponse.getId().toString()))
+        // #q Find out what to do with passed id and id from productDTO ? Tonight is too late for me, to do that.
+        if (!id.equals(productDTO.getId().toString()))
             throw new ProductNotFoundException("A conflict between passed id and found id");
 
         Product newProduct = Product.ProductBuilder.aProduct()
                 .withId(productToUpdate.getId())
-                .withName(productResponse.getName())
-                .withQuantity(productResponse.getQuantity())
-                .withExpiryDate(productResponse.getExpiryDate())
+                .withName(productDTO.getName())
+                .withQuantity(productDTO.getQuantity())
+                .withExpiryDate(productDTO.getExpiryDate())
                 .build();
 
         Product savedProduct = productRepository.save(newProduct);
@@ -159,11 +170,11 @@ public class ProductServiceImpl implements ProductService {
 //************** DELETE *************
 
     @Override
-    public ProductResponse deleteProductById(String id) {
+    public ProductDTO deleteProductById(String id) {
         UUID uuid = UUID_Validator.convertStringToUUID(id);
         Product foundProduct = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(id));
-        ProductResponse productResponse = ProductMapper.toProductResponse(foundProduct);
+        ProductDTO productDTO = ProductMapper.toProductResponse(foundProduct);
         productRepository.deleteById(uuid);
-        return productResponse;
+        return productDTO;
     }
 }

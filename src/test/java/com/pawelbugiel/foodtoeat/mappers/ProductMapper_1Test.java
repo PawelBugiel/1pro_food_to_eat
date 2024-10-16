@@ -1,7 +1,7 @@
 package com.pawelbugiel.foodtoeat.mappers;
 
 import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
-import com.pawelbugiel.foodtoeat.dtos.ProductResponse;
+import com.pawelbugiel.foodtoeat.dtos.ProductDTO;
 import com.pawelbugiel.foodtoeat.models.Product;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.UUID;
 
-class ProductMapperTest {
+class ProductMapper_1Test {
 
     private final UUID tempUUID = UUID.randomUUID();
     private final LocalDate expiryDate_1 = LocalDate.of(2077, 7, 7);
@@ -73,13 +73,13 @@ class ProductMapperTest {
     void testMapProductToProductDto_whenPassValidDetails_returnsProperProductResponse() {
         // GIVEN
         // WHEN
-        ProductResponse productResponse = ProductMapper.toProductResponse(validProductEntity_1);
+        ProductDTO productDTO = ProductMapper.toProductResponse(validProductEntity_1);
 
         // THEN
-        Assertions.assertThat(productResponse.getQuantity()).isEqualTo(validProductEntity_1.getQuantity());
-        Assertions.assertThat(productResponse.getExpiryDate()).isEqualTo(validProductEntity_1.getExpiryDate());
-        Assertions.assertThat(productResponse.getName()).isEqualTo(validProductEntity_1.getName());
-        Assertions.assertThat(productResponse.getId()).isEqualTo(tempUUID);
+        Assertions.assertThat(productDTO.getQuantity()).isEqualTo(validProductEntity_1.getQuantity());
+        Assertions.assertThat(productDTO.getExpiryDate()).isEqualTo(validProductEntity_1.getExpiryDate());
+        Assertions.assertThat(productDTO.getName()).isEqualTo(validProductEntity_1.getName());
+        Assertions.assertThat(productDTO.getId()).isEqualTo(tempUUID);
     }
 
 
@@ -89,13 +89,13 @@ class ProductMapperTest {
     void testMapProductToProductDto_whenPassProductWithDefaultValues_returnsProductResponseDefaultValues() {
         // GIVEN
         // WHEN
-        ProductResponse productResponse = ProductMapper.toProductResponse(productWithDefaultValues);
+        ProductDTO productDTO = ProductMapper.toProductResponse(productWithDefaultValues);
 
         // THEN
-        Assertions.assertThat(productResponse.getName()).isNull();
-        Assertions.assertThat(productResponse.getQuantity()).isEqualTo(0);
-        Assertions.assertThat(productResponse.getExpiryDate()).isNull();
-        Assertions.assertThat(productResponse.getId()).isNull();
+        Assertions.assertThat(productDTO.getName()).isNull();
+        Assertions.assertThat(productDTO.getQuantity()).isEqualTo(0);
+        Assertions.assertThat(productDTO.getExpiryDate()).isNull();
+        Assertions.assertThat(productDTO.getId()).isNull();
     }
 
     /*

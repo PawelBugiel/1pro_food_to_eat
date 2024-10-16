@@ -1,8 +1,8 @@
 
 package com.pawelbugiel.foodtoeat.services;
 
+import com.pawelbugiel.foodtoeat.dtos.ProductDTO;
 import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
-import com.pawelbugiel.foodtoeat.dtos.ProductResponse;
 import com.pawelbugiel.foodtoeat.mappers.ProductMapper;
 import com.pawelbugiel.foodtoeat.models.Product;
 import com.pawelbugiel.foodtoeat.repositories.ProductRepository;
@@ -77,13 +77,13 @@ public class ProductServiceImplTest {
         Mockito.when(productRepository.save(any(Product.class))).thenReturn(validProductEntity_1);
 
         // WHEN
-        ProductResponse resultProductResponse = underTest_ProductServiceImpl.createProduct(productRequest);
+        ProductDTO resultProductDTO = underTest_ProductServiceImpl.createProduct(productRequest);
 
         // THEN
-        Assertions.assertNotNull(resultProductResponse);
-        Assertions.assertEquals(validProductEntity_1.getName(), resultProductResponse.getName());
-        Assertions.assertEquals(validProductEntity_1.getQuantity(), resultProductResponse.getQuantity());
-        Assertions.assertEquals(validProductEntity_1.getExpiryDate(), resultProductResponse.getExpiryDate());
+        Assertions.assertNotNull(resultProductDTO);
+        Assertions.assertEquals(validProductEntity_1.getName(), resultProductDTO.getName());
+        Assertions.assertEquals(validProductEntity_1.getQuantity(), resultProductDTO.getQuantity());
+        Assertions.assertEquals(validProductEntity_1.getExpiryDate(), resultProductDTO.getExpiryDate());
 
         verify(productRepository, times(1)).save(any(Product.class));
     }
@@ -103,7 +103,7 @@ public class ProductServiceImplTest {
 
         log.info(invalidProduct.toString());
 
-        ProductRequest invalidProductWriteDto = ProductMapper.toProductRequest(invalidProduct);
+        ProductRequest invalidProductWriteDto = ProductMapper_old.toProductRequest(invalidProduct);
 
         log.info(invalidProductWriteDto.toString());
         // WHEN, THEN
@@ -131,7 +131,7 @@ public class ProductServiceImplTest {
         products.add(product_2);
         when(productRepository.findAll()).thenReturn(products);
         // WHEN
-        List<ProductResponse> productDtos = underTest_ProductServiceImpl.findAllProducts();
+        List<ProductDTO> productDtos = underTest_ProductServiceImpl.findAllProducts();
         // THEN
         Assertions.assertNotNull(productDtos);
         assertThat(productDtos.size()).isEqualTo(2);
@@ -155,13 +155,13 @@ public class ProductServiceImplTest {
         // GIVEN
         UUID uuid = UUID.randomUUID();
         String stringUUID = uuid.toString();
-        ProductResponse productDto_1 = ProductMapper.toProductResponse(validProductEntity_1);
+        ProductDTO productDto_1 = ProductMapper_old.toProductResponse(validProductEntity_1);
         when(productRepository.findById(eq(uuid))).thenReturn(Optional.of(validProductEntity_1));
         // WHEN
-        Optional<ProductResponse> resultOptionalProductDto = underTest_ProductServiceImpl.findProductById(stringUUID);
+        Optional<ProductDTO> resultOptionalProductDto = underTest_ProductServiceImpl.findProductById(stringUUID);
         // THEN
         Assertions.assertTrue(resultOptionalProductDto.isPresent());
-        ProductResponse resultProductDto = resultOptionalProductDto.get();
+        ProductDTO resultProductDto = resultOptionalProductDto.get();
 
         assertThat(resultProductDto.getId()).isEqualTo(productDto_1.getId());
         assertThat(resultProductDto.getName()).isEqualTo(productDto_1.getName());
@@ -177,7 +177,7 @@ public class ProductServiceImplTest {
         // GIVEN
         when(productRepository.findAll()).thenReturn(new ArrayList<>());
         // WHEN
-        List<ProductResponse> productDtos = underTest_ProductServiceImpl.findAllProducts();
+        List<ProductDTO> productDtos = underTest_ProductServiceImpl.findAllProducts();
         // THEN
         assertTrue(productDtos.isEmpty());
         verify(productRepository, times(1)).findAll();
@@ -191,7 +191,7 @@ public class ProductServiceImplTest {
         String stringUUID = uuid.toString();
         when(productRepository.findById(eq(uuid))).thenReturn(Optional.empty());
         // WHEN
-        Optional<ProductResponse> resultOptionalProductDto = underTest_ProductServiceImpl.findProductById(stringUUID);
+        Optional<ProductDTO> resultOptionalProductDto = underTest_ProductServiceImpl.findProductById(stringUUID);
         // THEN
         Assertions.assertTrue(resultOptionalProductDto.isEmpty());
         verify(productRepository, times(1)).findById(eq(uuid));
