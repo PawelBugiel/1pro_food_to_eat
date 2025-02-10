@@ -1,6 +1,6 @@
--- SQL script to insert data into the "products" table
-
--- Inserting sample data into the "products" table
+---- SQL script to insert data into the "products" table
+--
+---- Inserting sample data into the "products" table
 INSERT INTO products (id, expiry_date, name, quantity) VALUES
     ('f47ac10b-58cc-4372-a567-0e02b2c3d479', '2025-06-30', 'dried pineapple', 22),
     ('1ba7a0d2-a370-41ad-a340-47e22bd4bc9c', '2024-07-15', 'beef', 15),

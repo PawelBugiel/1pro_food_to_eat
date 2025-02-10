@@ -17,6 +17,13 @@ public interface ProductService {
 
 //************** READ *************
 
+    // Jest to interfejs zdefiniowany w Spring Data.
+    //Zawiera nie tylko dane, ale także metadane dotyczące paginacji, takie jak:
+    //
+    //    Liczba wszystkich elementów (getTotalElements()),
+    //    Liczba stron (getTotalPages()),
+    //    Bieżąca strona (getNumber()),
+    //    Rozmiar strony (getSize()).
     Page<ProductDTO> findAllProducts(QueryParams params, Pageable pageable);
 
     ProductDTO findProductById(String id);
