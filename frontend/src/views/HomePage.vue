@@ -1,30 +1,41 @@
+<!--------------------------------- T E M P L A T E --------------------------------------->
+
 <template>
   <div class="container mt-4">
     <h1 class="mb-4">Products list</h1>
 
-    <!-- NOWOŚĆ: Formularz dodawania nowego produktu -->
+    <!-- Formularz dodawania nowego produktu -->
+
     <div class="card p-3 mb-3">
-      <h3>Add new product</h3>
-      <form @submit.prevent="addProduct">
+      <h3>{{ isEditMode ? "Edit product" : "Add new product" }}</h3>
+
+      <form @submit.prevent="isEditMode ? updateProduct() : addProduct()">
         <div class="mb-2">
           <label for="name" class="form-label">Product name:</label>
-          <input v-model="newProduct.name" type="text" id="name" class="form-control" required/>
+          <input v-model="currentProduct.name" type="text" id="name" class="form-control" required/>
         </div>
+
         <div class="mb-2">
           <label for="quantity" class="form-label">Quantity:</label>
-          <input v-model="newProduct.quantity" type="number" id="quantity" class="form-control" required/>
+          <input v-model="currentProduct.quantity" type="number" id="quantity" class="form-control" required/>
         </div>
+
         <div class="mb-2">
           <label for="expiryDate" class="form-label">Expiry date:</label>
-          <input v-model="newProduct.expiryDate" type="date" id="expiryDate" class="form-control" required/>
+          <input v-model="currentProduct.expiryDate" type="date" id="expiryDate" class="form-control" required/>
         </div>
-        <button type="submit" class="btn btn-success">Add product</button>
+
+        <button type="submit" class="btn btn-success">
+          {{ isEditMode ? "Update product" : "Add product" }}
+        </button>
+
+        <button v-if="isEditMode" @click="cancelEdit" class="btn btn-secondary ms-2">Cancel</button>
       </form>
-      <div v-if="addProductError" class="alert alert-danger mt-2">
-        {{ addProductError }}
+
+      <div v-if="productError" class="alert alert-danger mt-2">
+        {{ productError }}
       </div>
     </div>
-    <!-- KONIEC: Formularz dodawania nowego produktu -->
 
     <!-- Wybór parametru sortowania -->
 
@@ -51,20 +62,29 @@
       {{ error }}
     </div>
 
+    <!-- Tabela z produktami -->
     <table class="table table-bordered table-striped" v-if="!error">
       <thead>
+
       <tr>
         <th>Product name</th>
         <th>Quantity</th>
         <th>Expiry date</th>
+        <th>Actions</th>
       </tr>
+
       </thead>
       <tbody>
+
       <tr v-for="product in products" :key="product.id">
         <td>{{ product.name }}</td>
         <td>{{ product.quantity }}</td>
         <td>{{ product.expiryDate }}</td>
+        <td>
+          <button @click="editProduct(product)" class="btn btn-warning btn-sm">Update</button>
+        </td>
       </tr>
+
       </tbody>
     </table>
 
@@ -83,6 +103,7 @@
   </div>
 </template>
 
+<!--------------------------------- S C R I P T --------------------------------------->
 
 <script>
 import axios from '../axios';                   // Upewnij się, że ścieżka do axios jest poprawna
@@ -96,16 +117,18 @@ export default {
       sortBy: 'expiryDate',                    // Domyślny parametr sortowania
       sortDirection: 'asc',               // Domyślny kierunek sortowania
       hasMoreProducts: true,             // Zmienna do przechowywania informacji o dostępności kolejnych wyników
-      // NOWOŚĆ: Dane nowego produktu
-      newProduct: {name: '', quantity: null, expiryDate: ''},
-      addProductError: null
+      newProduct: {name: '', quantity: null, expiryDate: ''},      // Dane nowego produktu
+      addProductError: null,
+      isEditMode: false,                                                      // update
+      currentProduct: {id: '', name: '', quantity: null, expiryDate: ''}    //update
     };
   },
   mounted() {
     this.fetchProducts();
   },
+
   watch: {
-    // NOWOŚĆ: Watcher odświeża listę produktów po zmianie sortowania
+    // Watcher odświeża listę produktów po zmianie sortowania
     sortBy() {
       this.fetchProducts();
     },
@@ -113,6 +136,7 @@ export default {
       this.fetchProducts();
     }
   },
+
   methods: {
     async fetchProducts() {
       try {
@@ -140,7 +164,7 @@ export default {
     },
 
 
-    // NOWOŚĆ: Obsługa dodawania nowego produktu
+    // Obsługa dodawania nowego produktu
     async addProduct() {
       try {
         const response = await axios.post('/products', this.newProduct);
@@ -158,6 +182,35 @@ export default {
       }
     },
 
+    // Obsługa edycji produktu
+    editProduct(product) {
+      this.isEditMode = true;
+      this.currentProduct = {...product}; // Skopiowanie danych produktu do edycji
+    },
+
+    // Aktualizacja produktu
+    async updateProduct() {
+      try {
+        const response = await axios.put('/products', this.currentProduct, {
+          params: {id: this.currentProduct.id}
+        });
+        console.log("Produkt zaktualizowany:", response.data);
+        this.isEditMode = false;
+        this.currentProduct = {id: '', name: '', quantity: null, expiryDate: ''};
+        this.productError = null;
+        this.fetchProducts();
+      } catch (error) {
+        console.error("Błąd podczas aktualizacji produktu:", error);
+        this.productError = 'Nie udało się zaktualizować produktu. Sprawdź dane wejściowe.';
+      }
+    },
+
+    // Anulowanie edycji
+    cancelEdit() {
+      this.isEditMode = false;
+      this.currentProduct = {id: '', name: '', quantity: null, expiryDate: ''};
+    },
+
 
     // Metoda do zmiany na poprzednią stronę
     prevPage() {
@@ -173,6 +226,8 @@ export default {
     }
   }
 }</script>
+
+<!--------------------------------- S T Y L E --------------------------------------->
 
 <style scoped>
 /* Opcjonalne stylowanie */
