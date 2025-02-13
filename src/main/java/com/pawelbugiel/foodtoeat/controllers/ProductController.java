@@ -68,16 +68,25 @@ public class ProductController {
     }
 
     @GetMapping("/products/partial-name")
-    public ResponseEntity<?> findProductsByPartialName(@RequestParam @Pattern(regexp = PARTIAL_NAME_REGEX) String partialName,
-                                                       @RequestBody QueryParams queryParams) {
-        var productDtos = productService.findProductsByPartialName(
-                partialName,
-                queryParams
-        );
+    public ResponseEntity<Page<ProductDTO>> findProductsByPartialName(
+            @RequestParam @Pattern(regexp = PARTIAL_NAME_REGEX) String partialName,
+            Pageable pageable) {
 
-        return ResponseEntity.status(200)
-                .body(productDtos);
+        Page<ProductDTO> productDtos = productService.findProductsByPartialName(partialName, pageable);
+        return ResponseEntity.ok(productDtos);
     }
+
+//    @GetMapping("/products/partial-name")
+//    public ResponseEntity<?> findProductsByPartialName(@RequestParam @Pattern(regexp = PARTIAL_NAME_REGEX) String partialName,
+//                                                       @RequestBody QueryParams queryParams) {
+//        var productDtos = productService.findProductsByPartialName(
+//                partialName,
+//                queryParams
+//        );
+//
+//        return ResponseEntity.status(200)
+//                .body(productDtos);
+//    }
 
     @GetMapping("/products/expired")
     public ResponseEntity<?> findProductsWithExpiredDate(@RequestParam(required = false) String page,

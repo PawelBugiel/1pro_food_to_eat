@@ -37,6 +37,20 @@
       </div>
     </div>
 
+    <!-- Partial name search -->
+    <div class="mb-3">
+      <label for="search" class="form-label">Search product:</label>
+      <input
+          v-model="searchQuery"
+          @input="fetchProducts"
+          type="text"
+          id="search"
+          class="form-control"
+          placeholder="Enter product name"
+      />
+    </div>
+
+
     <!-- Wybór parametru sortowania -->
 
     <div>
@@ -82,7 +96,7 @@
         <td>{{ product.expiryDate }}</td>
         <td>
           <button @click="editProduct(product)" class="btn btn-warning btn-sm">Update</button>
-<!--          <button @click="confirmDelete(product)" class="btn btn-danger btn-sm ms-2">Delete</button>-->
+          <!--          <button @click="confirmDelete(product)" class="btn btn-danger btn-sm ms-2">Delete</button>-->
           <button @click="openDeleteModal(product)" class="btn btn-danger btn-sm ms-2">Delete</button>
         </td>
       </tr>
@@ -129,7 +143,7 @@
 
 <script>
 import axios from '../axios';                   // Upewnij się, że ścieżka do axios jest poprawna
-import { Modal } from 'bootstrap'; // Import Bootstrapa
+import {Modal} from 'bootstrap'; // Import Bootstrapa
 
 export default {
   data() {
@@ -146,7 +160,10 @@ export default {
       currentProduct: {id: '', name: '', quantity: null, expiryDate: ''},    //update
 
       productToDelete: null, // Przechowywanie produktu do usunięcia
-      deleteModal: null     // Instancja Bootstrap Modal
+      deleteModal: null,     // Instancja Bootstrap Modal
+
+      searchQuery: '' // Przechowywanie wpisanej frazy wyszukiwania
+
     };
   },
   mounted() {
@@ -165,12 +182,20 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const response = await axios.get('/products', {
-          params: {
-            page: this.currentPage,
-            sortBy: this.sortBy,
-            sortDirection: this.sortDirection.toUpperCase()                                        // Użycie wielkich liter
-          }
+        // Deklaracja `params`
+        let params = {
+          page: this.currentPage,
+          sortBy: this.sortBy,
+          sortDirection: this.sortDirection.toUpperCase()
+        };
+
+        if (this.searchQuery) {  // Jeśli użytkownik coś wpisał, dodajemy parametr `partialName`
+          params.partialName = this.searchQuery;
+        }
+
+        // Zapytanie zmienia URL w zależności od wyszukiwania
+        const response = await axios.get(this.searchQuery ? '/products/partial-name' : '/products', {
+          params: params
         });
 
         console.log("Odpowiedź z backendu:", response.data);                                       // Logowanie odpowiedzi
@@ -187,6 +212,8 @@ export default {
         this.hasMoreProducts = false;                                                      // Ustaw hasMoreProducts na false, gdy wystąpił błąd
       }
     },
+
+
 
 
     // Obsługa dodawania nowego produktu
@@ -255,13 +282,13 @@ export default {
     //   }
     // },
 
-    // NOWOŚĆ: Otwieranie modala z produktem do usunięcia
+    // Otwieranie modala z produktem do usunięcia
     openDeleteModal(product) {
       this.productToDelete = product;
       this.deleteModal.show();
     },
 
-    // NOWOŚĆ: Usuwanie produktu po zatwierdzeniu w modalnym oknie
+    // Usuwanie produktu po zatwierdzeniu w modalnym oknie
     async deleteProduct() {
       try {
         await axios.delete(`/products/id/${this.productToDelete.id}`);

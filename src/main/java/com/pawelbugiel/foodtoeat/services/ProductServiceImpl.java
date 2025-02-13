@@ -9,7 +9,6 @@ import com.pawelbugiel.foodtoeat.mappers.ProductMapper;
 import com.pawelbugiel.foodtoeat.models.Product;
 import com.pawelbugiel.foodtoeat.repositories.ProductRepository;
 import com.pawelbugiel.foodtoeat.validators.PageValidator;
-import com.pawelbugiel.foodtoeat.validators.ProductSearchCriteriaValidator;
 import com.pawelbugiel.foodtoeat.validators.SortDirectionValidator;
 import com.pawelbugiel.foodtoeat.validators.UUID_Validator;
 import org.slf4j.Logger;
@@ -30,12 +29,14 @@ public class ProductServiceImpl implements ProductService {
 
     public static final int PAGE_SIZE = 5;
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
     private final static Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
 
 //************** CREATE *************
@@ -47,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct;
 
         if (existingProduct.isEmpty()) {
-            Product passedProduct = ProductMapper.toProduct(productRequest);
+            Product passedProduct = productMapper.toProduct(productRequest);
             savedProduct = productRepository.save(passedProduct);
         } else {
             Product actualProduct = existingProduct.get();
@@ -59,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
                     .build();
             savedProduct = productRepository.save(actualProduct);
         }
-        return ProductMapper.toProductResponse(savedProduct);
+        return productMapper.toProductResponse(savedProduct);
     }
 
     //************** READ *************
@@ -97,24 +98,30 @@ public class ProductServiceImpl implements ProductService {
         var uuid = UUID_Validator.convertStringToUUID(id);
         var product = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(id));
 
-        return ProductMapper.toProductResponse(product);
+        return productMapper.toProductResponse(product);
     }
 
     @Override
-    public List<ProductDTO> findProductsByPartialName(String partialName, QueryParams params) {
-        params = ProductSearchCriteriaValidator.valid(params);
-        // #q to implement a validation of the partialName param
-
-        var pageRequest = getPageRequest(params);
-        var resultList = productRepository.findByPartialName(partialName, pageRequest);
-        // #q if there are no results at all, also throws the exception. This approach is not as good as it should
-        // All similar cases works the same.
-        if (resultList.isEmpty()) throw new PageException(params.getPage());
-
-        return resultList.stream()
-                .map(ProductMapper::toProductResponse)
-                .toList();
+    public Page<ProductDTO> findProductsByPartialName(String partialName, Pageable pageable) {
+        return productRepository.findByPartialName(partialName, pageable)
+                .map(productMapper::toProductResponse);
     }
+
+//    @Override
+//    public List<ProductDTO> findProductsByPartialName(String partialName, QueryParams params) {
+//        params = ProductSearchCriteriaValidator.valid(params);
+//        // #q to implement a validation of the partialName param
+//
+//        var pageRequest = getPageRequest(params);
+//        var resultList = productRepository.findByPartialName(partialName, pageRequest);
+//        // #q if there are no results at all, also throws the exception. This approach is not as good as it should
+//        // All similar cases works the same.
+//        if (resultList.isEmpty()) throw new PageException(params.getPage());
+//
+//        return resultList.stream()
+//                .map(ProductMapper::toProductResponse)
+//                .toList();
+//    }
 
     @Override
     public List<ProductDTO> findProductsWithExpiredDate(String page, Sort.Direction direction) {
@@ -127,7 +134,7 @@ public class ProductServiceImpl implements ProductService {
         if (resultList.isEmpty()) throw new PageException(page);
 
         return resultList.stream()
-                .map(ProductMapper::toProductResponse)
+                .map(productMapper::toProductResponse)
                 .toList();
     }
 
@@ -164,7 +171,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product savedProduct = productRepository.save(newProduct);
 
-        return ProductMapper.toProductResponse(savedProduct);
+        return productMapper.toProductResponse(savedProduct);
     }
 
 //************** DELETE *************
@@ -173,7 +180,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO deleteProductById(String id) {
         UUID uuid = UUID_Validator.convertStringToUUID(id);
         Product foundProduct = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(id));
-        ProductDTO productDTO = ProductMapper.toProductResponse(foundProduct);
+        ProductDTO productDTO = productMapper.toProductResponse(foundProduct);
         productRepository.deleteById(uuid);
         return productDTO;
     }

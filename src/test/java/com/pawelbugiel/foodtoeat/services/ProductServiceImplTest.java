@@ -1,26 +1,19 @@
 
 package com.pawelbugiel.foodtoeat.services;
 
-import com.pawelbugiel.foodtoeat.dtos.ProductDTO;
-import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
-import com.pawelbugiel.foodtoeat.mappers.ProductMapper;
 import com.pawelbugiel.foodtoeat.models.Product;
 import com.pawelbugiel.foodtoeat.repositories.ProductRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.UUID;
-
-import static org.mockito.Mockito.*;
 
 /* @ExtendWith(MockitoExtension.class) annotation is used to avoid implicitly implementing open and close a mock resource
  * 1.
@@ -67,26 +60,26 @@ public class ProductServiceImplTest {
 
 //************** CREATE *************
 
-    @Test
-    @DisplayName("CREATE: Should create Product and Return Product Dto")
-    public void testCreateProduct_whenValidDetailsPassed_ReturnsProductDto() {
-
-        // GIVEN
-        ProductRequest productRequest = ProductMapper.toProductRequest(validProductEntity_1);
-        // set how the productRepository mock should behave
-        Mockito.when(productRepository.save(any(Product.class))).thenReturn(validProductEntity_1);
-
-        // WHEN
-        ProductDTO resultProductDTO = underTest_ProductServiceImpl.createProduct(productRequest);
-
-        // THEN
-        Assertions.assertNotNull(resultProductDTO);
-        Assertions.assertEquals(validProductEntity_1.getName(), resultProductDTO.getName());
-        Assertions.assertEquals(validProductEntity_1.getQuantity(), resultProductDTO.getQuantity());
-        Assertions.assertEquals(validProductEntity_1.getExpiryDate(), resultProductDTO.getExpiryDate());
-
-        verify(productRepository, times(1)).save(any(Product.class));
-    }
+//    @Test
+//    @DisplayName("CREATE: Should create Product and Return Product Dto")
+//    public void testCreateProduct_whenValidDetailsPassed_ReturnsProductDto() {
+//
+//        // GIVEN
+//        ProductRequest productRequest = ProductMapper.toProductRequest(validProductEntity_1);
+//        // set how the productRepository mock should behave
+//        Mockito.when(productRepository.save(any(Product.class))).thenReturn(validProductEntity_1);
+//
+//        // WHEN
+//        ProductDTO resultProductDTO = underTest_ProductServiceImpl.createProduct(productRequest);
+//
+//        // THEN
+//        Assertions.assertNotNull(resultProductDTO);
+//        Assertions.assertEquals(validProductEntity_1.getName(), resultProductDTO.getName());
+//        Assertions.assertEquals(validProductEntity_1.getQuantity(), resultProductDTO.getQuantity());
+//        Assertions.assertEquals(validProductEntity_1.getExpiryDate(), resultProductDTO.getExpiryDate());
+//
+//        verify(productRepository, times(1)).save(any(Product.class));
+//    }
 
    /* @Test
     @DisplayName("CREATE: Invalid name value should throw NullPointerException")

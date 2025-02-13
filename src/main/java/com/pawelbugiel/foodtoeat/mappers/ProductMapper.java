@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class ProductMapper {
 
 
-    public static Product toProduct(ProductRequest productRequest) {
+    public  Product toProduct(ProductRequest productRequest) {
         return Product.ProductBuilder.aProduct()
                 .withName(productRequest.getName())
                 .withQuantity(productRequest.getQuantity())
@@ -17,7 +17,7 @@ public class ProductMapper {
                 .build();
     }
 
-    public static ProductDTO toProductResponse(Product product) {
+    public  ProductDTO toProductResponse(Product product) {
         return ProductDTO.ProductDTOBuilder.aProductDto()
                 .withId(product.getId())
                 .withName(product.getName())
@@ -26,7 +26,7 @@ public class ProductMapper {
                 .build();
     }
 
-    public static ProductRequest toProductRequest(Product product) {
+    public  ProductRequest toProductRequest(Product product) {
         return ProductRequest.ProductRequestBuilder.aProductWriteDto()
                 .withName(product.getName())
                 .withQuantity(product.getQuantity())
