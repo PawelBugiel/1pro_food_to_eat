@@ -82,6 +82,8 @@
         <td>{{ product.expiryDate }}</td>
         <td>
           <button @click="editProduct(product)" class="btn btn-warning btn-sm">Update</button>
+<!--          <button @click="confirmDelete(product)" class="btn btn-danger btn-sm ms-2">Delete</button>-->
+          <button @click="openDeleteModal(product)" class="btn btn-danger btn-sm ms-2">Delete</button>
         </td>
       </tr>
 
@@ -100,6 +102,26 @@
     <div v-if="!hasMoreProducts && !error" class="alert alert-info mt-3">
       Nie ma więcej wyników.
     </div>
+
+    <!-- MODAL BOOTSTRAP DO POTWIERDZENIA USUNIĘCIA -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirm Deletion</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete product "<strong>{{ productToDelete?.name }}</strong>"?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-danger" @click="deleteProduct()">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- KONIEC MODALA -->
   </div>
 </template>
 
@@ -107,6 +129,7 @@
 
 <script>
 import axios from '../axios';                   // Upewnij się, że ścieżka do axios jest poprawna
+import { Modal } from 'bootstrap'; // Import Bootstrapa
 
 export default {
   data() {
@@ -120,13 +143,16 @@ export default {
       newProduct: {name: '', quantity: null, expiryDate: ''},      // Dane nowego produktu
       addProductError: null,
       isEditMode: false,                                                      // update
-      currentProduct: {id: '', name: '', quantity: null, expiryDate: ''}    //update
+      currentProduct: {id: '', name: '', quantity: null, expiryDate: ''},    //update
+
+      productToDelete: null, // Przechowywanie produktu do usunięcia
+      deleteModal: null     // Instancja Bootstrap Modal
     };
   },
   mounted() {
     this.fetchProducts();
+    this.deleteModal = new Modal(document.getElementById('deleteModal'));   // Inicjalizacja modala
   },
-
   watch: {
     // Watcher odświeża listę produktów po zmianie sortowania
     sortBy() {
@@ -136,7 +162,6 @@ export default {
       this.fetchProducts();
     }
   },
-
   methods: {
     async fetchProducts() {
       try {
@@ -167,11 +192,11 @@ export default {
     // Obsługa dodawania nowego produktu
     async addProduct() {
       try {
-        const response = await axios.post('/products', this.newProduct);
+        const response = await axios.post('/products', this.currentProduct);
         console.log("Produkt dodany:", response.data);
 
         // Reset formularza
-        this.newProduct = {name: '', quantity: null, expiryDate: ''};
+        this.currentProduct = {name: '', quantity: null, expiryDate: ''};
         this.addProductError = null;
 
         // Odśwież listę produktów
@@ -209,6 +234,43 @@ export default {
     cancelEdit() {
       this.isEditMode = false;
       this.currentProduct = {id: '', name: '', quantity: null, expiryDate: ''};
+    },
+
+    // // Metoda potwierdzająca usunięcie
+    // confirmDelete(product) {
+    //   if (confirm(`Are you sure you want to delete product "${product.name}"?`)) {
+    //     this.deleteProduct(product.id);
+    //   }
+    // },
+    //
+    // // Usuwanie produktu
+    // async deleteProduct(id) {
+    //   try {
+    //     await axios.delete(`/products/id/${id}`);
+    //     console.log("Produkt usunięty:", id);
+    //     this.fetchProducts(); // Odśwież listę po usunięciu
+    //   } catch (error) {
+    //     console.error("Błąd podczas usuwania produktu:", error);
+    //     alert("Nie udało się usunąć produktu.");
+    //   }
+    // },
+
+    // NOWOŚĆ: Otwieranie modala z produktem do usunięcia
+    openDeleteModal(product) {
+      this.productToDelete = product;
+      this.deleteModal.show();
+    },
+
+    // NOWOŚĆ: Usuwanie produktu po zatwierdzeniu w modalnym oknie
+    async deleteProduct() {
+      try {
+        await axios.delete(`/products/id/${this.productToDelete.id}`);
+        this.fetchProducts();
+        this.deleteModal.hide();
+      } catch (error) {
+        console.error("Błąd podczas usuwania produktu:", error);
+        alert("Nie udało się usunąć produktu.");
+      }
     },
 
 

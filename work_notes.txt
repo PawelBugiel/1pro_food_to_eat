@@ -1,0 +1,27 @@
+CREATE 
+--------------
+create product - name :  “A onion” nie działa 
+
+
+
+READ
+--------------
+
+
+
+UPDATE 
+--------------
+
+update product - name :  “A onion”  works   (look at create )  
+
+update - it is possible to update any data if the expiry_date isn't in the past. Otherwise only expiry_date can be modified. 
+
+
+
+
+DELETE 
+--------------
+Canceling deletion not working. 
+
+
+
