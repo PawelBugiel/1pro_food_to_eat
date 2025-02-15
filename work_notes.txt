@@ -12,9 +12,9 @@ READ
 UPDATE 
 --------------
 
-update product - name :  “A onion”  works   (look at create )  
+1. update product - name :  “A onion”  works   (look at create )
 
-update - it is possible to update any data if the expiry_date isn't in the past. Otherwise only expiry_date can be modified. 
+2. go to update form ( page top) if you want to update product - to avoid scrolling by user
 
 
 

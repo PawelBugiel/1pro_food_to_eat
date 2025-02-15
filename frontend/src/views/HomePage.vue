@@ -10,12 +10,14 @@
       <form @submit.prevent="isEditMode ? updateProduct() : addProduct()">
         <div class="mb-2">
           <label for="name" class="form-label">Product name:</label>
-          <input v-model="currentProduct.name" type="text" id="name" class="form-control" required/>
+          <input v-model="currentProduct.name" type="text" id="name" class="form-control" required
+                 :disabled="isExpiryDatePast"/>
         </div>
 
         <div class="mb-2">
           <label for="quantity" class="form-label">Quantity:</label>
-          <input v-model="currentProduct.quantity" type="number" id="quantity" class="form-control" required/>
+          <input v-model="currentProduct.quantity" type="number" id="quantity" class="form-control" required
+                 :disabled="isExpiryDatePast"/>
         </div>
 
         <div class="mb-2">
@@ -124,6 +126,11 @@
       </div>
     </div>
     <!-- MODAL -->
+
+    <div v-if="productError" class="alert alert-danger mt-2">
+      {{ productError }}
+    </div>
+
   </div>
 </template>
 
@@ -148,6 +155,7 @@ export default {
       // update
       isEditMode: false,
       currentProduct: {id: '', name: '', quantity: null, expiryDate: ''},
+      productError: null,
       // delete
       productToDelete: null,
       deleteModal: null,     // Bootstrap Modal
@@ -169,6 +177,14 @@ export default {
       this.fetchProducts();
     }
   },
+
+  computed: {
+    isExpiryDatePast() {
+      if (!this.currentProduct.expiryDate) return false; // If date is empty, editing is allowed
+      return new Date(this.currentProduct.expiryDate) < new Date(); // Check if the date is in the past
+    }
+  },
+
   methods: {
     async fetchProducts() {
       try {
@@ -227,6 +243,7 @@ export default {
     editProduct(product) {
       this.isEditMode = true;
       this.currentProduct = {...product}; // Copying product data for editing
+      this.productError = null;
     },
 
     async updateProduct() {
@@ -248,6 +265,7 @@ export default {
     cancelEdit() {
       this.isEditMode = false;
       this.currentProduct = {id: '', name: '', quantity: null, expiryDate: ''};
+      this.productError = null;
     },
 
     // Modal
