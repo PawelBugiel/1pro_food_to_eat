@@ -21,7 +21,6 @@ update - it is possible to update any data if the expiry_date isn't in the past.
 
 DELETE 
 --------------
-Canceling deletion not working. 
 
 
 

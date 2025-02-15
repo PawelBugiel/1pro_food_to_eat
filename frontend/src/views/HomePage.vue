@@ -4,8 +4,6 @@
   <div class="container mt-4">
     <h1 class="mb-4">Products list</h1>
 
-    <!-- Formularz dodawania nowego produktu -->
-
     <div class="card p-3 mb-3">
       <h3>{{ isEditMode ? "Edit product" : "Add new product" }}</h3>
 
@@ -50,9 +48,6 @@
       />
     </div>
 
-
-    <!-- Wybór parametru sortowania -->
-
     <div>
       <label for="sortBy">Sort by:</label>
       <select v-model="sortBy" id="sortBy">
@@ -61,8 +56,6 @@
         <option value="expiryDate">Expiry date</option>
       </select>
     </div>
-
-    <!-- Wybór kierunku sortowania -->
 
     <div>
       <label for="sortDirection">Sort direction:</label>
@@ -76,7 +69,6 @@
       {{ error }}
     </div>
 
-    <!-- Tabela z produktami -->
     <table class="table table-bordered table-striped" v-if="!error">
       <thead>
 
@@ -96,7 +88,6 @@
         <td>{{ product.expiryDate }}</td>
         <td>
           <button @click="editProduct(product)" class="btn btn-warning btn-sm">Update</button>
-          <!--          <button @click="confirmDelete(product)" class="btn btn-danger btn-sm ms-2">Delete</button>-->
           <button @click="openDeleteModal(product)" class="btn btn-danger btn-sm ms-2">Delete</button>
         </td>
       </tr>
@@ -104,20 +95,17 @@
       </tbody>
     </table>
 
-    <!-- Przyciski paginacji -->
-
+    <!-- Pagination -->
     <div class="d-flex justify-content-between mt-3">
       <button @click="prevPage" :disabled="currentPage === 0">Previous page</button>
       <button @click="nextPage" :disabled="!hasMoreProducts">Next page</button>
     </div>
 
-    <!-- Informacja o braku wyników -->
-
     <div v-if="!hasMoreProducts && !error" class="alert alert-info mt-3">
-      Nie ma więcej wyników.
+      There are no more results.
     </div>
 
-    <!-- MODAL BOOTSTRAP DO POTWIERDZENIA USUNIĘCIA -->
+    <!-- BOOTSTRAP MODAL-->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -129,49 +117,51 @@
             Are you sure you want to delete product "<strong>{{ productToDelete?.name }}</strong>"?
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-secondary" @click="closeModal">Cancel</button>
             <button type="button" class="btn btn-danger" @click="deleteProduct()">Delete</button>
           </div>
         </div>
       </div>
     </div>
-    <!-- KONIEC MODALA -->
+    <!-- MODAL -->
   </div>
 </template>
 
 <!--------------------------------- S C R I P T --------------------------------------->
 
 <script>
-import axios from '../axios';                   // Upewnij się, że ścieżka do axios jest poprawna
-import {Modal} from 'bootstrap'; // Import Bootstrapa
+import axios from '../axios';
+import {Modal} from 'bootstrap';
 
 export default {
   data() {
     return {
       products: [],
-      currentPage: 0,                   // Numer bieżącej strony
-      error: null,                       // Zmienna do przechowywania komunikatów o błędach
-      sortBy: 'expiryDate',                    // Domyślny parametr sortowania
-      sortDirection: 'asc',               // Domyślny kierunek sortowania
-      hasMoreProducts: true,             // Zmienna do przechowywania informacji o dostępności kolejnych wyników
-      newProduct: {name: '', quantity: null, expiryDate: ''},      // Dane nowego produktu
+      currentPage: 0,
+      error: null,
+      sortBy: 'expiryDate',
+      sortDirection: 'asc',
+      hasMoreProducts: true,
+      // add product
+      newProduct: {name: '', quantity: null, expiryDate: ''},
       addProductError: null,
-      isEditMode: false,                                                      // update
-      currentProduct: {id: '', name: '', quantity: null, expiryDate: ''},    //update
-
-      productToDelete: null, // Przechowywanie produktu do usunięcia
-      deleteModal: null,     // Instancja Bootstrap Modal
-
-      searchQuery: '' // Przechowywanie wpisanej frazy wyszukiwania
+      // update
+      isEditMode: false,
+      currentProduct: {id: '', name: '', quantity: null, expiryDate: ''},
+      // delete
+      productToDelete: null,
+      deleteModal: null,     // Bootstrap Modal
+      // find by name
+      searchQuery: ''
 
     };
   },
   mounted() {
     this.fetchProducts();
-    this.deleteModal = new Modal(document.getElementById('deleteModal'));   // Inicjalizacja modala
+    this.deleteModal = new Modal(document.getElementById('deleteModal'));   // Modal
   },
   watch: {
-    // Watcher odświeża listę produktów po zmianie sortowania
+    // Watcher refreshes product list after sorting change
     sortBy() {
       this.fetchProducts();
     },
@@ -182,133 +172,114 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        // Deklaracja `params`
         let params = {
           page: this.currentPage,
           sortBy: this.sortBy,
           sortDirection: this.sortDirection.toUpperCase()
         };
 
-        if (this.searchQuery) {  // Jeśli użytkownik coś wpisał, dodajemy parametr `partialName`
+        if (this.searchQuery) {  // If the user entered something, we add the `partialName` parameter
           params.partialName = this.searchQuery;
         }
 
-        // Zapytanie zmienia URL w zależności od wyszukiwania
+        // The query changes the URL depending on the search
         const response = await axios.get(this.searchQuery ? '/products/partial-name' : '/products', {
           params: params
         });
 
-        console.log("Odpowiedź z backendu:", response.data);                                       // Logowanie odpowiedzi
+        console.log("Backend response:", response.data);
 
-        this.products = response.data.content;                                                  // Zakładamy, że backend zwraca listę produktów w 'content'
-        this.hasMoreProducts = response.data.totalPages > this.currentPage + 1;                // Sprawdzenie, czy są dostępne kolejne strony
-        console.log("Has More Products:", this.hasMoreProducts);                               // Logowanie stanu hasMoreProducts
-        console.log("Liczba dostępnych stron:", response.data.totalPages);                     // Logowanie totalPages
+        this.products = response.data.content;     // We assume that the backend returns a list of products in 'content'
+        this.hasMoreProducts = response.data.totalPages > this.currentPage + 1;   // Check if there are more pages available
 
-        this.error = null;                                                                     // Resetujemy błąd, jeśli zapytanie zakończyło się pomyślnie
+        console.log("Has More Products:", this.hasMoreProducts);
+        console.log("Available pages quantity:", response.data.totalPages);
+
+        this.error = null;
       } catch (error) {
-        console.error("Błąd podczas pobierania produktów:", error);
-        this.error = 'Nie udało się załadować produktów. Sprawdź, czy serwer jest uruchomiony.';
-        this.hasMoreProducts = false;                                                      // Ustaw hasMoreProducts na false, gdy wystąpił błąd
+
+        console.error("Error while downloading products:", error);
+
+        this.error = 'Failed to load products. Check if the server is running..';
+        this.hasMoreProducts = false;
       }
     },
 
-
-
-
-    // Obsługa dodawania nowego produktu
     async addProduct() {
       try {
         const response = await axios.post('/products', this.currentProduct);
-        console.log("Produkt dodany:", response.data);
 
-        // Reset formularza
+        console.log("Product added:", response.data);
+
+        // Form reset
         this.currentProduct = {name: '', quantity: null, expiryDate: ''};
         this.addProductError = null;
 
-        // Odśwież listę produktów
+        // Refresh product list
         this.fetchProducts();
+
       } catch (error) {
-        console.error("Błąd podczas dodawania produktu:", error);
-        this.addProductError = 'Nie udało się dodać produktu. Sprawdź dane wejściowe.';
+        console.error("Error while adding product:", error);
+        this.addProductError = 'Failed to add product. Please check your input.';
       }
     },
 
-    // Obsługa edycji produktu
     editProduct(product) {
       this.isEditMode = true;
-      this.currentProduct = {...product}; // Skopiowanie danych produktu do edycji
+      this.currentProduct = {...product}; // Copying product data for editing
     },
 
-    // Aktualizacja produktu
     async updateProduct() {
       try {
         const response = await axios.put('/products', this.currentProduct, {
           params: {id: this.currentProduct.id}
         });
-        console.log("Produkt zaktualizowany:", response.data);
+        console.log("Product updated:", response.data);
         this.isEditMode = false;
         this.currentProduct = {id: '', name: '', quantity: null, expiryDate: ''};
         this.productError = null;
         this.fetchProducts();
       } catch (error) {
-        console.error("Błąd podczas aktualizacji produktu:", error);
-        this.productError = 'Nie udało się zaktualizować produktu. Sprawdź dane wejściowe.';
+        console.error("Error while updating product:", error);
+        this.productError = 'Failed to update product. Please check your input.';
       }
     },
 
-    // Anulowanie edycji
     cancelEdit() {
       this.isEditMode = false;
       this.currentProduct = {id: '', name: '', quantity: null, expiryDate: ''};
     },
 
-    // // Metoda potwierdzająca usunięcie
-    // confirmDelete(product) {
-    //   if (confirm(`Are you sure you want to delete product "${product.name}"?`)) {
-    //     this.deleteProduct(product.id);
-    //   }
-    // },
-    //
-    // // Usuwanie produktu
-    // async deleteProduct(id) {
-    //   try {
-    //     await axios.delete(`/products/id/${id}`);
-    //     console.log("Produkt usunięty:", id);
-    //     this.fetchProducts(); // Odśwież listę po usunięciu
-    //   } catch (error) {
-    //     console.error("Błąd podczas usuwania produktu:", error);
-    //     alert("Nie udało się usunąć produktu.");
-    //   }
-    // },
-
-    // Otwieranie modala z produktem do usunięcia
+    // Modal
     openDeleteModal(product) {
       this.productToDelete = product;
       this.deleteModal.show();
     },
 
-    // Usuwanie produktu po zatwierdzeniu w modalnym oknie
     async deleteProduct() {
       try {
         await axios.delete(`/products/id/${this.productToDelete.id}`);
         this.fetchProducts();
         this.deleteModal.hide();
       } catch (error) {
-        console.error("Błąd podczas usuwania produktu:", error);
-        alert("Nie udało się usunąć produktu.");
+        console.error("Error while removing product:", error);
+        alert("Failed to remove product.");
       }
     },
 
+    closeModal() {
+      if (this.deleteModal) {
+        this.deleteModal.hide();
+      }
+    },
 
-    // Metoda do zmiany na poprzednią stronę
     prevPage() {
       if (this.currentPage > 0) {
         this.currentPage--;
         this.fetchProducts();
       }
     },
-    // Metoda do zmiany na następną stronę
+
     nextPage() {
       this.currentPage++;
       this.fetchProducts();
@@ -319,7 +290,6 @@ export default {
 <!--------------------------------- S T Y L E --------------------------------------->
 
 <style scoped>
-/* Opcjonalne stylowanie */
 button {
   margin: 10px;
 }
