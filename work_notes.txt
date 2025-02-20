@@ -6,7 +6,7 @@ create product - name :  “A onion” nie działa
 
 READ
 --------------
-
+search by partial name - BE sends request to DB for each entered letter.
 
 
 UPDATE 
@@ -22,5 +22,12 @@ UPDATE
 DELETE 
 --------------
 
+
+
+
+GENERAL
+------------------
+change QueryParam to Page, Pageable
+logging to a file / console
 
 

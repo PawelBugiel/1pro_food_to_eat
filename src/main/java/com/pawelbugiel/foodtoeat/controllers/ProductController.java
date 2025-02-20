@@ -54,7 +54,7 @@ public class ProductController {
     @GetMapping("/products")
     public Page<ProductDTO> findAllProducts(@Valid @Nullable QueryParams queryParams) {
         Pageable pageable = PageRequest.of(
-                Integer.parseInt(queryParams.getPage()), 10, // Liczba wyników na stronie (10)
+                Integer.parseInt(queryParams.getPage()), 10,
                 Sort.by(queryParams.getSortDirection(), queryParams.getSortBy())
         );
         return productService.findAllProducts(queryParams, pageable);
@@ -68,31 +68,24 @@ public class ProductController {
     }
 
     @GetMapping("/products/partial-name")
-    public ResponseEntity<Page<ProductDTO>> findProductsByPartialName(
+    public ResponseEntity<?> findProductsByPartialName(
             @RequestParam @Pattern(regexp = PARTIAL_NAME_REGEX) String partialName,
-            Pageable pageable) {
+            @RequestParam(required = false) int page,
+            @RequestParam(required = false) int pageSize,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) Sort.Direction sortDirection) {
 
-        Page<ProductDTO> productDtos = productService.findProductsByPartialName(partialName, pageable);
+        Page<ProductDTO> productDtos = productService.findProductsByPartialName(partialName, page, pageSize, sortBy, sortDirection);
+
         return ResponseEntity.ok(productDtos);
     }
 
-//    @GetMapping("/products/partial-name")
-//    public ResponseEntity<?> findProductsByPartialName(@RequestParam @Pattern(regexp = PARTIAL_NAME_REGEX) String partialName,
-//                                                       @RequestBody QueryParams queryParams) {
-//        var productDtos = productService.findProductsByPartialName(
-//                partialName,
-//                queryParams
-//        );
-//
-//        return ResponseEntity.status(200)
-//                .body(productDtos);
-//    }
-
     @GetMapping("/products/expired")
-    public ResponseEntity<?> findProductsWithExpiredDate(@RequestParam(required = false) String page,
-                                                         @RequestParam(required = false) Sort.Direction sortDirection) {
-        var foundProducts = productService.findProductsWithExpiredDate(page, sortDirection);
+    public ResponseEntity<?> findProductsWithExpiredDate(
+            @RequestParam(required = false) String page,
+            @RequestParam(required = false) Sort.Direction sortDirection) {
 
+        var foundProducts = productService.findProductsWithExpiredDate(page, sortDirection);
         return ResponseEntity.status(200)
                 .body(foundProducts);
     }

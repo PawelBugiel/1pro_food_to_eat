@@ -9,6 +9,7 @@ import com.pawelbugiel.foodtoeat.mappers.ProductMapper;
 import com.pawelbugiel.foodtoeat.models.Product;
 import com.pawelbugiel.foodtoeat.repositories.ProductRepository;
 import com.pawelbugiel.foodtoeat.validators.PageValidator;
+import com.pawelbugiel.foodtoeat.validators.PageableValidator;
 import com.pawelbugiel.foodtoeat.validators.SortDirectionValidator;
 import com.pawelbugiel.foodtoeat.validators.UUID_Validator;
 import org.slf4j.Logger;
@@ -27,16 +28,22 @@ import java.util.UUID;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    public static final int PAGE_SIZE = 5;
+    private static final int DEFAULT_PAGE = 0;
+    private static final int DEFAULT_PAGE_SIZE = 10;
+    private static final int MAX_PAGE_SIZE = 50;
+    private static final String DEFAULT_SORT_BY = "name";
+    private static final Sort.Direction DEFAULT_SORT_DIRECTION = Sort.Direction.ASC;
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final PageableValidator pageableValidator;
 
     private final static Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, PageableValidator pageValidator) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
+        this.pageableValidator = pageValidator;
     }
 
 //************** CREATE *************
@@ -66,16 +73,6 @@ public class ProductServiceImpl implements ProductService {
     //************** READ *************
     @Override
     public Page<ProductDTO> findAllProducts(QueryParams params, Pageable pageable) {
-//        params = ProductSearchCriteriaValidator.valid(params);
-//
-//        var pageRequest = getPageRequest(params);
-//
-//        var resultList = productRepository.findAll(pageRequest)
-//                .stream()
-//                .map(ProductMapper_old::toProductResponse)
-//                .toList();
-//        if (resultList.isEmpty()) throw new PageException(params.getPage());
-//        return resultList;
         return productRepository.findAll(pageable).map(product -> {
             ProductDTO dto = ProductDTO.ProductDTOBuilder.aProductDto()
                     .withId(product.getId())
@@ -89,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
 
     private static PageRequest getPageRequest(QueryParams queryParams) {
         return PageRequest.of(Integer.parseInt(queryParams.getPage()),
-                PAGE_SIZE,
+                DEFAULT_PAGE_SIZE,
                 Sort.by(queryParams.getSortDirection(), queryParams.getSortBy()));
     }
 
@@ -102,33 +99,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDTO> findProductsByPartialName(String partialName, Pageable pageable) {
-        return productRepository.findByPartialName(partialName, pageable)
-                .map(productMapper::toProductResponse);
-    }
+    public Page<ProductDTO> findProductsByPartialName(String partialName, int page, int pageSize, String sortBy, Sort.Direction sortDirection) {
 
-//    @Override
-//    public List<ProductDTO> findProductsByPartialName(String partialName, QueryParams params) {
-//        params = ProductSearchCriteriaValidator.valid(params);
-//        // #q to implement a validation of the partialName param
-//
-//        var pageRequest = getPageRequest(params);
-//        var resultList = productRepository.findByPartialName(partialName, pageRequest);
-//        // #q if there are no results at all, also throws the exception. This approach is not as good as it should
-//        // All similar cases works the same.
-//        if (resultList.isEmpty()) throw new PageException(params.getPage());
-//
-//        return resultList.stream()
-//                .map(ProductMapper::toProductResponse)
-//                .toList();
-//    }
+        Pageable pageable = pageableValidator.validatePageable(page, pageSize, sortBy, sortDirection);
+        Page<Product> products = productRepository.findByPartialName(partialName, pageable);
+        return products.map(productMapper::toProductResponse);
+        // -todo exceptions
+        //  if (resultList.isEmpty()) throw new PageException(params.getPage()
+    }
 
     @Override
     public List<ProductDTO> findProductsWithExpiredDate(String page, Sort.Direction direction) {
         var startPage = PageValidator.getValidPage(page);
         var validDirection = SortDirectionValidator.validDirection(direction);
 
-        var pageRequest = PageRequest.of(startPage, PAGE_SIZE, Sort.by(validDirection, "expiryDate"));
+        var pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(validDirection, "expiryDate"));
         var resultList = productRepository.findWithExpiredDate(pageRequest);
 
         if (resultList.isEmpty()) throw new PageException(page);

@@ -28,7 +28,7 @@ public interface ProductService {
 
     ProductDTO findProductById(String id);
 
-    Page<ProductDTO> findProductsByPartialName(String partialName,Pageable pageable);
+    Page<ProductDTO> findProductsByPartialName(String partialName, int page, int pageSize, String sortBy, Sort.Direction sortDirection);
 
     List<ProductDTO> findProductsWithExpiredDate(String page, Sort.Direction sort);
 
