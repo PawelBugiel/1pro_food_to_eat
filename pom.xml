@@ -10,7 +10,7 @@
 	</parent>
 
 	<groupId>com.pawelbugiel</groupId>
-	<artifactId>foodToEat</artifactId>
+	<artifactId>foodtoeat</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>foodToEat</name>
@@ -137,12 +137,35 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+
+					<!-- to create containers using buildpacks.io-->
+					<image>
+						<name>pawelbugiel/${project.artifactId}:backend-buildpacks</name>
+					</image>
+					<docker>
+						<host>//./pipe/dockerDesktopLinuxEngine</host>
+					</docker>
+
+
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+
+			<!-- to create containers using Google Jib-->
+			<!-- build stopped at 80% - to consider -->
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.4</version>
+				<configuration>
+						<to>
+							<image>pawelbugiel/${project.artifactId}:backend-google-jib</image>
+						</to>
 				</configuration>
 			</plugin>
 		</plugins>
