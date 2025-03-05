@@ -2,7 +2,6 @@ package com.pawelbugiel.foodtoeat.services;
 
 import com.pawelbugiel.foodtoeat.dtos.ProductDTO;
 import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
-import com.pawelbugiel.foodtoeat.dtos.QueryParams;
 import com.pawelbugiel.foodtoeat.exceptions.PageException;
 import com.pawelbugiel.foodtoeat.exceptions.ProductNotFoundException;
 import com.pawelbugiel.foodtoeat.mappers.ProductMapper;
@@ -72,22 +71,23 @@ public class ProductServiceImpl implements ProductService {
 
     //************** READ *************
     @Override
-    public Page<ProductDTO> findAllProducts(QueryParams params, Pageable pageable) {
-        return productRepository.findAll(pageable).map(product -> {
-            ProductDTO dto = ProductDTO.ProductDTOBuilder.aProductDto()
-                    .withId(product.getId())
-                    .withExpiryDate(product.getExpiryDate())
-                    .withName(product.getName())
-                    .withQuantity(product.getQuantity())
-                    .build();
-            return dto;
-        });
-    }
+    public Page<ProductDTO> findAllProducts(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
 
-    private static PageRequest getPageRequest(QueryParams queryParams) {
-        return PageRequest.of(Integer.parseInt(queryParams.getPage()),
-                DEFAULT_PAGE_SIZE,
-                Sort.by(queryParams.getSortDirection(), queryParams.getSortBy()));
+        Pageable pageable = pageableValidator.validatePageable(page, pageSize, sortBy, sortDirection);
+
+        return productRepository
+                .findAll(pageable)
+                .map(product -> {
+                    ProductDTO dto = ProductDTO.ProductDTOBuilder.aProductDto()
+                            .withId(product.getId())
+                            .withExpiryDate(product.getExpiryDate())
+                            .withName(product.getName())
+                            .withQuantity(product.getQuantity())
+                            .build();
+                    return dto;
+                });
+
+        // -todo exceptions - what if empty ?
     }
 
     @Override
@@ -99,10 +99,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDTO> findProductsByPartialName(String partialName, int page, int pageSize, String sortBy, Sort.Direction sortDirection) {
+    public Page<ProductDTO> findProductsByPartialName(String partialName, int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
 
         Pageable pageable = pageableValidator.validatePageable(page, pageSize, sortBy, sortDirection);
+
         Page<Product> products = productRepository.findByPartialName(partialName, pageable);
+
         return products.map(productMapper::toProductResponse);
         // -todo exceptions
         //  if (resultList.isEmpty()) throw new PageException(params.getPage()
@@ -122,18 +124,6 @@ public class ProductServiceImpl implements ProductService {
                 .map(productMapper::toProductResponse)
                 .toList();
     }
-
-
-/*    private Optional<ProductDTO> findByNameAndExpiryDate(String name, LocalDate date) {
-        Optional<Product> foundProduct = productRepository.findByNameAndExpiryDate(name, date);
-        return (foundProduct.isEmpty()) ? Optional.empty() : foundProduct.map(ProductMapper_old::toProductResponse);
-    }*/
-    
-    /*    @Override
-    public ProductDTO updateProduct(ProductDTO productDto) {
-        return null;
-    }*/
-
 
 //************** UPDATE *************
 

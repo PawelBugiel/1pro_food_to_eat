@@ -2,15 +2,11 @@ package com.pawelbugiel.foodtoeat.controllers;
 
 import com.pawelbugiel.foodtoeat.dtos.ProductDTO;
 import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
-import com.pawelbugiel.foodtoeat.dtos.QueryParams;
 import com.pawelbugiel.foodtoeat.services.ProductService;
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -52,12 +48,14 @@ public class ProductController {
 //************** READ *************
 
     @GetMapping("/products")
-    public Page<ProductDTO> findAllProducts(@Valid @Nullable QueryParams queryParams) {
-        Pageable pageable = PageRequest.of(
-                Integer.parseInt(queryParams.getPage()), 10,
-                Sort.by(queryParams.getSortDirection(), queryParams.getSortBy())
-        );
-        return productService.findAllProducts(queryParams, pageable);
+    public Page<ProductDTO> findAllProducts(
+            @RequestParam(required = false) int page,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) Sort.Direction sortDirection) {
+
+
+        return productService.findAllProducts(page, pageSize, sortBy, sortDirection);
     }
 
     @GetMapping("products/id/{id}")
