@@ -71,6 +71,11 @@
       {{ error }}
     </div>
 
+    <button @click="fetchExpiredProducts" class="btn btn-danger mt-3">
+      Show Expired Products
+    </button>
+
+
     <table class="table table-bordered table-striped" v-if="!error">
       <thead>
 
@@ -284,6 +289,32 @@ export default {
         alert("Failed to remove product.");
       }
     },
+
+    async fetchExpiredProducts() {
+      try {
+        const response = await axios.get('/products/expired', {
+          params: {
+            page: this.currentPage,
+            pageSize: 10,  // Możesz później dodać opcję wyboru
+            sortBy: this.sortBy,
+            sortDirection: this.sortDirection.toUpperCase()
+          }
+        });
+
+        console.log("Expired products response:", response.data);
+        this.products = response.data.content; // Aktualizacja listy produktów
+        console.log(this.products);
+        this.hasMoreProducts = response.data.totalPages > this.currentPage + 1;
+        // this.hasMoreProducts = response.data.totalElements > 0 && response.data.totalPages > this.currentPage + 1;
+
+        this.error = null;
+
+      } catch (error) {
+        console.error("Error fetching expired products:", error);
+        this.error = "Failed to load expired products. Check the server connection.";
+      }
+    },
+
 
     closeModal() {
       if (this.deleteModal) {

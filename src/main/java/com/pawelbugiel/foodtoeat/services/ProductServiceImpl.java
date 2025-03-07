@@ -7,15 +7,12 @@ import com.pawelbugiel.foodtoeat.exceptions.ProductNotFoundException;
 import com.pawelbugiel.foodtoeat.mappers.ProductMapper;
 import com.pawelbugiel.foodtoeat.models.Product;
 import com.pawelbugiel.foodtoeat.repositories.ProductRepository;
-import com.pawelbugiel.foodtoeat.validators.PageValidator;
 import com.pawelbugiel.foodtoeat.validators.PageableValidator;
-import com.pawelbugiel.foodtoeat.validators.SortDirectionValidator;
 import com.pawelbugiel.foodtoeat.validators.UUID_Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -111,18 +108,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> findProductsWithExpiredDate(String page, Sort.Direction direction) {
-        var startPage = PageValidator.getValidPage(page);
-        var validDirection = SortDirectionValidator.validDirection(direction);
+    public List<ProductDTO> findProductsWithExpiredDate(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
 
-        var pageRequest = PageRequest.of(startPage, DEFAULT_PAGE_SIZE, Sort.by(validDirection, "expiryDate"));
-        var resultList = productRepository.findWithExpiredDate(pageRequest);
+        Pageable pageable = pageableValidator.validatePageable(page, pageSize, sortBy, sortDirection);
 
-        if (resultList.isEmpty()) throw new PageException(page);
+        var resultList = productRepository.findWithExpiredDate(pageable);
+
+        if (resultList.isEmpty()) throw new PageException();
 
         return resultList.stream()
                 .map(productMapper::toProductResponse)
                 .toList();
+        // --todo exceptions
     }
 
 //************** UPDATE *************

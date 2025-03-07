@@ -69,7 +69,7 @@ public class ProductController {
     public ResponseEntity<?> findProductsByPartialName(
             @RequestParam @Pattern(regexp = PARTIAL_NAME_REGEX) String partialName,
             @RequestParam(required = false) int page,
-            @RequestParam(required = false) int pageSize,
+            @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) Sort.Direction sortDirection) {
 
@@ -80,10 +80,12 @@ public class ProductController {
 
     @GetMapping("/products/expired")
     public ResponseEntity<?> findProductsWithExpiredDate(
-            @RequestParam(required = false) String page,
+            @RequestParam(required = false) int page,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) Sort.Direction sortDirection) {
 
-        var foundProducts = productService.findProductsWithExpiredDate(page, sortDirection);
+        var foundProducts = productService.findProductsWithExpiredDate(page, pageSize, sortBy, sortDirection);
         return ResponseEntity.status(200)
                 .body(foundProducts);
     }

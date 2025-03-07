@@ -20,7 +20,7 @@ FROM nginx:alpine AS production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 # 8. Ekspozycja portu (np. 80)
-EXPOSE 80
+EXPOSE 8082
 
 # 9. Uruchomienie serwera Nginx
 CMD ["nginx", "-g", "daemon off;"]

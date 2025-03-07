@@ -8,7 +8,7 @@ WORKDIR /app
 # Copy the app files from host machine to image filesystem
 # Skopiowanie pliku JAR do kontenera i nadanie mu nazwy nazwa.jar
 # COPY - the first param applies to a host, the second param applies to an image
-COPY target/foodToEat-0.0.1-SNAPSHOT.jar fte-app-jar.jar
+COPY target/foodToEat-0.0.1-SNAPSHOT.jar foodToEat-0.0.1-SNAPSHOT.jar
 
 # Ustawienie komendy startowej kontenera, która uruchomi aplikację
-ENTRYPOINT ["java", "-jar", "fte-app-jar.jar"]
+ENTRYPOINT ["java", "-jar", "foodToEat-0.0.1-SNAPSHOT.jar"]
