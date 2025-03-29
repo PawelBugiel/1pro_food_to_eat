@@ -1,8 +1,10 @@
 package com.pawelbugiel.foodtoeat.exceptions;
 
+import java.util.UUID;
+
 public class ProductNotFoundException extends RuntimeException{
 
-    public ProductNotFoundException(String id){
-        super("No product with id : " + id);
+    public ProductNotFoundException(UUID id){
+        super("No product with id : " + id.toString());
     }
 }

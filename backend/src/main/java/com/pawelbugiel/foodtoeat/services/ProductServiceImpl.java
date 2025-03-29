@@ -8,7 +8,6 @@ import com.pawelbugiel.foodtoeat.mappers.ProductMapper;
 import com.pawelbugiel.foodtoeat.models.Product;
 import com.pawelbugiel.foodtoeat.repositories.ProductRepository;
 import com.pawelbugiel.foodtoeat.validators.PageableValidator;
-import com.pawelbugiel.foodtoeat.validators.UUID_Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,9 +87,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO findProductById(String id) {
-        var uuid = UUID_Validator.convertStringToUUID(id);
-        var product = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(id));
+    public ProductDTO findProductById(UUID id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
 
         return productMapper.toProductResponse(product);
     }
@@ -125,14 +124,14 @@ public class ProductServiceImpl implements ProductService {
 //************** UPDATE *************
 
     @Override
-    public ProductDTO updateProduct(String id, ProductDTO productDTO) {
+    public ProductDTO updateProduct(UUID id, ProductDTO productDTO) {
 
-        var validUUID = UUID_Validator.convertStringToUUID(id);
-        var productToUpdate = productRepository.findById(validUUID)
+//        var validUUID = UUID_Validator.convertStringToUUID(id);
+        var productToUpdate = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
         // #q Find out what to do with passed id and id from productDTO ? Tonight is too late for me, to do that.
-        if (!id.equals(productDTO.getId().toString()))
-            throw new ProductNotFoundException("A conflict between passed id and found id");
+        if (!id.equals(productDTO.getId()))
+            throw new ProductNotFoundException( id) ; // "A conflict between passed id and found id");
 
         Product newProduct = Product.ProductBuilder.aProduct()
                 .withId(productToUpdate.getId())
@@ -149,11 +148,12 @@ public class ProductServiceImpl implements ProductService {
 //************** DELETE *************
 
     @Override
-    public ProductDTO deleteProductById(String id) {
-        UUID uuid = UUID_Validator.convertStringToUUID(id);
-        Product foundProduct = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(id));
+    public ProductDTO deleteProductById(UUID id) {
+        Product foundProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
         ProductDTO productDTO = productMapper.toProductResponse(foundProduct);
-        productRepository.deleteById(uuid);
+        productRepository.deleteById(id);
+
         return productDTO;
     }
 }

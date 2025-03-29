@@ -13,6 +13,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.UUID;
+
 @SuppressWarnings("unused")
 @RestController
 @RequestMapping("api/v1")
@@ -54,15 +56,14 @@ public class ProductController {
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) Sort.Direction sortDirection) {
 
-
         return productService.findAllProducts(page, pageSize, sortBy, sortDirection);
     }
 
-    @GetMapping("products/id/{id}")
-    public ResponseEntity<ProductDTO> findProductById(@PathVariable String id) {
+    @GetMapping("products/{id}")
+    public ResponseEntity<ProductDTO> findProductById(@PathVariable UUID id) {
         ProductDTO productDTO = productService.findProductById(id);
-        return ResponseEntity.status(200)
-                .body(productDTO);
+
+        return ResponseEntity.ok(productDTO);
     }
 
     @GetMapping("/products/partial-name")
@@ -86,6 +87,7 @@ public class ProductController {
             @RequestParam(required = false) Sort.Direction sortDirection) {
 
         var foundProducts = productService.findProductsWithExpiredDate(page, pageSize, sortBy, sortDirection);
+
         return ResponseEntity.status(200)
                 .body(foundProducts);
     }
@@ -93,7 +95,7 @@ public class ProductController {
     //************** UPDATE *************
 
     @PutMapping("/products")
-    public ResponseEntity<?> updateProduct(@RequestParam String id,
+    public ResponseEntity<?> updateProduct(@RequestParam UUID id,
                                            @RequestBody @Valid ProductDTO productDTO) {
         ProductDTO updatedProductDTO = productService.updateProduct(id, productDTO);
         return ResponseEntity.status(200)
@@ -103,7 +105,7 @@ public class ProductController {
 //************** DELETE *************
 
     @DeleteMapping("products/id/{id}")
-    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable String id) {
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable UUID id) {
         ProductDTO deletedProductDTO = productService.deleteProductById(id);
         return ResponseEntity.status(200)
                 .body(deletedProductDTO);
