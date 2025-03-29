@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ProductService {
 
@@ -24,7 +25,7 @@ public interface ProductService {
     //    Rozmiar strony (getSize()).
     Page<ProductDTO> findAllProducts(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection);
 
-    ProductDTO findProductById(String id);
+    ProductDTO findProductById(UUID id);
 
     Page<ProductDTO> findProductsByPartialName(String partialName, int page, Integer pageSize, String sortBy, Sort.Direction sortDirection);
 
@@ -32,10 +33,10 @@ public interface ProductService {
 
 //************** UPDATE *************
 
-    ProductDTO updateProduct(String id, ProductDTO productDTO);
+    ProductDTO updateProduct(UUID id, ProductDTO productDTO);
 
 //************** DELETE *************
 
-    ProductDTO deleteProductById(String id);
+    ProductDTO deleteProductById(UUID id);
 
 }
