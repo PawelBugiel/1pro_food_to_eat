@@ -1,131 +1,84 @@
-### Food to eat
 
-#### My very first training project.
+# Food to Eat
 
-<p id="top-of-this-page">List of contents:</p>
+Projekt treningowy.
 
-1. [About the project](#About-the-project)
+---
 
-2. [Used technologies and tools](#Used-technologies-and-tools)
+## Spis treści
+[O projekcie](#o-projekcie)  
+[Funkcjonalności](#funkcjonalności)  
+[Wymagania wstępne](#wymagania-wstępne)  
+[Instrukcja instalacji](#instrukcja-instalacji)  
+[Sposób użycia](#sposób-użycia)  
+[Użyte technologie](#użyte-technologie)  
+[Status projektu](#status-projektu)  
+[Licencja](#licencja)  
+[Zrzuty ekranu lub demo](#zrzuty-ekranu-lub-demo)  
+[Lista zadań](#lista-zadań)  
+[Kontakt lub współpraca](#kontakt-lub-współpraca)  
 
-3. [My new experiences during coding](#My-new-experiences-during-coding)
 
-4. [To do list](#To-do-list)
+## O projekcie
+Jest to aplikacja CRUD, która służy mi jako piaskownica do nauki programowania. Jej główne cele to:
+- łączenie różnych aspektów wcześniej poznanych i używanych w oddzielnych, małych aplikacjach treningowych
+- napotykanie problemów i ich rozwiązywanie
+- budowanie aplikacji warstwowej
+- tworzenie REST API
+- pokrywanie kodu testami
+- zdobywanie doświadczenia
+- rozwijanie frontendu w Vue.js
 
-5. [How to run the application](#How-to-run-the-application)
+Jej celem biznesowym jest zarządzanie produktami spożywczymi pod kątem ich przydatności do spożycia.
 
-6. [Appendix](#Appendix) - a bit more information about my approach to write this application.
+## Funkcjonalności
+*(Brak szczegółowej listy funkcjonalności w oryginalnym pliku - możesz dodać szczegóły, np. dodawanie/usuwanie produktów spożywczych.)*
 
-### About the project
+## Wymagania wstępne
+*(Brak wyraźnie podanych wymagań - można je wywnioskować z technologii, ale warto określić, np. Java 8+, Node.js.)*
 
-It is a CRUD application that serves me as a development sandbox. Its main goals are:
+## Instrukcja instalacji
+### Jak uruchomić aplikację
+Pracuję nad tym. Rozważam:
+- dostarczenie kontenerów Docker na Githubie
+- użycie rozwiązania hostingowego online: AWS, Oracle Cloud
 
-- combining various aspects previously learned and used in separate tiny training applications
-- encountering problems and solving them
-- building a layered application
-- creating a REST API
-- covering the code with tests
-- gaining experiences
+## Sposób użycia
+*(Brak opisu - możesz dodać, jak użytkownicy powinni korzystać z aplikacji po jej uruchomieniu.)*
 
-Its business goal is to manage food products in terms of their suitability for consumption.
+## Użyte technologie
+Projekt wykorzystuje następujące technologie:
+- **Backend**: Java 8+, Spring Boot, Maven, JPA / Hibernate, Lombok
+- **Baza danych**: MySQL
+- **Testowanie**: JUnit, Mockito, JaCoCo
+- **Narzędzia**: IntelliJ, Git, GitBash, Postman, OpenAPI Swagger
+- **Frontend**: Vue.js, Node.js
+- **DevOps**: Docker, GitHub
 
-### Used technologies and tools
+## Status projektu
+Projekt treningowy. W toku.
 
-* Database:
-    * at the very beginning MySQL,
-    * finally in-memory H2
-* Java 8+
-* Spring Boot
-* Hibernate
-* Lombok
-* JUnit
-* Mockito
-* Maven
-* JaCoCo
-* OpenAPI Swagger
-* Postman
-* IntelliJ
-* Git
-* GitBash
-* GitHub
+## Licencja
+*(Brak informacji o licencji - rozważ określenie, np. MIT, lub wskazanie, że projekt jest prywatny.)*
 
-### My new experiences during coding
+## Zrzuty ekranu lub demo
+*(Nie uwzględnione w oryginalnym pliku - możesz dodać linki do zrzutów ekranu lub demo, jeśli są dostępne.)*
 
-- UUID.class
-- n+1 problem
-- LocalDate.class as an entity property
-- configuring of login levels
-- stack overflow exception caused by bidirectional tables relations
-- DTOs
-- deploying MySQL database to Amazon Web Services - RDS
-- handling exceptions with AOP approach
-- Java Code Coverage tool
-- Builder pattern
-- usefulness of unit tests during refactoring
-- ... and couple others
-
-### To do list
-
-- [x] Database
+## Lista zadań
+- [x] Baza danych
 - [x] REST API
-- [ ] Improve overall consistency
-- [ ] Tests
-- [ ] Integration with Open Food Facts API
-- [ ] Logging
-- [ ] Any others that I don't know about yet ;)
+- [ ] Frontend
+- [ ] Bezpieczeństwo
+- [ ] Testy
+- [ ] Logowanie
+- [ ] Wdrożenie
+- [ ] Integracja z Open Food Facts API
+- [ ] Deploy
+- [ ] Dokumentacja
 
-### How to run the application
+## Kontakt lub współpraca
+Paweł Bugiel
 
-Windows, Linux, macOS, Android.  
-*(In case of Android I
-recommend [Termux](https://play.google.com/store/apps/details?id=com.termux "Java Runtime Environment") as a CLI.)*
+---
 
-1. Download and install the
-   latest [Java Runtime Enviroment (JRE)](https://www.oracle.com/java/technologies/downloads/ "Java Runtime Environment")
-
-2. Use the chosen CLI to verify if the installation passed successfully, by typing
-   ~~~
-    java -version
-   ~~~
-   As a result you should see a similar response
-   ~~~
-    java version "21.0.3" 2024-04-16 LTS
-    Java(TM) SE Runtime Environment (build 21.0.3+7-LTS-152)
-    Java HotSpot(TM) 64-Bit Server VM (build 21.0.3+7-LTS-152, mixed mode, sharing)
-   ~~~
-3. Download a jar file from the GitHub - Releases section
-4. Again use the CLI to go to a folder that contains the downloaded file and run it ( the jar file name may vary )
-   ~~~ 
-    java -jar foodToEat-0.0.1-SNAPSHOT.jar
-   ~~~
-5. Use the following URL with a web browser http://localhost:8081/swagger-ui/index.html#/
-6. You should see a similar page. Use it to test the application.
-
-
-<img src="https://github.com/PawelBugiel/markdown-file-template/blob/main/.idea/resources/food_to_eat_openApi_UI.png?raw=true" alt="Spring Boot" width="44%">
- 
-7. To stop the application press CTRL + C in the CLI.
-
-To get a default Spring Boot - Open API documentation click the link just below the application title - (/v3/api-docs)
-
-### Appendix
-
-I approached this project several times.
-At the very beginning, I thought that I would immediately develop an application that goes beyond a typical CRUD
-functionality, with a database structured on several tables connected by 1:1, N:1, N:M relationships.
-<br>
-However, the first project, novice-level experience, too much complexity for the first application and limited time
-forced me to simplify it to its current form.
-
-The version presented here is:
-
-* the most advanced in terms of code completeness
-* the simplest in terms of business complexity
-  <br>
-
-The first step is done. There are still some work to do.
-<br>
-And for the future, I already feel more comfortable approaching a side personal project that I have in my plans :).
-
-<a href="#top-of-this-page">^ Go to the top of the page ^</a>
-
+<a href="#top-of-this-page">^ Wróć na górę strony ^</a>
