@@ -121,7 +121,7 @@ class ProductControllerWebLayerTest {
         Assertions.assertEquals(requestBody, resultContent);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isCreated());
-//                .andExpect(jsonPath("$.name", is));
+//                .andExpect(jsonPath("$.email", is));
 
     }
 

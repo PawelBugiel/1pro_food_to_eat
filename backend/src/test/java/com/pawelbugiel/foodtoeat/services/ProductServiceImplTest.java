@@ -82,7 +82,7 @@
 ////    }
 //
 //   /* @Test
-//    @DisplayName("CREATE: Invalid name value should throw NullPointerException")
+//    @DisplayName("CREATE: Invalid email value should throw NullPointerException")
 //    public void testCreateProduct_whenInvalidNamePassed_throwsNullPointerException() {
 //        //GIVEN
 //        Product invalidProduct = Product.ProductBuilder.aProduct()
@@ -105,10 +105,10 @@
 //    }*/
 //
 //    @Test
-//    @DisplayName("CREATE: Invalid name value should throw NullPointerException")
+//    @DisplayName("CREATE: Invalid email value should throw NullPointerException")
 //    public void testCreateProduct_henInvalidQuantityPassed_throwsNullPointerException() {
 //        Product invalidProduct = Product.ProductBuilder.aProduct()
-//                .withName("some name")
+//                .withName("some email")
 //                .withQuantity(11)
 //                .withExpiryDate(LocalDate.of(2055, 12, 22))
 //                .build();
