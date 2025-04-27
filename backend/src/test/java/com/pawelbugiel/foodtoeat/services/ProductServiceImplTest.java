@@ -70,7 +70,7 @@
 ////        Mockito.when(productRepository.save(any(Product.class))).thenReturn(validProductEntity_1);
 ////
 ////        // WHEN
-////        ProductDTO resultProductDTO = underTest_ProductServiceImpl.createProduct(productRequest);
+////        ProductResponse resultProductDTO = underTest_ProductServiceImpl.createProduct(productRequest);
 ////
 ////        // THEN
 ////        Assertions.assertNotNull(resultProductDTO);
@@ -124,7 +124,7 @@
 //        products.add(product_2);
 //        when(productRepository.findAll()).thenReturn(products);
 //        // WHEN
-//        List<ProductDTO> productDtos = underTest_ProductServiceImpl.findAllProducts();
+//        List<ProductResponse> productDtos = underTest_ProductServiceImpl.findAllProducts();
 //        // THEN
 //        Assertions.assertNotNull(productDtos);
 //        assertThat(productDtos.size()).isEqualTo(2);
@@ -148,13 +148,13 @@
 //        // GIVEN
 //        UUID uuid = UUID.randomUUID();
 //        String stringUUID = uuid.toString();
-//        ProductDTO productDto_1 = ProductMapper_old.toProductResponse(validProductEntity_1);
+//        ProductResponse productDto_1 = ProductMapper_old.toProductResponse(validProductEntity_1);
 //        when(productRepository.findById(eq(uuid))).thenReturn(Optional.of(validProductEntity_1));
 //        // WHEN
-//        Optional<ProductDTO> resultOptionalProductDto = underTest_ProductServiceImpl.findProductById(stringUUID);
+//        Optional<ProductResponse> resultOptionalProductDto = underTest_ProductServiceImpl.findProductById(stringUUID);
 //        // THEN
 //        Assertions.assertTrue(resultOptionalProductDto.isPresent());
-//        ProductDTO resultProductDto = resultOptionalProductDto.get();
+//        ProductResponse resultProductDto = resultOptionalProductDto.get();
 //
 //        assertThat(resultProductDto.getId()).isEqualTo(productDto_1.getId());
 //        assertThat(resultProductDto.getName()).isEqualTo(productDto_1.getName());
@@ -170,7 +170,7 @@
 //        // GIVEN
 //        when(productRepository.findAll()).thenReturn(new ArrayList<>());
 //        // WHEN
-//        List<ProductDTO> productDtos = underTest_ProductServiceImpl.findAllProducts();
+//        List<ProductResponse> productDtos = underTest_ProductServiceImpl.findAllProducts();
 //        // THEN
 //        assertTrue(productDtos.isEmpty());
 //        verify(productRepository, times(1)).findAll();
@@ -184,7 +184,7 @@
 //        String stringUUID = uuid.toString();
 //        when(productRepository.findById(eq(uuid))).thenReturn(Optional.empty());
 //        // WHEN
-//        Optional<ProductDTO> resultOptionalProductDto = underTest_ProductServiceImpl.findProductById(stringUUID);
+//        Optional<ProductResponse> resultOptionalProductDto = underTest_ProductServiceImpl.findProductById(stringUUID);
 //        // THEN
 //        Assertions.assertTrue(resultOptionalProductDto.isEmpty());
 //        verify(productRepository, times(1)).findById(eq(uuid));

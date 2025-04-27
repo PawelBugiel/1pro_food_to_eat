@@ -1,65 +1,35 @@
 package com.pawelbugiel.foodtoeat.dtos;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import org.hibernate.validator.constraints.Range;
 
 import java.time.LocalDate;
 
+/**
+ * Data Transfer Object for creating or updating a product request.
+ */
+
 @Getter
 @ToString
+@Builder
+@AllArgsConstructor
 public class ProductRequest {
 
     private static final String PRODUCT_NAME_REGEX = "^[a-zA-Z0-9]{3}.*$";
 
-    @NotBlank(message = "Product name cannot consists with whitespaces only")
-    @NotNull(message = "Product name cannot be empty")
-    @Pattern(regexp = "^[a-zA-Z0-9]{3}.*$")
+    @NotBlank(message = "Product name cannot be empty or contain only whitespaces")
+    @Pattern(regexp = "^[a-zA-Z0-9]{3}.*$", message = "Product name must start with at least 3 alphanumeric characters")
     @Size(min = 3, max = 33, message = "The name must be between 3 and 33 characters long")
-    private String name;
+    private final String name;
 
-    @Range(min = 1, max = 10_000,  message = "Product quantity must be in range from 1 to 10 000")
-    private int quantity;
+    @Min(value = 1, message = "Quantity must be at least 1")
+    @Max(value = 10_000, message = "Quantity must not exceed 10,000")
+    private final Integer quantity;
 
-    @NotNull(message = "Product expiry date cannot be empty")
-    @FutureOrPresent
-    private LocalDate expiryDate;
-
-    public static final class ProductRequestBuilder {
-
-        private  String name;
-        private int quantity;
-        private LocalDate expiryDate;
-
-        private ProductRequestBuilder() {
-        }
-
-        public static ProductRequestBuilder aProductWriteDto() {
-            return new ProductRequestBuilder();
-        }
-
-        public ProductRequestBuilder withName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public ProductRequestBuilder withQuantity(int quantity) {
-            this.quantity = quantity;
-            return this;
-        }
-
-        public ProductRequestBuilder withExpiryDate(LocalDate expiryDate) {
-            this.expiryDate = expiryDate;
-            return this;
-        }
-
-        public ProductRequest build() {
-            ProductRequest productRequest = new ProductRequest();
-            productRequest.expiryDate = this.expiryDate;
-            productRequest.quantity = this.quantity;
-            productRequest.name = this.name;
-            return productRequest;
-        }
-    }
+    @NotNull(message = "Expiry date cannot be null")
+    @FutureOrPresent(message = "Expiry date must be today or in the future")
+    private final LocalDate expiryDate;
 }

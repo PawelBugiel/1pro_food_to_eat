@@ -1,6 +1,6 @@
 package com.pawelbugiel.foodtoeat.controllers;
 
-import com.pawelbugiel.foodtoeat.dtos.ProductDTO;
+import com.pawelbugiel.foodtoeat.dtos.ProductResponse;
 import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
 import com.pawelbugiel.foodtoeat.services.ProductService;
 import jakarta.validation.Valid;
@@ -32,25 +32,25 @@ public class ProductController {
 //************** CREATE *************
 
     @PostMapping(value = "/products")
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid  ProductRequest productRequest,
-                                                    UriComponentsBuilder uriBuilder) {
-        ProductDTO resultProductDTO = productService.createProduct(productRequest);
-        String resourceUri = getResourceUri(uriBuilder, resultProductDTO);
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid  ProductRequest productRequest,
+                                                         UriComponentsBuilder uriBuilder) {
+        ProductResponse resultProductResponse = productService.createProduct(productRequest);
+        String resourceUri = getResourceUri(uriBuilder, resultProductResponse);
         return ResponseEntity.status(201)
                 .header("Location", resourceUri)
-                .body(resultProductDTO);
+                .body(resultProductResponse);
     }
 
-    private static String getResourceUri(UriComponentsBuilder uriBuilder, ProductDTO resultProductDTO) {
+    private static String getResourceUri(UriComponentsBuilder uriBuilder, ProductResponse resultProductResponse) {
         return uriBuilder.path("/api/products/{id}")
-                .buildAndExpand(resultProductDTO.getId())
+                .buildAndExpand(resultProductResponse.getId())
                 .toUriString();
     }
 
 //************** READ *************
 
     @GetMapping("/products")
-    public Page<ProductDTO> findAllProducts(
+    public Page<ProductResponse> findAllProducts(
             @RequestParam(required = false) int page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String sortBy,
@@ -60,10 +60,10 @@ public class ProductController {
     }
 
     @GetMapping("products/{id}")
-    public ResponseEntity<ProductDTO> findProductById(@PathVariable UUID id) {
-        ProductDTO productDTO = productService.findProductById(id);
+    public ResponseEntity<ProductResponse> findProductById(@PathVariable UUID id) {
+        ProductResponse productResponse = productService.findProductById(id);
 
-        return ResponseEntity.ok(productDTO);
+        return ResponseEntity.ok(productResponse);
     }
 
     @GetMapping("/products/partial-name")
@@ -74,9 +74,9 @@ public class ProductController {
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) Sort.Direction sortDirection) {
 
-        Page<ProductDTO> productDtos = productService.findProductsByPartialName(partialName, page, pageSize, sortBy, sortDirection);
+        Page<ProductResponse> productResponses = productService.findProductsByPartialName(partialName, page, pageSize, sortBy, sortDirection);
 
-        return ResponseEntity.ok(productDtos);
+        return ResponseEntity.ok(productResponses);
     }
 
     @GetMapping("/products/expired")
@@ -96,19 +96,19 @@ public class ProductController {
 
     @PutMapping("/products")
     public ResponseEntity<?> updateProduct(@RequestParam UUID id,
-                                           @RequestBody @Valid ProductDTO productDTO) {
-        ProductDTO updatedProductDTO = productService.updateProduct(id, productDTO);
+                                           @RequestBody @Valid ProductResponse productResponse) {
+        ProductResponse updatedProductResponse = productService.updateProduct(id, productResponse);
         return ResponseEntity.status(200)
-                .body(updatedProductDTO);
+                .body(updatedProductResponse);
     }
 
 //************** DELETE *************
 
     @DeleteMapping("products/id/{id}")
-    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable UUID id) {
-        ProductDTO deletedProductDTO = productService.deleteProductById(id);
+    public ResponseEntity<ProductResponse> deleteProduct(@PathVariable UUID id) {
+        ProductResponse deletedProductResponse = productService.deleteProductById(id);
         return ResponseEntity.status(200)
-                .body(deletedProductDTO);
+                .body(deletedProductResponse);
     }
 }
 

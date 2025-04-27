@@ -1,36 +1,20 @@
-CREATE 
---------------
-create product - name :  “A onion” nie działa (relates to update)
+1. CREATE create product - name :  “A onion” nie dziła (relates to update)
 
+2. search by partial name - BE sends requests to DB for each entered letter.
 
+3. update product - name :  “A onion”  works   (relates to create )
 
-READ
---------------
-search by partial name - BE sends request to DB for each entered letter.
+4. go to update form ( page top) if you want to update product - to avoid scrolling by user
 
+5. pagination change QueryParam to Page, Pageable
 
-UPDATE 
---------------
+6. logging to a file / console
 
-1. update product - name :  “A onion”  works   (relates to create )
+7. error handling - handle BE not responding exception
 
-2. go to update form ( page top) if you want to update product - to avoid scrolling by user
+8. default sorting in BE or FE ?
 
+9. Documentation - consider javadoc, Springdoc OpenAPI Swagger
 
-
-
-DELETE 
---------------
-
-
-
-
-GENERAL
-------------------
-change QueryParam to Page, Pageable
-logging to a file / console
-handle BE not responding exception
-
-default sorting in BE or FE ?
 
 

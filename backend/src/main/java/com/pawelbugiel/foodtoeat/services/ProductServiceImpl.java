@@ -1,6 +1,6 @@
 package com.pawelbugiel.foodtoeat.services;
 
-import com.pawelbugiel.foodtoeat.dtos.ProductDTO;
+import com.pawelbugiel.foodtoeat.dtos.ProductResponse;
 import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
 import com.pawelbugiel.foodtoeat.exceptions.PageException;
 import com.pawelbugiel.foodtoeat.exceptions.ProductNotFoundException;
@@ -44,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
 //************** CREATE *************
 
     @Override
-    public ProductDTO createProduct(ProductRequest productRequest) {
+    public ProductResponse createProduct(ProductRequest productRequest) {
         Optional<Product> existingProduct = productRepository.findByNameAndExpiryDate(productRequest.getName(), productRequest.getExpiryDate());
 
         Product savedProduct;
@@ -54,11 +54,11 @@ public class ProductServiceImpl implements ProductService {
             savedProduct = productRepository.save(passedProduct);
         } else {
             Product actualProduct = existingProduct.get();
-            actualProduct = Product.ProductBuilder.aProduct()
-                    .withId(actualProduct.getId())
-                    .withName(actualProduct.getName())
-                    .withQuantity(actualProduct.getQuantity() + productRequest.getQuantity())
-                    .withExpiryDate(actualProduct.getExpiryDate())
+            actualProduct = Product.builder()
+                    .id(actualProduct.getId())
+                    .name(actualProduct.getName())
+                    .quantity(actualProduct.getQuantity() + productRequest.getQuantity())
+                    .expiryDate(actualProduct.getExpiryDate())
                     .build();
             savedProduct = productRepository.save(actualProduct);
         }
@@ -67,27 +67,27 @@ public class ProductServiceImpl implements ProductService {
 
     //************** READ *************
     @Override
-    public Page<ProductDTO> findAllProducts(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
+    public Page<ProductResponse> findAllProducts(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
 
         Pageable pageable = pageableValidator.validatePageable(page, pageSize, sortBy, sortDirection);
 
         return productRepository
                 .findAll(pageable)
                 .map(product -> {
-                    ProductDTO dto = ProductDTO.ProductDTOBuilder.aProductDto()
-                            .withId(product.getId())
-                            .withExpiryDate(product.getExpiryDate())
-                            .withName(product.getName())
-                            .withQuantity(product.getQuantity())
+                    ProductResponse resultProductResponses = ProductResponse.builder()
+                            .id(product.getId())
+                            .expiryDate(product.getExpiryDate())
+                            .name(product.getName())
+                            .quantity(product.getQuantity())
                             .build();
-                    return dto;
+                    return resultProductResponses;
                 });
 
         // -todo exceptions - what if empty ?
     }
 
     @Override
-    public ProductDTO findProductById(UUID id) {
+    public ProductResponse findProductById(UUID id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
 
@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDTO> findProductsByPartialName(String partialName, int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
+    public Page<ProductResponse> findProductsByPartialName(String partialName, int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
 
         Pageable pageable = pageableValidator.validatePageable(page, pageSize, sortBy, sortDirection);
 
@@ -107,7 +107,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> findProductsWithExpiredDate(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
+    public List<ProductResponse> findProductsWithExpiredDate(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
 
         Pageable pageable = pageableValidator.validatePageable(page, pageSize, sortBy, sortDirection);
 
@@ -124,20 +124,20 @@ public class ProductServiceImpl implements ProductService {
 //************** UPDATE *************
 
     @Override
-    public ProductDTO updateProduct(UUID id, ProductDTO productDTO) {
+    public ProductResponse updateProduct(UUID id, ProductResponse productResponse) {
 
 //        var validUUID = UUID_Validator.convertStringToUUID(id);
         var productToUpdate = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
-        // #q Find out what to do with passed id and id from productDTO ? Tonight is too late for me, to do that.
-        if (!id.equals(productDTO.getId()))
+        // #q Find out what to do with passed id and id from productResponse ? Tonight is too late for me, to do that.
+        if (!id.equals(productResponse.getId()))
             throw new ProductNotFoundException( id) ; // "A conflict between passed id and found id");
 
-        Product newProduct = Product.ProductBuilder.aProduct()
-                .withId(productToUpdate.getId())
-                .withName(productDTO.getName())
-                .withQuantity(productDTO.getQuantity())
-                .withExpiryDate(productDTO.getExpiryDate())
+        Product newProduct = Product.builder()
+                .id(productToUpdate.getId())
+                .name(productResponse.getName())
+                .quantity(productResponse.getQuantity())
+                .expiryDate(productResponse.getExpiryDate())
                 .build();
 
         Product savedProduct = productRepository.save(newProduct);
@@ -148,12 +148,12 @@ public class ProductServiceImpl implements ProductService {
 //************** DELETE *************
 
     @Override
-    public ProductDTO deleteProductById(UUID id) {
+    public ProductResponse deleteProductById(UUID id) {
         Product foundProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
-        ProductDTO productDTO = productMapper.toProductResponse(foundProduct);
+        ProductResponse productResponse = productMapper.toProductResponse(foundProduct);
         productRepository.deleteById(id);
 
-        return productDTO;
+        return productResponse;
     }
 }
