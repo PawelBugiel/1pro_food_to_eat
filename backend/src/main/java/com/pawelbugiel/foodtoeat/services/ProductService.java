@@ -1,6 +1,6 @@
 package com.pawelbugiel.foodtoeat.services;
 
-import com.pawelbugiel.foodtoeat.dtos.ProductDTO;
+import com.pawelbugiel.foodtoeat.dtos.ProductResponse;
 import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -12,31 +12,24 @@ public interface ProductService {
 
 //************** CREATE *************
 
-    ProductDTO createProduct(ProductRequest productRequest);
+    ProductResponse createProduct(ProductRequest productRequest);
 
 //************** READ *************
 
-    // Jest to interfejs zdefiniowany w Spring Data.
-    //Zawiera nie tylko dane, ale także metadane dotyczące paginacji, takie jak:
-    //
-    //    Liczba wszystkich elementów (getTotalElements()),
-    //    Liczba stron (getTotalPages()),
-    //    Bieżąca strona (getNumber()),
-    //    Rozmiar strony (getSize()).
-    Page<ProductDTO> findAllProducts(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection);
+    Page<ProductResponse> findAllProducts(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection);
 
-    ProductDTO findProductById(UUID id);
+    ProductResponse findProductById(UUID id);
 
-    Page<ProductDTO> findProductsByPartialName(String partialName, int page, Integer pageSize, String sortBy, Sort.Direction sortDirection);
+    Page<ProductResponse> findProductsByPartialName(String partialName, int page, Integer pageSize, String sortBy, Sort.Direction sortDirection);
 
-    List<ProductDTO> findProductsWithExpiredDate(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection);
+    List<ProductResponse> findProductsWithExpiredDate(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection);
 
 //************** UPDATE *************
 
-    ProductDTO updateProduct(UUID id, ProductDTO productDTO);
+    ProductResponse updateProduct(UUID id, ProductResponse productResponse);
 
 //************** DELETE *************
 
-    ProductDTO deleteProductById(UUID id);
+    ProductResponse deleteProductById(UUID id);
 
 }
