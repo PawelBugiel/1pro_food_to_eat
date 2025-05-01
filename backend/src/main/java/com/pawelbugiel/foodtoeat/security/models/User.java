@@ -1,4 +1,4 @@
-package com.pawelbugiel.foodtoeat.models;
+package com.pawelbugiel.foodtoeat.security.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -32,7 +32,4 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
-
-
 }
-

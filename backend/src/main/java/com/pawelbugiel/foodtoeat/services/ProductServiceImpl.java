@@ -130,14 +130,14 @@ public class ProductServiceImpl implements ProductService {
         var productToUpdate = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
         // #q Find out what to do with passed id and id from productResponse ? Tonight is too late for me, to do that.
-        if (!id.equals(productResponse.getId()))
+        if (!id.equals(productResponse.id()))
             throw new ProductNotFoundException( id) ; // "A conflict between passed id and found id");
 
         Product newProduct = Product.builder()
                 .id(productToUpdate.getId())
-                .name(productResponse.getName())
-                .quantity(productResponse.getQuantity())
-                .expiryDate(productResponse.getExpiryDate())
+                .name(productResponse.name())
+                .quantity(productResponse.quantity())
+                .expiryDate(productResponse.expiryDate())
                 .build();
 
         Product savedProduct = productRepository.save(newProduct);

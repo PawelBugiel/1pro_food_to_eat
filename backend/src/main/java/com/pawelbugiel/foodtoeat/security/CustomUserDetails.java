@@ -1,6 +1,6 @@
 package com.pawelbugiel.foodtoeat.security;
 
-import com.pawelbugiel.foodtoeat.models.User;
+import com.pawelbugiel.foodtoeat.security.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

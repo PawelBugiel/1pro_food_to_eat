@@ -1,6 +1,6 @@
-package com.pawelbugiel.foodtoeat.repositories;
+package com.pawelbugiel.foodtoeat.security.repositories;
 
-import com.pawelbugiel.foodtoeat.models.Role;
+import com.pawelbugiel.foodtoeat.security.models.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

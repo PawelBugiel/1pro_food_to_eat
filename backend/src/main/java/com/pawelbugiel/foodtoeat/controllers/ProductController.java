@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api")
 @Validated
 public class ProductController {
 
@@ -43,7 +43,7 @@ public class ProductController {
 
     private static String getResourceUri(UriComponentsBuilder uriBuilder, ProductResponse resultProductResponse) {
         return uriBuilder.path("/api/products/{id}")
-                .buildAndExpand(resultProductResponse.getId())
+                .buildAndExpand(resultProductResponse.id())
                 .toUriString();
     }
 

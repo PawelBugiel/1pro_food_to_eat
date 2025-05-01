@@ -1,4 +1,4 @@
-package com.pawelbugiel.foodtoeat.models;
+package com.pawelbugiel.foodtoeat.security.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

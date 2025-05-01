@@ -16,5 +16,6 @@
 
 9. Documentation - consider javadoc, Springdoc OpenAPI Swagger
 
+10. trimming request values
 
 

@@ -1,7 +1,7 @@
 package com.pawelbugiel.foodtoeat.security;
 
-import com.pawelbugiel.foodtoeat.models.User;
-import com.pawelbugiel.foodtoeat.repositories.UserRepository;
+import com.pawelbugiel.foodtoeat.security.models.User;
+import com.pawelbugiel.foodtoeat.security.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
