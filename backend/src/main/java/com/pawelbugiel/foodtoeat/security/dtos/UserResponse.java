@@ -1,5 +1,6 @@
 package com.pawelbugiel.foodtoeat.security.dtos;
 
+import com.pawelbugiel.foodtoeat.security.models.Role;
 import lombok.Builder;
 
 import java.util.Set;
@@ -8,5 +9,5 @@ import java.util.Set;
 public record UserResponse(
         Long id,
         String email,
-        Set<String> roles
+        Set<Role> roles
 ) {}

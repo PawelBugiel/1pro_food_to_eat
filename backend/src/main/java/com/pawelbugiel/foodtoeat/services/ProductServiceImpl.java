@@ -1,7 +1,7 @@
 package com.pawelbugiel.foodtoeat.services;
 
-import com.pawelbugiel.foodtoeat.dtos.ProductResponse;
 import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
+import com.pawelbugiel.foodtoeat.dtos.ProductResponse;
 import com.pawelbugiel.foodtoeat.exceptions.PageException;
 import com.pawelbugiel.foodtoeat.exceptions.ProductNotFoundException;
 import com.pawelbugiel.foodtoeat.mappers.ProductMapper;
@@ -10,7 +10,6 @@ import com.pawelbugiel.foodtoeat.repositories.ProductRepository;
 import com.pawelbugiel.foodtoeat.validators.PageableValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,7 +33,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final static Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
 
-    @Autowired
     public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, PageableValidator pageValidator) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
@@ -125,13 +123,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse updateProduct(UUID id, ProductResponse productResponse) {
-
-//        var validUUID = UUID_Validator.convertStringToUUID(id);
         var productToUpdate = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
-        // #q Find out what to do with passed id and id from productResponse ? Tonight is too late for me, to do that.
         if (!id.equals(productResponse.id()))
-            throw new ProductNotFoundException( id) ; // "A conflict between passed id and found id");
+            throw new ProductNotFoundException(id) ;
 
         Product newProduct = Product.builder()
                 .id(productToUpdate.getId())

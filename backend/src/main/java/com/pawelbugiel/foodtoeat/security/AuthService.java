@@ -30,6 +30,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authManager;
+    private final UserMapper userMapper;
 
     public AuthResponse registerEnduser(RegisterRequest request) {
         Role enduserRole = roleRepository.findByName("ROLE_ENDUSER")
@@ -54,7 +55,6 @@ public class AuthService {
         return new AuthResponse(jwt);
     }
 
-
     public AuthResponse authenticate(AuthRequest request) {
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -76,17 +76,7 @@ public class AuthService {
 
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(this::mapToResponse)
+                .map(userMapper::toUserResponse)
                 .collect(Collectors.toList());
-    }
-
-    private UserResponse mapToResponse(User user) {
-        return UserResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .roles(user.getRoles().stream()
-                        .map(role -> role.getName())
-                        .collect(Collectors.toSet()))
-                .build();
     }
 }

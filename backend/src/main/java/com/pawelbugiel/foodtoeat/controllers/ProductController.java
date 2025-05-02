@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 @RestController
-@RequestMapping("api")
+@RequestMapping("api/products")
 @Validated
 public class ProductController {
 
@@ -31,7 +31,7 @@ public class ProductController {
 
 //************** CREATE *************
 
-    @PostMapping(value = "/products")
+    @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid  ProductRequest productRequest,
                                                          UriComponentsBuilder uriBuilder) {
         ProductResponse resultProductResponse = productService.createProduct(productRequest);
@@ -42,14 +42,14 @@ public class ProductController {
     }
 
     private static String getResourceUri(UriComponentsBuilder uriBuilder, ProductResponse resultProductResponse) {
-        return uriBuilder.path("/api/products/{id}")
+        return uriBuilder.path("/api/product/products/{id}")
                 .buildAndExpand(resultProductResponse.id())
                 .toUriString();
     }
 
 //************** READ *************
 
-    @GetMapping("/products")
+    @GetMapping
     public Page<ProductResponse> findAllProducts(
             @RequestParam(required = false) int page,
             @RequestParam(required = false) Integer pageSize,
@@ -59,14 +59,14 @@ public class ProductController {
         return productService.findAllProducts(page, pageSize, sortBy, sortDirection);
     }
 
-    @GetMapping("products/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> findProductById(@PathVariable UUID id) {
         ProductResponse productResponse = productService.findProductById(id);
 
         return ResponseEntity.ok(productResponse);
     }
 
-    @GetMapping("/products/partial-name")
+    @GetMapping("/search")
     public ResponseEntity<?> findProductsByPartialName(
             @RequestParam @Pattern(regexp = PARTIAL_NAME_REGEX) String partialName,
             @RequestParam(required = false) int page,
@@ -79,7 +79,7 @@ public class ProductController {
         return ResponseEntity.ok(productResponses);
     }
 
-    @GetMapping("/products/expired")
+    @GetMapping("/expired")
     public ResponseEntity<?> findProductsWithExpiredDate(
             @RequestParam(required = false) int page,
             @RequestParam(required = false) Integer pageSize,
@@ -94,8 +94,8 @@ public class ProductController {
 
     //************** UPDATE *************
 
-    @PutMapping("/products")
-    public ResponseEntity<?> updateProduct(@RequestParam UUID id,
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable UUID id,
                                            @RequestBody @Valid ProductResponse productResponse) {
         ProductResponse updatedProductResponse = productService.updateProduct(id, productResponse);
         return ResponseEntity.status(200)
@@ -104,7 +104,7 @@ public class ProductController {
 
 //************** DELETE *************
 
-    @DeleteMapping("products/id/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ProductResponse> deleteProduct(@PathVariable UUID id) {
         ProductResponse deletedProductResponse = productService.deleteProductById(id);
         return ResponseEntity.status(200)

@@ -1,10 +1,7 @@
 package com.pawelbugiel.foodtoeat.dtos;
 
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -15,10 +12,15 @@ import java.time.LocalDate;
 @Getter
 @ToString
 @Builder
-@AllArgsConstructor
 public class ProductRequest {
 
     private static final String PRODUCT_NAME_REGEX = "^[a-zA-Z0-9]{3}.*$";
+
+    public ProductRequest(String name, Integer quantity, LocalDate expiryDate) {
+        this.name = name;
+        this.quantity = quantity;
+        this.expiryDate = expiryDate;
+    }
 
     @NotBlank(message = "Product name cannot be empty or contain only whitespaces")
     @Pattern(regexp = "^[a-zA-Z0-9]{3}.*$", message = "Product name must start with at least 3 alphanumeric characters")
