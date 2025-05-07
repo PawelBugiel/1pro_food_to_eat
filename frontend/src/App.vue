@@ -1,18 +1,14 @@
 <template>
   <div id="app">
-    <HomePage /> <!-- Zastępuje router-view bezpośrednim komponentem -->
+    <!-- Router-view renderuje widoki na podstawie tras -->
+    <router-view />
   </div>
 </template>
 
 <script>
-import HomePage from './views/HomePage.vue'
-
 export default {
-  name: 'App',
-  components: {
-   HomePage
-   }
-}
+  name: 'App'
+};
 </script>
 
 <style>

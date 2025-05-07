@@ -1,16 +1,19 @@
-import { createRouter, createWebHistory } from 'vue-router'; // Import funkcji z Vue Routera
-import HomePage from '../views/HomePage.vue'; // Importuj komponenty
+import { createRouter, createWebHistory } from 'vue-router';
+import AuthView from '../views/AuthView.vue';
+import HomePage from '../views/HomePage.vue';
 import FoodItemDetails from '../views/FoodItemDetails.vue';
+import UserManagement from '../views/UserManagement.vue'; // Nowy import
 
 const routes = [
-  { path: '/', name: 'HomePage', component: HomePage },
-  { path: '/food-item/:id', name: 'FoodItemDetails', component: FoodItemDetails }
+  { path: '/', name: 'Auth', component: AuthView },
+  { path: '/home', name: 'HomePage', component: HomePage },
+  { path: '/food-item/:id', name: 'FoodItemDetails', component: FoodItemDetails },
+  { path: '/users', name: 'UserManagement', component: UserManagement } // Nowa trasa
 ];
 
-// Tworzenie instancji routera z odpowiednią konfiguracją (w Vue 3 używamy createRouter)
 const router = createRouter({
-  history: createWebHistory(), // Używamy createWebHistory do historii przeglądarki
-  routes, // Przekazujemy zdefiniowane trasy
+  history: createWebHistory(),
+  routes,
 });
 
 export default router;

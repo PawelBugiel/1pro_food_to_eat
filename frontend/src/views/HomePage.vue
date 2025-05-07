@@ -2,6 +2,11 @@
 
 <template>
   <div class="container mt-4">
+
+    <div class="mb-4" v-if="isAdmin">
+      <router-link to="/users" class="btn btn-info">Manage Users</router-link>
+    </div>
+
     <h1 class="mb-4">Products list</h1>
 
     <div class="card p-3 mb-3">
@@ -18,7 +23,7 @@
           <label for="quantity" class="form-label">Quantity:</label>
           <input v-model="currentProduct.quantity" type="number" id="quantity" class="form-control" required
                  :disabled="isExpiryDatePast"/>
-        </div>
+        </div> 
 
         <div class="mb-2">
           <label for="expiryDate" class="form-label">Expiry date:</label>
