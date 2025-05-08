@@ -17,7 +17,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,7 +53,9 @@ public class AuthService {
         user.setRoles(Set.of(role));
 
         User savedUser = userRepository.save(user);
-        String jwt = jwtService.generateToken(new CustomUserDetails(savedUser));
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("role", role.getName().replace("ROLE_", "")); // Dodajemy rolę jako claim
+        String jwt = jwtService.generateToken(extraClaims, new CustomUserDetails(savedUser));
         return new AuthResponse(jwt);
     }
 
@@ -64,7 +68,16 @@ public class AuthService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + request.getEmail()));
 
         UserDetails userDetails = new CustomUserDetails(user);
-        String jwt = jwtService.generateToken(userDetails);
+        // Pobieramy rolę użytkownika i dodajemy jako claim
+        String role = user.getRoles().stream()
+                .map(Role::getName)
+                .map(name -> name.replace("ROLE_", ""))
+                .findFirst()
+                .orElse("ENDUSER"); // Domyślna rola, jeśli brak
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("role", role);
+
+        String jwt = jwtService.generateToken(extraClaims, userDetails);
         return new AuthResponse(jwt);
     }
 

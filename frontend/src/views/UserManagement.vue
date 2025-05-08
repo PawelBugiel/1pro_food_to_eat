@@ -2,7 +2,6 @@
   <div class="container mt-4">
     <h2>User Management</h2>
 
-    <!-- Formularz rejestracji -->
     <div class="card p-3 mb-3">
       <h3>Add New User</h3>
       <form @submit.prevent="registerUser">
@@ -26,12 +25,10 @@
       <p v-if="registerError" class="text-danger mt-2">{{ registerError }}</p>
     </div>
 
-    <!-- Komunikat o błędzie -->
     <div v-if="error" class="alert alert-danger">
       {{ error }}
     </div>
 
-    <!-- Lista użytkowników -->
     <table class="table table-bordered table-striped" v-if="users.length">
       <thead>
       <tr>
@@ -56,8 +53,13 @@
 
 <script>
 import axios from '@/axios.js';
+import { useAuthStore } from '@/stores/authStore';
 
 export default {
+  setup() {
+    const authStore = useAuthStore();
+    return { authStore };
+  },
   data() {
     return {
       users: [],
@@ -78,7 +80,7 @@ export default {
       try {
         const response = await axios.get('/auth/users', {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
+            Authorization: `Bearer ${this.authStore.token}` // Używamy tokenu z Pinia
           }
         });
         this.users = response.data;
@@ -95,7 +97,7 @@ export default {
           role: this.newUser.role
         }, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
+            Authorization: `Bearer ${this.authStore.token}` // Używamy tokenu z Pinia
           }
         });
         this.registerError = '';
@@ -110,7 +112,7 @@ export default {
         try {
           await axios.delete(`/auth/user/${userId}`, {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
+              Authorization: `Bearer ${this.authStore.token}` // Używamy tokenu z Pinia
             }
           });
           this.fetchUsers();

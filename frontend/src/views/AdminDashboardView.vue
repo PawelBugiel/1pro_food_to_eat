@@ -5,12 +5,25 @@
       <router-link to="/home" class="btn btn-primary me-2">Go to Products</router-link>
       <router-link to="/users" class="btn btn-success">Manage Users</router-link>
     </div>
+    <button @click="logout" class="btn btn-danger">Logout</button>
   </div>
 </template>
 
 <script>
+import { useAuthStore } from '@/stores/authStore';
+
 export default {
-  name: 'AdminDashboard'
+  name: 'AdminDashboardView',
+  setup() {
+    const authStore = useAuthStore();
+    return { authStore };
+  },
+  methods: {
+    logout() {
+      this.authStore.clearAuth();
+      this.$router.push('/');
+    }
+  }
 };
 </script>
 

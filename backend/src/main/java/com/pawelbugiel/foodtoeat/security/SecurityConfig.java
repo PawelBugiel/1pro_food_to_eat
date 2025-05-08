@@ -62,7 +62,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080")); // Zezwalamy na frontend
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://192.168.0.172:8080")); // Zezwalamy na frontend
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Dozwolone metody
         configuration.setAllowedHeaders(Arrays.asList("*")); // Dozwolone nagłówki
         configuration.setAllowCredentials(true); // Zezwolenie na wysyłanie cookies/credentials

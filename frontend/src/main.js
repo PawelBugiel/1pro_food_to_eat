@@ -1,10 +1,12 @@
 import {createApp} from 'vue'; // Importuj createApp
+import { createPinia } from 'pinia'; // Import Pinia
 import App from './App.vue';
 import router from './router'; // Importuj router
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+const app = createApp(App);
+const pinia = createPinia(); // Inicjalizacja Pinia
 
-// Tworzenie instancji aplikacji
-createApp(App)
-    .use(router) // Dodaj router do aplikacji
-    .mount('#app'); // Montuj aplikację do elementu DOM o id "app"
+app.use(pinia); // Podpięcie Pinia do aplikacji
+app.use(router);
+app.mount('#app');
