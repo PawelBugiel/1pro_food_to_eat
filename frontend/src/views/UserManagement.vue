@@ -40,7 +40,7 @@
       <tbody>
       <tr v-for="user in users" :key="user.id">
         <td>{{ user.email }}</td>
-        <td>{{ user.role }}</td>
+        <td>{{ user.roles && user.roles.length > 0 ? user.roles[0].name.replace("ROLE_", "") : "NO_ROLE" }}</td>
         <td>
           <button @click="deleteUser(user.id)" class="btn btn-danger btn-sm">Delete</button>
         </td>
@@ -80,7 +80,7 @@ export default {
       try {
         const response = await axios.get('/auth/users', {
           headers: {
-            Authorization: `Bearer ${this.authStore.token}` // Używamy tokenu z Pinia
+            Authorization: `Bearer ${this.authStore.token}`
           }
         });
         this.users = response.data;
@@ -97,7 +97,7 @@ export default {
           role: this.newUser.role
         }, {
           headers: {
-            Authorization: `Bearer ${this.authStore.token}` // Używamy tokenu z Pinia
+            Authorization: `Bearer ${this.authStore.token}`
           }
         });
         this.registerError = '';
@@ -112,7 +112,7 @@ export default {
         try {
           await axios.delete(`/auth/user/${userId}`, {
             headers: {
-              Authorization: `Bearer ${this.authStore.token}` // Używamy tokenu z Pinia
+              Authorization: `Bearer ${this.authStore.token}`
             }
           });
           this.fetchUsers();
