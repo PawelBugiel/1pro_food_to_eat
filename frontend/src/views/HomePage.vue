@@ -40,7 +40,11 @@
           <a href="#" @click.prevent="sort('name')">Name</a>
           <span v-if="sortBy === 'name'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
         </th>
-        <th>Quantity</th>
+<!--        <th>Quantity</th>-->
+        <th>
+          <a href="#" @click.prevent="sort('quantity')">Quantity</a>
+          <span v-if="sortBy === 'quantity'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+        </th>
         <th>
           <a href="#" @click.prevent="sort('expiryDate')">Expiry Date</a>
           <span v-if="sortBy === 'expiryDate'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
@@ -182,6 +186,8 @@ export default {
     },
     async updateProduct() {
       try {
+        // Synchronizuj dane z formularza
+        this.currentProduct = { ...this.newProduct, id: this.currentProduct.id };
         await axios.put(`/products/${this.currentProduct.id}`, this.currentProduct, {
           headers: {
             Authorization: `Bearer ${this.authStore.token}`
@@ -189,10 +195,12 @@ export default {
         });
         this.isEditMode = false;
         this.currentProduct = { id: '', name: '', quantity: null, expiryDate: '' };
+        this.newProduct = { name: '', quantity: null, expiryDate: '' };
         this.addProductError = null;
         this.fetchProducts();
       } catch (error) {
-        this.addProductError = 'Failed to update product.';
+        console.error('Update error:', error.response?.data || error.message);
+        this.addProductError = error.response?.data?.message || 'Failed to update product.';
       }
     },
     editProduct(product) {
