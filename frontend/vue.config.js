@@ -11,6 +11,15 @@ module.exports = defineConfig({
         __VUE_PROD_DEVTOOLS__: JSON.stringify(false)
       })
     ]
+  },
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://myspring-boot-app:8081', // backend port
+        changeOrigin: true,
+        // pathRewrite: { '^/api': '' } // Opcjonalne, usuwa /api z żądania, jeśli backend tego wymaga
+      }
+    }
   }
 });
 

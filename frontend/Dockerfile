@@ -1,26 +1,29 @@
-# 1. Użycie obrazu bazowego z Node.js
-FROM node:18 AS build-stage
+# Bazowy obraz Node.js do budowania aplikacji Vue.js
+FROM node:18 AS build
 
-# 2. Ustawienie katalogu roboczego
+# Ustaw katalog roboczy
 WORKDIR /app
 
-# 3. Kopiowanie plików projektu do kontenera
-COPY . .
+# Skopiuj pliki package.json i package-lock.json
+COPY package*.json ./
 
-# 4. Instalacja zależności
+# Zainstaluj zależności
 RUN npm install
 
-# 5. Zbudowanie aplikacji frontendowej
+# Skopiuj resztę kodu źródłowego
+COPY . .
+
+# Zbuduj aplikację Vue.js
 RUN npm run build
 
-# 6. Użycie obrazu serwera Nginx do serwowania aplikacji
-FROM nginx:alpine AS production-stage
+# Użyj lekkiego obrazu Nginx do serwowania aplikacji
+FROM nginx:alpine AS production
 
-# 7. Kopiowanie wynikowych plików do Nginx
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+# Skopiuj zbudowane pliki z etapu budowania
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# 8. Ekspozycja portu (np. 80)
-EXPOSE 8082
+# Otwórz port 80
+EXPOSE 80
 
-# 9. Uruchomienie serwera Nginx
+# Uruchom Nginx
 CMD ["nginx", "-g", "daemon off;"]

@@ -17,7 +17,7 @@ Projekt treningowy.
 [Zrzuty ekranu lub demo](#zrzuty-ekranu-lub-demo)  
 [Lista zadań](#lista-zadań)  
 [Kontakt lub współpraca](#kontakt-lub-współpraca)  
-
+[Application credentials](#appilcation-credentials)
 
 ## O projekcie
 Jest to aplikacja CRUD, która służy mi jako piaskownica do nauki programowania. Jej główne cele to:
@@ -78,6 +78,10 @@ Projekt treningowy. W toku.
 
 ## Kontakt lub współpraca
 Paweł Bugiel
+
+## Appilcation credentials
+Login: adm@adm  
+Password: adm
 
 ---
 
