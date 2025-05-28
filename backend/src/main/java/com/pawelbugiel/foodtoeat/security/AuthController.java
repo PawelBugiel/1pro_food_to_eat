@@ -4,6 +4,7 @@ import com.pawelbugiel.foodtoeat.security.dtos.AuthRequest;
 import com.pawelbugiel.foodtoeat.security.dtos.AuthResponse;
 import com.pawelbugiel.foodtoeat.security.dtos.RegisterRequest;
 import com.pawelbugiel.foodtoeat.security.dtos.UserResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,13 +21,13 @@ public class AuthController {
 
     @PostMapping("/register-enduser")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AuthResponse> registerEnduser(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> registerEnduser(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.registerEnduser(request));
     }
 
     @PostMapping("/register-admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AuthResponse> registerAdmin(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> registerAdmin(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.registerAdmin(request));
     }
 
