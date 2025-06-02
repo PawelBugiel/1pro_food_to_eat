@@ -1,51 +1,54 @@
-version: '3.8'
-
 services:
-  mysql-db:
+  mysql:
     image: mysql:latest
-    container_name: foodtoeat-db-db
+    container_name: fte-mysql-container
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: fte-db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: polki
+      MYSQL_DATABASE: fresh_food
     ports:
-      # host port : container port (docker container port - internal network port)
-      - "3306:3306"
+      - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - fte-db-vol-PROD:/var/lib/mysql
+
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
     networks:
       - app-network
 
   backend:
-    image: pawelbugiel/food-to-eat:backend-1.0
-    container_name: foodtoeat-backend
-    depends_on:
-      - mysql-db
+    image: fte-be
+    container_name: fte_backend-container
+    restart: always
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/fte-db
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/fresh_food?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: polki
     ports:
-      # host:image
       - "8081:8081"
+    depends_on:
+      mysql:
+        condition: service_healthy
     networks:
       - app-network
 
-#  frontend:
-#    image: foodtoeat-frontend:1.1
-#    container_name: foodtoeat-frontend
-#    ports:
-#      - "8082:8082"  # Frontend dostępny pod portem 8082
-#    depends_on:
-#      - backend
-#    networks:
-#      - app-network
+  frontend:
+    image: fte25-fe
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
 
+volumes:
+  fte-db-vol-PROD:
+    external: true # Volume exists and has been created outside of docker-compose.
 
 networks:
   app-network:
     driver: bridge
-
-volumes:
-  mysql_data:

@@ -27,8 +27,10 @@ HTTP. Status 400 – Bad Request
 test through postman failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: <uuid>
 ----------------------------------
 
-5-11-2025  
+5-11-2025
+BE
 REFINE  
+SECURITY
 authStore.js  
 Bezpieczeństwo localStorage:  
 Przechowywanie tokenu w localStorage jest powszechne, ale naraża token na ataki XSS (Cross-Site Scripting). Jeśli atakujący wstrzyknie złośliwy skrypt, może odczytać token z localStorage.
@@ -41,8 +43,29 @@ Domyślna rola:
 Ustawianie "ENDUSER" jako domyślnej roli może być problematyczne, jeśli API wymaga konkretnej roli. Warto rozważyć wylogowanie użytkownika, jeśli rola nie jest dostępna.
 ----------------------------------
 
-25.05.2025  
-REFINE  
+25.05.2025
+BE
+REFINE
+OPTIMALIZATION
 User management - n + 1 problem
+
+----------------------------------
+
+26.05.2025  
+DEV
+FEATURE  
+Create separate profiles for prod and dev
+
+----------------------------------
+
+28.05.2025  
+BE:
+REFINE  
+SECURITY  
+Dane dostępowe do bazy danych przenieść z pliku application.properties do zmiennych środowiskowych
+Dzięki temu:
+* możliwa zmiana konfiguracji bez modyfikacji kodu i przebudowywania obrazu Dockera. 
+
+* przechowywanie credentials poza kodem źródłowym 
 
 ----------------------------------

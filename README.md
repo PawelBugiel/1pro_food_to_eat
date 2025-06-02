@@ -80,8 +80,11 @@ Projekt treningowy. W toku.
 Paweł Bugiel
 
 ## Appilcation credentials
-Login: adm@adm  
-Password: adm
+Login: admin@admin  
+Password: Admin22*
+
+Login: user@user  
+Password: User123*
 
 ---
 
