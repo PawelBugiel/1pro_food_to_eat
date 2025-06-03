@@ -1,11 +1,14 @@
 <template>
   <div class="container mt-4">
-    <h2>Admin Dashboard</h2>
-    <div class="mb-4">
-      <router-link to="/home" class="btn btn-primary me-2">Go to Products</router-link>
-      <router-link to="/users" class="btn btn-success">Manage Users</router-link>
+    <div class="d-flex justify-content-end mb-4">
+      <button @click="logout" class="btn btn-info btn-sm">Logout</button>
     </div>
-    <button @click="logout" class="btn btn-danger">Logout</button>
+
+    <h2>Admin Dashboard</h2>
+    <div class="d-flex justify-content-center mb-4">
+      <router-link to="/home" class="btn btn-custom-add btn-sm">Go to Products</router-link>
+      <router-link to="/users" class="btn btn-custom-register btn-sm ms-3">Manage Users</router-link>
+    </div>
   </div>
 </template>
 
@@ -27,10 +30,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.container {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 20px;
-}
-</style>

@@ -1,38 +1,37 @@
 <template>
   <div class="container mt-4">
-    <!-- Nawigacja widoczna tylko dla admina -->
-    <div class="mb-4" v-if="authStore.role === 'ADMIN'">
-      <router-link to="/users" class="btn btn-info">Manage Users</router-link>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div v-if="authStore.role === 'ADMIN'">
+        <router-link to="/users" class="btn btn-info btn-sm">Manage Users</router-link>
+      </div>
+      <button @click="logout" class="btn btn-info btn-sm">Logout</button>
     </div>
 
     <h1 class="mb-4">Products list</h1>
 
-    <!-- Formularz dodawania produktu -->
     <form @submit.prevent="isEditMode ? updateProduct() : addProduct()" class="mb-4">
-      <div class="row">
+      <div class="row align-items-center">
         <div class="col">
-          <input v-model="newProduct.name" type="text" class="form-control" placeholder="Product name" required />
+          <input v-model="newProduct.name" type="text" class="form-control form-control-sm" placeholder="Product name" required />
         </div>
         <div class="col">
-          <input v-model.number="newProduct.quantity" type="number" class="form-control" placeholder="Quantity" required />
+          <input v-model.number="newProduct.quantity" type="number" class="form-control form-control-sm" placeholder="Quantity" required />
         </div>
         <div class="col">
-          <input v-model="newProduct.expiryDate" type="date" class="form-control" required />
+          <input v-model="newProduct.expiryDate" type="date" class="form-control form-control-sm" required />
         </div>
         <div class="col">
-          <button type="submit" class="btn btn-primary">{{ isEditMode ? 'Update' : 'Add' }}</button>
-          <button v-if="isEditMode" @click="cancelEdit" type="button" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-custom-add btn-sm">{{ isEditMode ? 'Update' : 'Add new product' }}</button>
+          <button v-if="isEditMode" @click="cancelEdit" type="button" class="btn btn-secondary btn-sm">Cancel</button>
         </div>
       </div>
       <p v-if="addProductError" class="text-danger">{{ addProductError }}</p>
     </form>
 
-    <!-- Wyszukiwanie produktów -->
     <div class="mb-4">
       <input v-model="searchQuery" type="text" class="form-control" placeholder="Search by name" @input="fetchProducts" />
     </div>
 
-    <!-- Tabela produktów -->
     <table class="table table-bordered table-striped">
       <thead>
       <tr>
@@ -40,7 +39,6 @@
           <a href="#" @click.prevent="sort('name')">Name</a>
           <span v-if="sortBy === 'name'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
         </th>
-<!--        <th>Quantity</th>-->
         <th>
           <a href="#" @click.prevent="sort('quantity')">Quantity</a>
           <span v-if="sortBy === 'quantity'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
@@ -60,25 +58,22 @@
           {{ product.expiryDate }}
         </td>
         <td>
-          <button @click="editProduct(product)" class="btn btn-sm btn-primary me-1">Edit</button>
-          <button @click="showDeleteModal(product)" class="btn btn-sm btn-danger">Delete</button>
+          <button @click="editProduct(product)" class="btn btn-sm btn-custom-add me-1">Edit</button>
+          <button @click="showDeleteModal(product)" class="btn btn-sm btn-custom-delete">Delete</button>
         </td>
       </tr>
       </tbody>
     </table>
 
-    <!-- Paginacja -->
     <div class="d-flex justify-content-between mb-4">
       <button @click="currentPage--" :disabled="currentPage === 0" class="btn btn-secondary">Previous</button>
       <button @click="currentPage++" :disabled="!hasMoreProducts" class="btn btn-secondary">Next</button>
     </div>
 
-    <!-- Komunikat o błędzie -->
     <div v-if="error" class="alert alert-danger">
       {{ error }}
     </div>
 
-    <!-- Modal do usuwania -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -91,14 +86,13 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-danger" @click="deleteProduct">Delete</button>
+            <button type="button" class="btn btn-custom-delete" @click="deleteProduct">Delete</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 import axios from '../axios';
 import { Modal } from 'bootstrap';
@@ -241,13 +235,11 @@ export default {
     },
     isExpired(expiryDate) {
       return new Date(expiryDate) < new Date();
+    },
+    logout() {
+      this.authStore.clearAuth();
+      this.$router.push('/');
     }
   }
 };
 </script>
-
-<style scoped>
-button {
-  margin: 10px;
-}
-</style>

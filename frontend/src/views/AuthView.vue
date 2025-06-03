@@ -5,14 +5,14 @@
     <form @submit.prevent="handleLogin">
       <div class="mb-3">
         <label for="email" class="form-label">Email:</label>
-        <input v-model="formData.email" type="email" id="email" class="form-control" required />
+        <input v-model="formData.email" type="email" id="email" class="form-control form-control-sm" required />
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Password:</label>
-        <input v-model="formData.password" type="password" id="password" class="form-control" required />
+        <input v-model="formData.password" type="password" id="password" class="form-control form-control-sm" required />
       </div>
 
-      <button type="submit" class="btn btn-primary">Login</button>
+      <button type="submit" class="btn btn-info btn-sm">Login</button>
     </form>
 
     <p v-if="error" class="text-danger mt-2">{{ error }}</p>
@@ -20,6 +20,7 @@
 </template>
 
 <script>
+// ... (sekcja script pozostaje bez zmian) ...
 import axios from '@/axios.js';
 import { useAuthStore } from '@/stores/authStore';
 
