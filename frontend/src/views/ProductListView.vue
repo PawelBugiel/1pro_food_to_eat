@@ -21,7 +21,8 @@
           <input v-model="newProduct.expiryDate" type="date" class="form-control form-control-sm" required />
         </div>
         <div class="col">
-          <button type="submit" class="btn btn-custom-add btn-sm">{{ isEditMode ? 'Update' : 'Add new product' }}</button>
+          <button v-if="!isEditMode" type="submit" class="btn btn-custom-add btn-sm">Add new product</button>
+          <button v-if="isEditMode" type="submit" class="btn btn-custom-edit-update btn-sm">Update</button>
           <button v-if="isEditMode" @click="cancelEdit" type="button" class="btn btn-secondary btn-sm">Cancel</button>
         </div>
       </div>
@@ -58,7 +59,7 @@
           {{ product.expiryDate }}
         </td>
         <td>
-          <button @click="editProduct(product)" class="btn btn-sm btn-custom-add me-1">Edit</button>
+          <button @click="editProduct(product)" class="btn btn-sm btn-custom-edit-update me-1">Edit</button>
           <button @click="showDeleteModal(product)" class="btn btn-sm btn-custom-delete">Delete</button>
         </td>
       </tr>

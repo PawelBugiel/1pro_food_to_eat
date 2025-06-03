@@ -1,15 +1,16 @@
 /* Custom button styles */
 
+/* btn-custom-add będzie teraz zielony (dla "Add new product") */
 .btn-custom-add {
-    background-color: #8cbdf7; /* Mniej nasycony niebieski (domyślny) */
-    border-color: #8cbdf7;
+    background-color: #a4e69b; /* Mniej nasycony zielony */
+    border-color: #a4e69b;
     color: #343a40; /* Bardzo ciemnoszary tekst */
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .btn-custom-add:hover {
-    background-color: #007bff; /* Bardziej nasycony niebieski (klasyczny primary z Bootstrapa) */
-    border-color: #007bff;
+    background-color: #28a745; /* Bardziej nasycony zielony (klasyczny success z Bootstrapa) */
+    border-color: #28a745;
     color: #fff; /* Biały tekst na hover */
     cursor: pointer;
 }
@@ -28,16 +29,32 @@
     cursor: pointer;
 }
 
+/* btn-custom-register będzie również zielony (dla "Register new user") */
 .btn-custom-register {
     background-color: #a4e69b; /* Mniej nasycony zielony */
     border-color: #a4e69b;
-    color: #343a40; /* Zmieniono na bardzo ciemnoszary tekst dla lepszej czytelności */
+    color: #343a40; /* Bardzo ciemnoszary tekst */
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .btn-custom-register:hover {
     background-color: #28a745; /* Bardziej nasycony zielony (klasyczny success z Bootstrapa) */
     border-color: #28a745;
+    color: #fff; /* Biały tekst na hover */
+    cursor: pointer;
+}
+
+/* Nowa klasa dla niebieskich przycisków "Edit" i "Update" */
+.btn-custom-edit-update {
+    background-color: #8cbdf7; /* Mniej nasycony niebieski (oryginalny kolor dla add/edit) */
+    border-color: #8cbdf7;
+    color: #343a40; /* Bardzo ciemnoszary tekst */
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-custom-edit-update:hover {
+    background-color: #007bff; /* Bardziej nasycony niebieski (klasyczny primary z Bootstrapa) */
+    border-color: #007bff;
     color: #fff; /* Biały tekst na hover */
     cursor: pointer;
 }

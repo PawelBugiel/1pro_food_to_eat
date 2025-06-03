@@ -5,7 +5,7 @@
 * [BE-BUG-01-01-2025: Update product (ponownie)](#be-bug-01-01-2025-update-product-ponownie)
 * [FE-REFINE-01-01-2025: Go to update form](#fe-refine-01-01-2025-go-to-update-form)
 * [BE-REFINE-01-01-2025: Pagination](#be-refine-01-01-2025-pagination)
-* [BE-REFINE-01-01-2025: Logging](#be-refine-01-01-2025-logging)
+* [BE-REFINE-01-01-2025: Logging](#be-refine-01-01-2025:-logging)
 * [BE-BUG-01-01-2025: Error handling](#be-bug-01-01-2025-error-handling)
 * [BE/FE-REFINE-01-01-2025: Domyślne sortowanie](#befe-refine-01-01-2025-domyślne-sortowanie)
 * [BE-REFINE-01-01-2025: Documentation](#be-refine-01-01-2025-documentation)
@@ -15,6 +15,7 @@
 * [BE-REFINE-OPTIMALIZATION-25.05.2025: User management](#be-refine-optimalization-25052025-user-management)
 * [DEV-FEATURE-26.05.2025: Profile separation](#dev-feature-26052025-profile-separation)
 * [BE-REFINE-SECURITY-28-05-2025: Database credentials](#be-refine-security-28-05-2025-database-credentials)
+* [FE/BE-BUG-03-06-2025: Add new product](#febe-bug-03-06-2025-add-new-product)
 
 ---
 
@@ -110,7 +111,7 @@ Test przez Postmana nie powiódł się: problem z konwersją wartości typu 'jav
 ## BE-REFINE-SECURITY-11-05-2025: authStore.js
 
 * **Bezpieczeństwo localStorage:** Przechowywanie tokenu w localStorage jest powszechne, ale naraża token na ataki XSS (Cross-Site Scripting). Jeśli atakujący wstrzyknie złośliwy skrypt, może odczytać token z localStorage.
-    * **Alternatywa:** Przechowywanie tokenu w HttpOnly cookie, co zabezpiecza przed XSS, ale wymaga zmian w backendzie (ustawienie cookie przez serwer).
+  * **Alternatywa:** Przechowywanie tokenu w HttpOnly cookie, co zabezpiecza przed XSS, ale wymaga zmian w backendzie (ustawienie cookie przez serwer).
 * **Walidacja tokenu:** Kod nie sprawdza ważności tokenu (np. czy nie wygasł). Jeśli token wygaśnie, żądania do API będą odrzucane (np. status 401 Unauthorized). Warto dodać logikę sprawdzającą `exp` (expiration) z dekodowanego tokenu i automatyczne wylogowanie użytkownika, jeśli token wygasł.
 * **Domyślna rola:** Ustawianie "ENDUSER" jako domyślnej roli może być problematyczne, jeśli API wymaga konkretnej roli. Warto rozważyć wylogowanie użytkownika, jeśli rola nie jest dostępna.
 
@@ -139,5 +140,10 @@ Stwórz osobne profile dla środowisk produkcyjnego (`prod`) i deweloperskiego (
 Dane dostępowe do bazy danych przenieść z pliku `application.properties` do **zmiennych środowiskowych**. Dzięki temu:
 * Możliwa zmiana konfiguracji bez modyfikacji kodu i przebudowywania obrazu Dockera.
 * Przechowywanie danych uwierzytelniających poza kodem źródłowym.
+
+*<sub>[Wróć do Spisu Treści](#spis-treści)</sub>*
+## FE/BE-BUG-03-06-2025: Add new product
+
+Nie można dodać produktu z polskimi znakami diakrytycznymi.
 
 *<sub>[Wróć do Spisu Treści](#spis-treści)</sub>*
