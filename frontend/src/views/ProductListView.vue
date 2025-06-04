@@ -1,10 +1,12 @@
 <template>
   <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <div v-if="authStore.role === 'ADMIN'">
-        <router-link to="/users" class="btn btn-info btn-sm">Manage Users</router-link>
+      <div>
+        <router-link v-if="authStore.role === 'ADMIN'" to="/users" class="btn btn-info btn-sm">Manage Users</router-link>
       </div>
-      <button @click="logout" class="btn btn-info btn-sm">Logout</button>
+      <div>
+        <button @click="logout" class="btn btn-info btn-sm">Logout</button>
+      </div>
     </div>
 
     <h1 class="mb-4">Products list</h1>
@@ -12,13 +14,13 @@
     <form @submit.prevent="isEditMode ? updateProduct() : addProduct()" class="mb-4">
       <div class="row align-items-center">
         <div class="col">
-          <input v-model="newProduct.name" type="text" class="form-control form-control-sm" placeholder="Product name" required />
+          <input v-model="newProduct.name" type="text" class="form-control" placeholder="Product name" required />
         </div>
         <div class="col">
-          <input v-model.number="newProduct.quantity" type="number" class="form-control form-control-sm" placeholder="Quantity" required />
+          <input v-model.number="newProduct.quantity" type="number" class="form-control" placeholder="Quantity" required />
         </div>
         <div class="col">
-          <input v-model="newProduct.expiryDate" type="date" class="form-control form-control-sm" required />
+          <input v-model="newProduct.expiryDate" type="date" class="form-control" required />
         </div>
         <div class="col">
           <button v-if="!isEditMode" type="submit" class="btn btn-custom-add btn-sm">Add new product</button>
@@ -30,7 +32,11 @@
     </form>
 
     <div class="mb-4">
-      <input v-model="searchQuery" type="text" class="form-control" placeholder="Search by name" @input="fetchProducts" />
+      <div class="row">
+        <div class="col col-md-6 col-sm-12">
+          <input v-model="searchQuery" type="text" class="form-control" placeholder="Search by name" @input="fetchProducts" />
+        </div>
+      </div>
     </div>
 
     <table class="table table-bordered table-striped">
@@ -59,7 +65,7 @@
           {{ product.expiryDate }}
         </td>
         <td>
-          <button @click="editProduct(product)" class="btn btn-sm btn-custom-edit-update me-1">Edit</button>
+          <button @click="editProduct(product)" class="btn btn-sm btn-custom-edit-update mx-1">Edit</button>
           <button @click="showDeleteModal(product)" class="btn btn-sm btn-custom-delete">Delete</button>
         </td>
       </tr>

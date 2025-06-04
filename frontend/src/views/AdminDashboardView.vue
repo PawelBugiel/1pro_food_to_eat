@@ -6,8 +6,8 @@
 
     <h2>Admin Dashboard</h2>
     <div class="d-flex justify-content-center mb-4">
-      <router-link to="/home" class="btn btn-custom-add btn-sm">Go to Products</router-link>
-      <router-link to="/users" class="btn btn-custom-register btn-sm ms-3">Manage Users</router-link>
+      <router-link to="/home" class="btn btn-info btn-sm mx-1">Go to Products</router-link>
+      <router-link to="/users" class="btn btn-info btn-sm mx-1">Manage Users</router-link>
     </div>
   </div>
 </template>

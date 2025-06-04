@@ -7,7 +7,7 @@
 
     <h2>User management</h2>
 
-    <div class="card p-3 mb-3">
+    <div class="card p-2 mb-3 col-md-6 col-sm-12 mx-auto">
       <form @submit.prevent="registerUser">
         <div class="mb-2">
           <label for="register-email" class="form-label">Email:</label>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-// ... (sekcja script pozostaje bez zmian) ...
+
 import axios from '@/axios.js';
 import {useAuthStore} from '@/stores/authStore';
 
