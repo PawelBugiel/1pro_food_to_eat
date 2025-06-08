@@ -5,7 +5,7 @@
       <button @click="logout" class="btn btn-info btn-sm btn-compact btn-logout">Logout</button>
     </div>
 
-    <h2>User management</h2>
+    <h2 class="mb-4 user-management-heading">Manage Users</h2>
 
     <div class="p-2 mb-3 col-md-6 col-sm-12 mx-auto">
       <form @submit.prevent="registerUser">

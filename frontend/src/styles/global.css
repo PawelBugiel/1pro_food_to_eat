@@ -1,3 +1,89 @@
+/* Style Główne (Body, App) */
+body {
+    background-color: #F2E1C3;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+#app {
+    min-height: 100vh;
+}
+
+/* Style Nagłówków */
+.product-list-heading::before {
+    content: '\1F6CD';
+    margin-right: 11px;
+    font-size: 0.9em;
+    vertical-align: text-bottom;
+}
+
+.user-management-heading::before {
+    content: '\2699';
+    margin-right: 11px;
+    font-size: 0.9em;
+    vertical-align: text-bottom;
+}
+
+/* Style Formularzy i Kart */
+.card {
+    background-color: #F2E1C3 !important;
+    border-color: #54A498 !important;
+}
+
+.form-label {
+    color: #4A6369;
+}
+
+.form-control,
+.form-select {
+    background-color: #F9EBDA !important;
+    border-color: #54A498 !important;
+    color: #4A6369 !important;
+    background-image: none !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #F9EBDA !important;
+    border-color: #42827A !important;
+    box-shadow: 0 0 0 0.2rem rgba(84, 164, 152, 0.25) !important;
+    color: #4A6369 !important;
+}
+
+/* Style Przycisków (Bootstrap i ogólne) */
+.btn-compact {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+}
+
+.btn-info {
+    background-color: #F2E1C3 !important;
+    border-color: #54A498 !important;
+    color: #54A498 !important;
+    background-image: none !important;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-info:hover {
+    background-color: #54A498 !important;
+    border-color: #54A498 !important;
+    color: #F2E1C3 !important;
+    cursor: pointer;
+}
+
+.btn-info[disabled] {
+    opacity: 0.65;
+}
+
+.btn-info[disabled]:hover {
+    background-color: #F2E1C3 !important;
+    border-color: #54A498 !important;
+    color: #54A498 !important;
+    cursor: not-allowed;
+}
+
+/* Style Przycisków (Niestandardowe) */
 .btn-custom-add {
     background-color: #105446;
     border-color: #105446;
@@ -26,20 +112,6 @@
     cursor: pointer;
 }
 
-.btn-custom-register {
-    background-color: #105446;
-    border-color: #105446;
-    color: #fff;
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-
-.btn-custom-register:hover {
-    background-color: #1A705E;
-    border-color: #1A705E;
-    color: #fff;
-    cursor: pointer;
-}
-
 .btn-custom-edit-update {
     background-color: #54A498;
     border-color: #54A498;
@@ -54,71 +126,28 @@
     cursor: pointer;
 }
 
-body {
-    background-color: #F2E1C3;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-}
-
-#app {
-    min-height: 100vh;
-}
-
-.btn-info {
-    background-color: #F2E1C3 !important;
-    border-color: #54A498 !important;
-    color: #54A498 !important;
-    background-image: none !important;
+.btn-custom-register {
+    background-color: #105446;
+    border-color: #105446;
+    color: #fff;
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
-.btn-info:hover {
-    background-color: #54A498 !important;
-    border-color: #54A498 !important;
-    color: #F2E1C3 !important;
+.btn-custom-register:hover {
+    background-color: #1A705E;
+    border-color: #1A705E;
+    color: #fff;
     cursor: pointer;
 }
 
-.btn-info[disabled]:hover {
-    background-color: #F2E1C3 !important;
-    border-color: #54A498 !important;
-    color: #54A498 !important;
-    cursor: not-allowed;
-}
-
-.btn-info[disabled] {
-    opacity: 0.65;
-}
-
-.btn-compact {
-    font-size: 0.75rem;
-    padding: 0.2rem 0.5rem;
-}
-
-.card {
-    background-color: #F2E1C3 !important;
-    border-color: #54A498 !important;
-}
-
-.form-control,
-.form-select {
-    background-color: #F9EBDA !important;
-    border-color: #54A498 !important;
-    color: #4A6369 !important;
-    background-image: none !important;
-}
-
-.form-control:focus,
-.form-select:focus {
-    background-color: #F9EBDA !important;
-    border-color: #42827A !important;
-    box-shadow: 0 0 0 0.2rem rgba(84, 164, 152, 0.25) !important;
-    color: #4A6369 !important;
-}
-
-.form-label {
-    color: #4A6369;
+/* Style Ikon w Przyciskach */
+.btn-login::before {
+    content: '\26BF';
+    margin-right: 5px;
+    display: inline-block;
+    color: inherit !important;
+    font-size: 1.2em;
+    vertical-align: middle;
 }
 
 .btn-logout::before {
@@ -136,6 +165,15 @@ body {
     vertical-align: middle;
 }
 
+.btn-go-to-products::before {
+    content: '\1F6CD';
+    margin-right: 5px;
+    display: inline-block;
+    color: inherit !important;
+    font-size: 1.2em;
+    vertical-align: middle;
+}
+
 .btn-previous-page::before {
     content: '\2190';
     margin-right: 5px;
@@ -150,20 +188,13 @@ body {
     color: inherit !important;
 }
 
-.btn-go-to-products::before {
-    content: '\1F6CD';
-    margin-right: 5px;
-    display: inline-block;
-    color: inherit !important;
-    font-size: 1.2em;
-    vertical-align: middle;
+/* Style Tabeli */
+.table thead th a {
+    color: #2C3E50 !important;
+    text-decoration: none;
 }
 
-.btn-login::before {
-    content: '\26BF';
-    margin-right: 5px;
-    display: inline-block;
-    color: inherit !important;
-    font-size: 1.2em;
-    vertical-align: middle;
+.table thead th a:hover {
+    color: #465F79 !important;
+    text-decoration: underline;
 }

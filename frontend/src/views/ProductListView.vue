@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <h1 class="mb-4">Products list</h1>
+    <h2 class="mb-4 product-list-heading">Products list</h2>
 
     <form @submit.prevent="isEditMode ? updateProduct() : addProduct()" class="mb-4">
       <div class="row align-items-center">
@@ -41,13 +41,28 @@
       </div>
     </div>
 
+    <div class="d-flex justify-content-start mb-3">
+      <button
+          @click="editSelectedProduct()"
+          :disabled="!selectedProduct"
+          class="btn btn-sm btn-custom-edit-update mx-1">
+        Edit Selected Product
+      </button>
+      <button
+          @click="showDeleteModal(selectedProduct)"
+          :disabled="!selectedProduct"
+          class="btn btn-sm btn-custom-delete">
+        Delete Selected Product
+      </button>
+    </div>
+
     <table class="table table-bordered table-striped">
       <thead>
       <tr>
-        <th>
-          <a href="#" @click.prevent="sort('name')">Name</a>
-          <span v-if="sortBy === 'name'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
-        </th>
+        <th style="width: 50px;">Select</th> <th>
+        <a href="#" @click.prevent="sort('name')">Name</a>
+        <span v-if="sortBy === 'name'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+      </th>
         <th>
           <a href="#" @click.prevent="sort('quantity')">Quantity</a>
           <span v-if="sortBy === 'quantity'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
@@ -56,28 +71,24 @@
           <a href="#" @click.prevent="sort('expiryDate')">Expiry Date</a>
           <span v-if="sortBy === 'expiryDate'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
         </th>
-        <th>Actions</th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="product in products" :key="product.id">
+      <tr v-for="product in products" :key="product.id"
+          @click="selectProduct(product)"
+          :class="{ 'table-active': selectedProduct && selectedProduct.id === product.id }"
+          style="cursor: pointer;">
+        <td>
+          <input type="radio" :value="product.id" v-model="selectedProductId" @click.stop="selectProduct(product)">
+        </td>
         <td>{{ product.name }}</td>
         <td>{{ product.quantity }}</td>
         <td :class="{ 'text-danger': isExpired(product.expiryDate) }">
           {{ product.expiryDate }}
         </td>
-        <td>
-          <button @click="editProduct(product)" class="btn btn-sm btn-custom-edit-update mx-1">Edit</button>
-          <button @click="showDeleteModal(product)" class="btn btn-sm btn-custom-delete">Delete</button>
-        </td>
       </tr>
       </tbody>
     </table>
-
-    <!--    <div class="d-flex justify-content-between mb-4">-->
-    <!--      <button @click="currentPage&#45;&#45;" :disabled="currentPage === 0" class="btn btn-info btn-compact">&larr; Previous page</button>-->
-    <!--      <button @click="currentPage++" :disabled="!hasMoreProducts" class="btn btn-info btn-compact">Next page &rarr;</button>-->
-    <!--    </div>-->
 
     <div class="d-flex justify-content-between mb-4">
       <button @click="currentPage--" :disabled="currentPage === 0" class="btn btn-info btn-compact btn-previous-page">
@@ -111,15 +122,16 @@
     </div>
   </div>
 </template>
+
 <script>
 import axios from '../axios';
-import {Modal} from 'bootstrap';
-import {useAuthStore} from '@/stores/authStore';
+import { Modal } from 'bootstrap';
+import { useAuthStore } from '@/stores/authStore';
 
 export default {
   setup() {
     const authStore = useAuthStore();
-    return {authStore};
+    return { authStore };
   },
   data() {
     return {
@@ -129,14 +141,16 @@ export default {
       sortBy: 'expiryDate',
       sortDirection: 'asc',
       hasMoreProducts: true,
-      newProduct: {name: '', quantity: null, expiryDate: ''},
+      newProduct: { name: '', quantity: null, expiryDate: '' },
       addProductError: null,
       isEditMode: false,
-      currentProduct: {id: '', name: '', quantity: null, expiryDate: ''},
+      currentProduct: { id: '', name: '', quantity: null, expiryDate: '' },
       productError: null,
       productToDelete: null,
       deleteModal: null,
-      searchQuery: ''
+      searchQuery: '',
+      selectedProduct: null, // Przechowuje CAŁY OBIEKT PRODUKTU
+      selectedProductId: null // NOWA ZMIENNA: Przechowuje TYLKO ID wybranego produktu, dla v-model radio
     };
   },
   mounted() {
@@ -154,6 +168,18 @@ export default {
     sortDirection() {
       this.currentPage = 0;
       this.fetchProducts();
+    },
+    // Opcjonalnie: Synchronizacja selectedProduct na podstawie selectedProductId
+    // Może być przydatne, jeśli selectedProductId jest zmieniane z zewnątrz lub przez inne interakcje
+    selectedProductId(newId) {
+      if (newId === null) {
+        this.selectedProduct = null;
+      } else {
+        const foundProduct = this.products.find(p => p.id === newId);
+        if (foundProduct) {
+          this.selectedProduct = foundProduct;
+        }
+      }
     }
   },
   methods: {
@@ -176,6 +202,8 @@ export default {
         this.products = response.data.content;
         this.hasMoreProducts = response.data.totalPages > this.currentPage + 1;
         this.error = null;
+        this.selectedProduct = null; // Resetuj zaznaczenie po odświeżeniu listy
+        this.selectedProductId = null; // Resetuj ID po odświeżeniu listy
       } catch (error) {
         this.error = 'Failed to load products. Check if the server is running..';
         this.hasMoreProducts = false;
@@ -188,7 +216,7 @@ export default {
             Authorization: `Bearer ${this.authStore.token}`
           }
         });
-        this.newProduct = {name: '', quantity: null, expiryDate: ''};
+        this.newProduct = { name: '', quantity: null, expiryDate: '' };
         this.addProductError = null;
         this.currentPage = 0;
         this.fetchProducts();
@@ -198,16 +226,15 @@ export default {
     },
     async updateProduct() {
       try {
-        // Synchronizuj dane z formularza
-        this.currentProduct = {...this.newProduct, id: this.currentProduct.id};
-        await axios.put(`/products/${this.currentProduct.id}`, this.currentProduct, {
+        const productIdToUpdate = this.currentProduct.id; // Używamy ID z currentProduct
+        await axios.put(`/products/${productIdToUpdate}`, this.newProduct, {
           headers: {
             Authorization: `Bearer ${this.authStore.token}`
           }
         });
         this.isEditMode = false;
-        this.currentProduct = {id: '', name: '', quantity: null, expiryDate: ''};
-        this.newProduct = {name: '', quantity: null, expiryDate: ''};
+        this.currentProduct = { id: '', name: '', quantity: null, expiryDate: '' };
+        this.newProduct = { name: '', quantity: null, expiryDate: '' };
         this.addProductError = null;
         this.fetchProducts();
       } catch (error) {
@@ -215,19 +242,27 @@ export default {
         this.addProductError = error.response?.data?.message || 'Failed to update product.';
       }
     },
-    editProduct(product) {
-      this.isEditMode = true;
-      this.currentProduct = {...product};
-      this.newProduct = {...product};
+    // Zmieniona metoda editProduct, teraz aktywuje edycję dla selectedProduct
+    editSelectedProduct() {
+      if (this.selectedProduct) {
+        this.isEditMode = true;
+        this.currentProduct = { ...this.selectedProduct }; // Ustawiamy currentProduct z selectedProduct
+        this.newProduct = { ...this.selectedProduct }; // Wypełniamy formularz danymi z selectedProduct
+      }
     },
     cancelEdit() {
       this.isEditMode = false;
-      this.currentProduct = {id: '', name: '', quantity: null, expiryDate: ''};
-      this.newProduct = {name: '', quantity: null, expiryDate: ''};
+      this.currentProduct = { id: '', name: '', quantity: null, expiryDate: '' };
+      this.newProduct = { name: '', quantity: null, expiryDate: '' };
+      this.selectedProduct = null; // Wyczyść zaznaczenie po anulowaniu edycji
+      this.selectedProductId = null; // Wyczyść ID zaznaczonego produktu
     },
+    // Metoda showDeleteModal przyjmuje teraz obiekt produktu
     showDeleteModal(product) {
-      this.productToDelete = product;
-      this.deleteModal.show();
+      if (product) { // Upewnij się, że produkt jest wybrany
+        this.productToDelete = product;
+        this.deleteModal.show();
+      }
     },
     async deleteProduct() {
       try {
@@ -238,6 +273,8 @@ export default {
         });
         this.deleteModal.hide();
         this.productToDelete = null;
+        this.selectedProduct = null; // Wyczyść zaznaczenie po usunięciu
+        this.selectedProductId = null; // Wyczyść ID zaznaczonego produktu
         this.fetchProducts();
       } catch (error) {
         this.error = 'Failed to delete product.';
@@ -257,7 +294,27 @@ export default {
     logout() {
       this.authStore.clearAuth();
       this.$router.push('/');
+    },
+    // NOWA METODA: Do zaznaczania/odznaczania produktu
+    selectProduct(product) {
+      if (this.selectedProduct && this.selectedProduct.id === product.id) {
+        // Jeśli ten sam produkt jest kliknięty ponownie, odznacz go
+        this.selectedProduct = null;
+        this.selectedProductId = null;
+      } else {
+        // Zaznacz nowy produkt
+        this.selectedProduct = product;
+        this.selectedProductId = product.id;
+      }
     }
   }
 };
 </script>
+
+<style scoped>
+/* Dodaj styl dla zaznaczonego wiersza, aby był bardziej widoczny */
+.table-active {
+  background-color: #e0f2f1 !important; /* Jaśniejszy odcień koloru #54A498 */
+  font-weight: bold;
+}
+</style>
