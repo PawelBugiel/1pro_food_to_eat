@@ -32,17 +32,22 @@ public class ProductController {
 //************** CREATE *************
 
     @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid  ProductRequest productRequest,
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid ProductRequest productRequest,
                                                          UriComponentsBuilder uriBuilder) {
-        ProductResponse resultProductResponse = productService.createProduct(productRequest);
+        ProductResponse resultProductResponse = productService
+                .createProduct(productRequest);
+
         String resourceUri = getResourceUri(uriBuilder, resultProductResponse);
-        return ResponseEntity.status(201)
+
+        return ResponseEntity
+                .status(201)
                 .header("Location", resourceUri)
                 .body(resultProductResponse);
     }
 
     private static String getResourceUri(UriComponentsBuilder uriBuilder, ProductResponse resultProductResponse) {
-        return uriBuilder.path("/api/product/products/{id}")
+        return uriBuilder
+                .path("/api/product/products/{id}")
                 .buildAndExpand(resultProductResponse.id())
                 .toUriString();
     }
@@ -56,14 +61,17 @@ public class ProductController {
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) Sort.Direction sortDirection) {
 
-        return productService.findAllProducts(page, pageSize, sortBy, sortDirection);
+        return productService
+                .findAllProducts(page, pageSize, sortBy, sortDirection);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> findProductById(@PathVariable UUID id) {
-        ProductResponse productResponse = productService.findProductById(id);
+        ProductResponse productResponse = productService
+                .findProductById(id);
 
-        return ResponseEntity.ok(productResponse);
+        return ResponseEntity
+                .ok(productResponse);
     }
 
     @GetMapping("/search")
@@ -74,22 +82,25 @@ public class ProductController {
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) Sort.Direction sortDirection) {
 
-        Page<ProductResponse> productResponses = productService.findProductsByPartialName(partialName, page, pageSize, sortBy, sortDirection);
+        Page<ProductResponse> productResponses = productService
+                .findProductsByPartialName(partialName, page, pageSize, sortBy, sortDirection);
 
-        return ResponseEntity.ok(productResponses);
+        return ResponseEntity
+                .ok(productResponses);
     }
 
     @GetMapping("/expired")
-    public ResponseEntity<?> findProductsWithExpiredDate(
-            @RequestParam(required = false) int page,
+    public ResponseEntity<Page<ProductResponse>> findProductsWithExpiredDate(
+            @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) Sort.Direction sortDirection) {
 
-        var foundProducts = productService.findProductsWithExpiredDate(page, pageSize, sortBy, sortDirection);
+        Page<ProductResponse> foundProducts = productService
+                .findProductsWithExpiredDate(page, pageSize, sortBy, sortDirection);
 
-        return ResponseEntity.status(200)
-                .body(foundProducts);
+        return ResponseEntity
+                .ok(foundProducts);
     }
 
     //************** UPDATE *************
@@ -97,8 +108,10 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable UUID id,
                                            @RequestBody @Valid ProductResponse productResponse) {
-        ProductResponse updatedProductResponse = productService.updateProduct(id, productResponse);
-        return ResponseEntity.status(200)
+        ProductResponse updatedProductResponse = productService
+                .updateProduct(id, productResponse);
+        return ResponseEntity
+                .status(200)
                 .body(updatedProductResponse);
     }
 
@@ -106,8 +119,11 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ProductResponse> deleteProduct(@PathVariable UUID id) {
-        ProductResponse deletedProductResponse = productService.deleteProductById(id);
-        return ResponseEntity.status(200)
+        ProductResponse deletedProductResponse = productService
+                .deleteProductById(id);
+
+        return ResponseEntity
+                .status(200)
                 .body(deletedProductResponse);
     }
 }

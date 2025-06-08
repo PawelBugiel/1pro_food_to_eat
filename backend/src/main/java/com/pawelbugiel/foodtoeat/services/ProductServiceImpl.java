@@ -2,7 +2,6 @@ package com.pawelbugiel.foodtoeat.services;
 
 import com.pawelbugiel.foodtoeat.dtos.ProductRequest;
 import com.pawelbugiel.foodtoeat.dtos.ProductResponse;
-import com.pawelbugiel.foodtoeat.exceptions.PageException;
 import com.pawelbugiel.foodtoeat.exceptions.ProductNotFoundException;
 import com.pawelbugiel.foodtoeat.mappers.ProductMapper;
 import com.pawelbugiel.foodtoeat.models.Product;
@@ -15,18 +14,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private static final int DEFAULT_PAGE = 0;
-    private static final int DEFAULT_PAGE_SIZE = 10;
-    private static final int MAX_PAGE_SIZE = 50;
-    private static final String DEFAULT_SORT_BY = "name";
-    private static final Sort.Direction DEFAULT_SORT_DIRECTION = Sort.Direction.ASC;
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final PageableValidator pageableValidator;
@@ -71,17 +64,12 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository
                 .findAll(pageable)
-                .map(product -> {
-                    ProductResponse resultProductResponses = ProductResponse.builder()
-                            .id(product.getId())
-                            .expiryDate(product.getExpiryDate())
-                            .name(product.getName())
-                            .quantity(product.getQuantity())
-                            .build();
-                    return resultProductResponses;
-                });
-
-        // -todo exceptions - what if empty ?
+                .map(product -> ProductResponse.builder()
+                        .id(product.getId())
+                        .expiryDate(product.getExpiryDate())
+                        .name(product.getName())
+                        .quantity(product.getQuantity())
+                        .build());
     }
 
     @Override
@@ -105,18 +93,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> findProductsWithExpiredDate(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
-
-        Pageable pageable = pageableValidator.validatePageable(page, pageSize, sortBy, sortDirection);
-
-        var resultList = productRepository.findWithExpiredDate(pageable);
-
-        if (resultList.isEmpty()) throw new PageException();
-
-        return resultList.stream()
-                .map(productMapper::toProductResponse)
-                .toList();
-        // --todo exceptions
+    public Page<ProductResponse> findProductsWithExpiredDate(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
+        Pageable pageable = pageableValidator
+                .validatePageable(page, pageSize, sortBy, sortDirection);
+        Page<Product> expiredProductsPage = productRepository
+                .findWithExpiredDate(pageable);
+        return expiredProductsPage
+                .map(productMapper::toProductResponse);
     }
 
 //************** UPDATE *************
