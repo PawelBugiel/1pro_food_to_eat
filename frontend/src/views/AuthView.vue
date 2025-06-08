@@ -12,7 +12,7 @@
         <input v-model="formData.password" type="password" id="password" class="form-control form-control-sm" required />
       </div>
 
-      <button type="submit" class="btn btn-info btn-compact">Login</button>
+      <button type="submit" class="btn btn-info btn-compact btn-login">Login</button>
     </form>
 
     <p v-if="error" class="text-danger mt-2">{{ error }}</p>

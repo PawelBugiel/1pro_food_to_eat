@@ -2,11 +2,10 @@
   <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
-        <router-link v-if="authStore.role === 'ADMIN'" to="/users" class="btn btn-info btn-compact">Manage Users</router-link>
+        <router-link v-if="authStore.role === 'ADMIN'" to="/users" class="btn btn-info btn-compact btn-manage-users">Manage Users</router-link>
       </div>
       <div>
-<!--        <button @click="logout" class="btn btn-info btn-sm">Logout</button>-->
-        <button @click="logout" class="btn btn-info btn-sm btn-compact">Logout</button>
+        <button @click="logout" class="btn btn-info btn-sm btn-compact btn-logout">Logout</button>
       </div>
     </div>
 
@@ -15,13 +14,14 @@
     <form @submit.prevent="isEditMode ? updateProduct() : addProduct()" class="mb-4">
       <div class="row align-items-center">
         <div class="col">
-          <input v-model="newProduct.name" type="text" class="form-control" placeholder="Product name" required />
+          <input v-model="newProduct.name" type="text" class="form-control" placeholder="Product name" required/>
         </div>
         <div class="col">
-          <input v-model.number="newProduct.quantity" type="number" class="form-control" placeholder="Quantity" required />
+          <input v-model.number="newProduct.quantity" type="number" class="form-control" placeholder="Quantity"
+                 required/>
         </div>
         <div class="col">
-          <input v-model="newProduct.expiryDate" type="date" class="form-control" required />
+          <input v-model="newProduct.expiryDate" type="date" class="form-control" required/>
         </div>
         <div class="col">
           <button v-if="!isEditMode" type="submit" class="btn btn-custom-add btn-sm">Add new product</button>
@@ -35,7 +35,8 @@
     <div class="mb-4">
       <div class="row">
         <div class="col col-md-6 col-sm-12">
-          <input v-model="searchQuery" type="text" class="form-control" placeholder="Search by name" @input="fetchProducts" />
+          <input v-model="searchQuery" type="text" class="form-control" placeholder="Search by name"
+                 @input="fetchProducts"/>
         </div>
       </div>
     </div>
@@ -73,9 +74,18 @@
       </tbody>
     </table>
 
+    <!--    <div class="d-flex justify-content-between mb-4">-->
+    <!--      <button @click="currentPage&#45;&#45;" :disabled="currentPage === 0" class="btn btn-info btn-compact">&larr; Previous page</button>-->
+    <!--      <button @click="currentPage++" :disabled="!hasMoreProducts" class="btn btn-info btn-compact">Next page &rarr;</button>-->
+    <!--    </div>-->
+
     <div class="d-flex justify-content-between mb-4">
-      <button @click="currentPage--" :disabled="currentPage === 0" class="btn btn-secondary">Previous</button>
-      <button @click="currentPage++" :disabled="!hasMoreProducts" class="btn btn-secondary">Next</button>
+      <button @click="currentPage--" :disabled="currentPage === 0" class="btn btn-info btn-compact btn-previous-page">
+        Previous
+      </button>
+      <button @click="currentPage++" :disabled="!hasMoreProducts" class="btn btn-info btn-compact btn-next-page">
+        Next
+      </button>
     </div>
 
     <div v-if="error" class="alert alert-danger">
@@ -103,13 +113,13 @@
 </template>
 <script>
 import axios from '../axios';
-import { Modal } from 'bootstrap';
-import { useAuthStore } from '@/stores/authStore';
+import {Modal} from 'bootstrap';
+import {useAuthStore} from '@/stores/authStore';
 
 export default {
   setup() {
     const authStore = useAuthStore();
-    return { authStore };
+    return {authStore};
   },
   data() {
     return {
@@ -119,10 +129,10 @@ export default {
       sortBy: 'expiryDate',
       sortDirection: 'asc',
       hasMoreProducts: true,
-      newProduct: { name: '', quantity: null, expiryDate: '' },
+      newProduct: {name: '', quantity: null, expiryDate: ''},
       addProductError: null,
       isEditMode: false,
-      currentProduct: { id: '', name: '', quantity: null, expiryDate: '' },
+      currentProduct: {id: '', name: '', quantity: null, expiryDate: ''},
       productError: null,
       productToDelete: null,
       deleteModal: null,
@@ -178,7 +188,7 @@ export default {
             Authorization: `Bearer ${this.authStore.token}`
           }
         });
-        this.newProduct = { name: '', quantity: null, expiryDate: '' };
+        this.newProduct = {name: '', quantity: null, expiryDate: ''};
         this.addProductError = null;
         this.currentPage = 0;
         this.fetchProducts();
@@ -189,15 +199,15 @@ export default {
     async updateProduct() {
       try {
         // Synchronizuj dane z formularza
-        this.currentProduct = { ...this.newProduct, id: this.currentProduct.id };
+        this.currentProduct = {...this.newProduct, id: this.currentProduct.id};
         await axios.put(`/products/${this.currentProduct.id}`, this.currentProduct, {
           headers: {
             Authorization: `Bearer ${this.authStore.token}`
           }
         });
         this.isEditMode = false;
-        this.currentProduct = { id: '', name: '', quantity: null, expiryDate: '' };
-        this.newProduct = { name: '', quantity: null, expiryDate: '' };
+        this.currentProduct = {id: '', name: '', quantity: null, expiryDate: ''};
+        this.newProduct = {name: '', quantity: null, expiryDate: ''};
         this.addProductError = null;
         this.fetchProducts();
       } catch (error) {
@@ -207,13 +217,13 @@ export default {
     },
     editProduct(product) {
       this.isEditMode = true;
-      this.currentProduct = { ...product };
-      this.newProduct = { ...product };
+      this.currentProduct = {...product};
+      this.newProduct = {...product};
     },
     cancelEdit() {
       this.isEditMode = false;
-      this.currentProduct = { id: '', name: '', quantity: null, expiryDate: '' };
-      this.newProduct = { name: '', quantity: null, expiryDate: '' };
+      this.currentProduct = {id: '', name: '', quantity: null, expiryDate: ''};
+      this.newProduct = {name: '', quantity: null, expiryDate: ''};
     },
     showDeleteModal(product) {
       this.productToDelete = product;

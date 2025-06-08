@@ -1,8 +1,8 @@
 <template>
   <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <router-link to="/home" class="btn btn-info btn-sm btn-compact">Go to Products</router-link>
-      <button @click="logout" class="btn btn-info btn-sm btn-compact">Logout</button>
+      <router-link to="/home" class="btn btn-info btn-sm btn-compact btn-go-to-products">Go to Products</router-link>
+      <button @click="logout" class="btn btn-info btn-sm btn-compact btn-logout">Logout</button>
     </div>
 
     <h2>User management</h2>
