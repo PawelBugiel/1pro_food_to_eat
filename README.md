@@ -1,4 +1,4 @@
-# Food to Eat
+# Waste no food
 
 Projekt treningowy.
 
@@ -21,7 +21,7 @@ Projekt treningowy.
 ---
 
 ## O projekcie
-**Food to Eat** to aplikacja webowa typu CRUD (Create, Read, Update, Delete) służąca do zarządzania produktami spożywczymi pod kątem ich **daty przydatności do spożycia**. Głównym celem biznesowym projektu jest **pomoc użytkownikom w monitorowaniu świeżości żywności**, minimalizując marnotrawstwo produktów spożywczych w gospodarstwach domowych.
+**Waste no food** to aplikacja webowa typu CRUD (Create, Read, Update, Delete) służąca do zarządzania produktami spożywczymi pod kątem ich **daty przydatności do spożycia**. Głównym celem biznesowym projektu jest **pomoc użytkownikom w monitorowaniu świeżości żywności**, minimalizując marnotrawstwo produktów spożywczych w gospodarstwach domowych.
 
 Projekt ten pełni rolę mojej **piaskownicy deweloperskiej**, umożliwiając mi praktyczną naukę i eksperymentowanie z nowoczesnymi technologiami w obszarze backendu i frontendu. Jego kluczowe cele to:
 * **Integracja poznanych technologii**: Łączenie różnych aspektów programowania, które wcześniej były wykorzystywane w mniejszych, izolowanych aplikacjach treningowych (np. Spring Boot, JPA, Vue.js).
@@ -38,7 +38,7 @@ Projekt ten pełni rolę mojej **piaskownicy deweloperskiej**, umożliwiając mi
 ---
 
 ## Funkcjonalności
-Obecnie aplikacja `Food to Eat` oferuje następujące kluczowe funkcjonalności, dostępne poprzez REST API i interfejs użytkownika:
+Obecnie aplikacja `Waste no food` oferuje następujące kluczowe funkcjonalności, dostępne poprzez REST API i interfejs użytkownika:
 
 ### Funkcjonalności API (Backend)
 * **Zarządzanie produktami spożywczymi (CRUD)**: Pełny zestaw operacji Create, Read, Update, Delete dla obiektów `Product`.
@@ -142,7 +142,7 @@ Po uruchomieniu aplikacji (za pomocą Docker Compose lub z kodu źródłowego):
 ---
 
 ## Użyte technologie
-Projekt `Food to Eat` wykorzystuje następujące kluczowe technologie i narzędzia:
+Projekt `Waste no food` wykorzystuje następujące kluczowe technologie i narzędzia:
 
 ### Backend
 * **Java 17**: Podstawowy język programowania, z wykorzystaniem nowoczesnych funkcji języka.
@@ -185,7 +185,7 @@ Projekt `Food to Eat` wykorzystuje następujące kluczowe technologie i narzędz
 ---
 
 ## Status projektu
-Projekt `Food to Eat` jest w **aktywnej fazie rozwoju (W toku)**. Jest to projekt treningowy, co oznacza, że jego głównym celem jest nauka i eksperymentowanie z nowymi technologiami i wzorcami projektowymi. Nowe funkcjonalności są sukcesywnie dodawane, a istniejące ulepszane i optymalizowane.
+Projekt `Waste no food` jest w **aktywnej fazie rozwoju (W toku)**. Jest to projekt treningowy, co oznacza, że jego głównym celem jest nauka i eksperymentowanie z nowymi technologiami i wzorcami projektowymi. Nowe funkcjonalności są sukcesywnie dodawane, a istniejące ulepszane i optymalizowane.
 
 ---
 
