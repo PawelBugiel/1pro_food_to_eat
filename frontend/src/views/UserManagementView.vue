@@ -1,13 +1,13 @@
 <template>
   <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <router-link to="/home" class="btn btn-info btn-sm">Go to Products</router-link>
-      <button @click="logout" class="btn btn-info btn-sm">Logout</button>
+      <router-link to="/home" class="btn btn-info btn-sm btn-compact">Go to Products</router-link>
+      <button @click="logout" class="btn btn-info btn-sm btn-compact">Logout</button>
     </div>
 
     <h2>User management</h2>
 
-    <div class="card p-2 mb-3 col-md-6 col-sm-12 mx-auto">
+    <div class="p-2 mb-3 col-md-6 col-sm-12 mx-auto">
       <form @submit.prevent="registerUser">
         <div class="mb-2">
           <label for="register-email" class="form-label">Email:</label>

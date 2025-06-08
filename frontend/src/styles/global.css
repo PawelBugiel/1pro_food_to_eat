@@ -1,60 +1,125 @@
 /* Custom button styles */
 
-/* btn-custom-add będzie teraz zielony (dla "Add new product") */
+/* --- btn-custom-add (dla "Add new product") --- */
 .btn-custom-add {
-    background-color: #a4e69b; /* Mniej nasycony zielony */
-    border-color: #a4e69b;
-    color: #343a40; /* Bardzo ciemnoszary tekst */
+    background-color: #105446;
+    border-color: #105446;
+    color: #fff; /* Biały tekst dla kontrastu */
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .btn-custom-add:hover {
-    background-color: #28a745; /* Bardziej nasycony zielony (klasyczny success z Bootstrapa) */
-    border-color: #28a745;
-    color: #fff; /* Biały tekst na hover */
+    background-color: #1A705E; /* Jaśniejszy Brunswick Green na hover */
+    border-color: #1A705E;
+    color: #fff;
     cursor: pointer;
 }
 
+/* --- btn-custom-delete --- */
 .btn-custom-delete {
-    background-color: #ffb380; /* Jeszcze mniej nasycony pomarańczowy */
-    border-color: #ffb380;
-    color: #343a40; /* Bardzo ciemnoszary tekst */
+    background-color: #874537;
+    border-color: #874537;
+    color: #fff; /* Biały tekst dla kontrastu */
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .btn-custom-delete:hover {
-    background-color: #e07b3c; /* Nieco ciemniejszy na hover */
-    border-color: #e07b3c;
-    color: #fff; /* Biały tekst na hover */
+    background-color: #6C372D; /* Lekko ciemniejszy na hover */
+    border-color: #6C372D;
+    color: #fff;
     cursor: pointer;
 }
 
-/* btn-custom-register będzie również zielony (dla "Register new user") */
+/* --- btn-custom-register (dla "Register new user") --- */
+/* Będzie taki sam jak btn-custom-add */
 .btn-custom-register {
-    background-color: #a4e69b; /* Mniej nasycony zielony */
-    border-color: #a4e69b;
-    color: #343a40; /* Bardzo ciemnoszary tekst */
+    background-color: #105446;
+    border-color: #105446;
+    color: #fff; /* Biały tekst dla kontrastu */
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .btn-custom-register:hover {
-    background-color: #28a745; /* Bardziej nasycony zielony (klasyczny success z Bootstrapa) */
-    border-color: #28a745;
-    color: #fff; /* Biały tekst na hover */
+    background-color: #1A705E; /* Jaśniejszy Brunswick Green na hover */
+    border-color: #1A705E;
+    color: #fff;
     cursor: pointer;
 }
 
-/* Nowa klasa dla niebieskich przycisków "Edit" i "Update" */
+/* --- btn-custom-edit-update (dla "Edit" i "Update") --- */
 .btn-custom-edit-update {
-    background-color: #8cbdf7; /* Mniej nasycony niebieski (oryginalny kolor dla add/edit) */
-    border-color: #8cbdf7;
-    color: #343a40; /* Bardzo ciemnoszary tekst */
+    background-color: #54A498;
+    border-color: #54A498;
+    color: #fff; /* Biały tekst dla kontrastu */
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .btn-custom-edit-update:hover {
-    background-color: #007bff; /* Bardziej nasycony niebieski (klasyczny primary z Bootstrapa) */
-    border-color: #007bff;
-    color: #fff; /* Biały tekst na hover */
+    background-color: #42827A; /* Lekko ciemniejszy na hover */
+    border-color: #42827A;
+    color: #fff;
     cursor: pointer;
+}
+
+/* --- Globalne tło strony (body) --- */
+body {
+    background-color: #F2E1C3; /* Champagne */
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+/* Dodatkowo, jeśli używasz <div id="app"> w index.html */
+#app {
+    min-height: 100vh;
+}
+
+/* --- Klasy btn-info (Logout, Manage Users, Go to products) - ODWRÓCONE KOLORY --- */
+.btn-info {
+    background-color: #F2E1C3; /* Kolor tła strony (Champagne) */
+    border-color: #54A498; /* Kolor Keppel */
+    color: #54A498; /* <--- Zmieniono kolor tekstu na Keppel */
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-info:hover {
+    background-color: #54A498; /* Kolor Keppel na hover */
+    border-color: #54A498; /* Kolor Keppel na hover */
+    color: #F2E1C3; /* Kolor tła strony (Champagne) na hover */
+    cursor: pointer;
+}
+
+/* --- Klasa dla małych, kompaktowych przycisków --- */
+.btn-compact {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+}
+
+/* --- Style dla kart Bootstrapa --- */
+.card {
+    background-color: #F2E1C3 !important; /* Ustawienie tła na Champagne */
+    border-color: #54A498 !important; /* Opcjonalnie, aby dopasować obramowanie */
+}
+
+/* --- Style dla pól formularza (input, select) - NIECO JAŚNIEJSZE TŁO --- */
+.form-control,
+.form-select {
+    background-color: #F9EBDA !important; /* NIECO JAŚNIEJSZY KOLOR - subtelne rozjaśnienie od #F2E1C3 */
+    border-color: #54A498 !important; /* Keppel */
+    color: #4A6369 !important; /* Ciemny niebiesko-zielony */
+    background-image: none !important; /* Usuwa domyślny gradient Bootstrapa */
+}
+
+/* Dostosowanie stylu dla focus, aby zachować spójność */
+.form-control:focus,
+.form-select:focus {
+    background-color: #F9EBDA !important; /* Tło pozostaje nieco jaśniejsze na focus */
+    border-color: #42827A !important; /* Lekko ciemniejszy Keppel na focus */
+    box-shadow: 0 0 0 0.2rem rgba(84, 164, 152, 0.25) !important; /* Dopasowany cień do Keppel */
+    color: #4A6369 !important;
+}
+
+/* Etykiety form-label */
+.form-label {
+    color: #4A6369; /* Kolor ciemnego niebiesko-zielonego z palety */
 }

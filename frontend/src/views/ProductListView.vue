@@ -2,10 +2,11 @@
   <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
-        <router-link v-if="authStore.role === 'ADMIN'" to="/users" class="btn btn-info btn-sm">Manage Users</router-link>
+        <router-link v-if="authStore.role === 'ADMIN'" to="/users" class="btn btn-info btn-compact">Manage Users</router-link>
       </div>
       <div>
-        <button @click="logout" class="btn btn-info btn-sm">Logout</button>
+<!--        <button @click="logout" class="btn btn-info btn-sm">Logout</button>-->
+        <button @click="logout" class="btn btn-info btn-sm btn-compact">Logout</button>
       </div>
     </div>
 
