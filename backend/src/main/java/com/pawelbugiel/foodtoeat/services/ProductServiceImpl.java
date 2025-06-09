@@ -36,7 +36,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse createProduct(ProductRequest productRequest) {
-        Optional<Product> existingProduct = productRepository.findByNameAndExpiryDate(productRequest.getName(), productRequest.getExpiryDate());
+        Optional<Product> existingProduct = productRepository
+                .findByNameAndExpiryDate(productRequest.getName(), productRequest.getExpiryDate());
 
         Product savedProduct;
 
@@ -46,7 +47,8 @@ public class ProductServiceImpl implements ProductService {
         } else {
             Product actualProduct = existingProduct.get();
 
-            actualProduct = Product.builder()
+            actualProduct = Product
+                    .builder()
                     .id(actualProduct.getId())
                     .name(actualProduct.getName())
                     .quantity(actualProduct.getQuantity() + productRequest.getQuantity())
@@ -62,42 +64,48 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<ProductResponse> findAllProducts(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
 
-        Pageable pageable = pageableValidator.validatePageable(page, pageSize, sortBy, sortDirection);
+        Pageable pageable = createPageable(page, pageSize, sortBy, sortDirection);
 
         return productRepository
                 .findAll(pageable)
-                .map(product -> ProductResponse.builder()
-                        .id(product.getId())
-                        .expiryDate(product.getExpiryDate())
-                        .name(product.getName())
-                        .quantity(product.getQuantity())
-                        .build());
+                .map(productMapper::toProductResponse);
     }
 
     @Override
     public ProductResponse findProductById(UUID id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(id));
-
+        Product product = findProductByIdOrThrow(id);
         return productMapper.toProductResponse(product);
     }
 
-    @Override
-    public Page<ProductResponse> findProductsByPartialName(String partialName, int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
-
-        Pageable pageable = pageableValidator.validatePageable(page, pageSize, sortBy, sortDirection);
-
-        Page<Product> products = productRepository.findByPartialName(partialName, pageable);
-
-        return products.map(productMapper::toProductResponse);
-        // -todo exceptions
-        //  if (resultList.isEmpty()) throw new PageException(params.getPage()
+    private Product findProductByIdOrThrow(UUID id) {
+        return productRepository
+                .findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     @Override
-    public Page<ProductResponse> findProductsWithExpiredDate(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
-        Pageable pageable = pageableValidator
+    public Page<ProductResponse> findProductsByPartialName(
+            String partialName, int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
+
+        Pageable pageable = createPageable(page, pageSize, sortBy, sortDirection);
+
+        Page<Product> products = productRepository
+                .findByPartialName(partialName, pageable);
+
+        return products
+                .map(productMapper::toProductResponse);
+    }
+
+    private Pageable createPageable(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
+        return pageableValidator
                 .validatePageable(page, pageSize, sortBy, sortDirection);
+    }
+
+    @Override
+    public Page<ProductResponse> findProductsWithExpiredDate(
+            int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
+
+        Pageable pageable = createPageable(page, pageSize, sortBy, sortDirection);
 
         Page<Product> expiredProductsPage = productRepository
                 .findWithExpiredDate(pageable);
@@ -109,9 +117,8 @@ public class ProductServiceImpl implements ProductService {
 //************** UPDATE *************
 
     @Override
-    public ProductResponse updateProduct(UUID id, ProductRequest  productRequest) {
-        Product productToUpdate = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(id));
+    public ProductResponse updateProduct(UUID id, ProductRequest productRequest) {
+        Product productToUpdate = findProductByIdOrThrow(id);
 
         productMapper.updateProductFromRequest(productRequest, productToUpdate);
 
@@ -124,8 +131,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse deleteProductById(UUID id) {
-        Product foundProduct = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(id));
+        Product foundProduct = findProductByIdOrThrow(id);
 
         ProductResponse productResponse = productMapper.toProductResponse(foundProduct);
 
