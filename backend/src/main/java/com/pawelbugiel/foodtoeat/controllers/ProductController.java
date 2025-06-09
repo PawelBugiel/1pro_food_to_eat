@@ -32,8 +32,9 @@ public class ProductController {
 //************** CREATE *************
 
     @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid ProductRequest productRequest,
-                                                         UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<ProductResponse> createProduct(
+            @RequestBody @Valid ProductRequest productRequest,
+            UriComponentsBuilder uriBuilder) {
         ProductResponse resultProductResponse = productService
                 .createProduct(productRequest);
 
@@ -66,7 +67,8 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> findProductById(@PathVariable UUID id) {
+    public ResponseEntity<ProductResponse> findProductById(
+            @PathVariable UUID id) {
         ProductResponse productResponse = productService
                 .findProductById(id);
 
@@ -106,19 +108,20 @@ public class ProductController {
     //************** UPDATE *************
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable UUID id,
-                                           @RequestBody @Valid ProductResponse productResponse) {
+    public ResponseEntity<ProductResponse> updateProduct(
+            @PathVariable UUID id,
+            @RequestBody @Valid ProductRequest productRequest) {
         ProductResponse updatedProductResponse = productService
-                .updateProduct(id, productResponse);
+                .updateProduct(id, productRequest);
         return ResponseEntity
-                .status(200)
-                .body(updatedProductResponse);
+                .ok(updatedProductResponse);
     }
 
 //************** DELETE *************
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProductResponse> deleteProduct(@PathVariable UUID id) {
+    public ResponseEntity<ProductResponse> deleteProduct(
+            @PathVariable UUID id) {
         ProductResponse deletedProductResponse = productService
                 .deleteProductById(id);
 

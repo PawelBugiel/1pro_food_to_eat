@@ -45,12 +45,14 @@ public class ProductServiceImpl implements ProductService {
             savedProduct = productRepository.save(passedProduct);
         } else {
             Product actualProduct = existingProduct.get();
+
             actualProduct = Product.builder()
                     .id(actualProduct.getId())
                     .name(actualProduct.getName())
                     .quantity(actualProduct.getQuantity() + productRequest.getQuantity())
                     .expiryDate(actualProduct.getExpiryDate())
                     .build();
+
             savedProduct = productRepository.save(actualProduct);
         }
         return productMapper.toProductResponse(savedProduct);
@@ -96,8 +98,10 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductResponse> findProductsWithExpiredDate(int page, Integer pageSize, String sortBy, Sort.Direction sortDirection) {
         Pageable pageable = pageableValidator
                 .validatePageable(page, pageSize, sortBy, sortDirection);
+
         Page<Product> expiredProductsPage = productRepository
                 .findWithExpiredDate(pageable);
+
         return expiredProductsPage
                 .map(productMapper::toProductResponse);
     }
@@ -105,20 +109,13 @@ public class ProductServiceImpl implements ProductService {
 //************** UPDATE *************
 
     @Override
-    public ProductResponse updateProduct(UUID id, ProductResponse productResponse) {
-        var productToUpdate = productRepository.findById(id)
+    public ProductResponse updateProduct(UUID id, ProductRequest  productRequest) {
+        Product productToUpdate = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
-        if (!id.equals(productResponse.id()))
-            throw new ProductNotFoundException(id) ;
 
-        Product newProduct = Product.builder()
-                .id(productToUpdate.getId())
-                .name(productResponse.name())
-                .quantity(productResponse.quantity())
-                .expiryDate(productResponse.expiryDate())
-                .build();
+        productMapper.updateProductFromRequest(productRequest, productToUpdate);
 
-        Product savedProduct = productRepository.save(newProduct);
+        Product savedProduct = productRepository.save(productToUpdate);
 
         return productMapper.toProductResponse(savedProduct);
     }
@@ -129,7 +126,9 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse deleteProductById(UUID id) {
         Product foundProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
+
         ProductResponse productResponse = productMapper.toProductResponse(foundProduct);
+
         productRepository.deleteById(id);
 
         return productResponse;
