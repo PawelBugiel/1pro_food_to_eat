@@ -5,15 +5,15 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.0</version>
+        <version>3.5.0</version>
         <relativePath/>
     </parent>
 
     <groupId>com.pawelbugiel</groupId>
-    <artifactId>foodtoeat</artifactId>
+    <artifactId>waste-no-food</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>foodToEat</name>
+    <name>WasteNoFood</name>
     <description>practiceProject</description>
 
     <properties>

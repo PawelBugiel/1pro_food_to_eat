@@ -16,6 +16,7 @@
 * [DEV-FEATURE-26.05.2025: Profile separation](#dev-feature-26052025-profile-separation)
 * [BE-REFINE-SECURITY-28-05-2025: Database credentials](#be-refine-security-28-05-2025-database-credentials)
 * [FE/BE-BUG-03-06-2025: Add new product](#febe-bug-03-06-2025-add-new-product)
+* [FE/BE-FEATURE-11-06-2025: Product history](#febe-feature-11-06-2025-product-history)
 
 ---
 
@@ -145,5 +146,15 @@ Dane dostępowe do bazy danych przenieść z pliku `application.properties` do *
 ## FE/BE-BUG-03-06-2025: Add new product
 
 Nie można dodać produktu z polskimi znakami diakrytycznymi.
+
+
+*<sub>[Wróć do Spisu Treści](#spis-treści)</sub>*
+## FE/BE-FEATURE-11-06-2025: Product history
+
+Dodać logowanie historii zmian w liście produktów: 
+kto coś zmienił 
+kiedy - data i czas
+szczególy zmian - nazwa produktu, nowa nazwa produktu itp. 
+
 
 *<sub>[Wróć do Spisu Treści](#spis-treści)</sub>*
