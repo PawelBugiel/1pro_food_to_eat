@@ -47,14 +47,7 @@ public class ProductServiceImpl implements ProductService {
         } else {
             Product actualProduct = existingProduct.get();
 
-            actualProduct = Product
-                    .builder()
-                    .id(actualProduct.getId())
-                    .name(actualProduct.getName())
-                    .quantity(actualProduct.getQuantity() + productRequest.getQuantity())
-                    .expiryDate(actualProduct.getExpiryDate())
-                    .build();
-
+            actualProduct.setQuantity(actualProduct.getQuantity() + productRequest.getQuantity());
             savedProduct = productRepository.save(actualProduct);
         }
         return productMapper.toProductResponse(savedProduct);
