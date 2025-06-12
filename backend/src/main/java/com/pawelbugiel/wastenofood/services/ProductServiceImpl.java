@@ -6,6 +6,7 @@ import com.pawelbugiel.wastenofood.exceptions.ProductNotFoundException;
 import com.pawelbugiel.wastenofood.mappers.ProductMapper;
 import com.pawelbugiel.wastenofood.models.Product;
 import com.pawelbugiel.wastenofood.repositories.ProductRepository;
+import com.pawelbugiel.wastenofood.validators.ObjectValidator;
 import com.pawelbugiel.wastenofood.validators.PageableValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -23,19 +25,25 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final PageableValidator pageableValidator;
+    private final ObjectValidator<ProductRequest> objectValidator;
 
     private final static Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, PageableValidator pageValidator) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, PageableValidator pageValidator, ObjectValidator<ProductRequest> objectValidator) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
         this.pageableValidator = pageValidator;
+        this.objectValidator = objectValidator;
     }
 
 //************** CREATE *************
 
     @Override
+    @Transactional
     public ProductResponse createProduct(ProductRequest productRequest) {
+
+        objectValidator.validate(productRequest);
+
         Optional<Product> existingProduct = productRepository
                 .findByNameAndExpiryDate(productRequest.getName(), productRequest.getExpiryDate());
 
@@ -111,6 +119,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse updateProduct(UUID id, ProductRequest productRequest) {
+
+        objectValidator.validate(productRequest);
 
         Product productToUpdate = findProductByIdOrThrow(id);
 

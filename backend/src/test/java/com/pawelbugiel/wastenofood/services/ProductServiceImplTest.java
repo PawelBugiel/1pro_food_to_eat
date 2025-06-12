@@ -6,6 +6,8 @@ import com.pawelbugiel.wastenofood.dtos.ProductResponse;
 import com.pawelbugiel.wastenofood.mappers.ProductMapper;
 import com.pawelbugiel.wastenofood.models.Product;
 import com.pawelbugiel.wastenofood.repositories.ProductRepository;
+import com.pawelbugiel.wastenofood.validators.ObjectValidator;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -35,21 +38,20 @@ import static org.mockito.Mockito.*;
  * }
  */
 
-
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceImplTest {
 
     @Mock
     private ProductMapper productMapper;
-
     @Mock
     private ProductRepository productRepository;
-
+    @Mock
+    private ObjectValidator<ProductRequest> objectValidator;
     @InjectMocks
     private ProductServiceImpl underTest_ProductServiceImpl;
 
     private final UUID VALID_UUID = UUID.fromString("55a85f64-5717-4562-b3fc-2c963f66af55");
-    private final LocalDate DATE_2025_05_05 = LocalDate.of(2025, 5, 5);
+    private final LocalDate DATE_NEXT_YEAR = LocalDate.now().plusYears(1);
     private final String NAME_MILK = "Milk";
     private final int QTY_1 = 1;
 
@@ -61,16 +63,12 @@ public class ProductServiceImplTest {
     public void testCreateProduct_whenValidProductRequestPassedAndProductWithSameNameAndExpiryDateDoesNotExist_ReturnsProductResponse() {
 
         // GIVEN
-        ProductRequest requestedProduct = new ProductRequest(NAME_MILK, QTY_1, DATE_2025_05_05);
+        ProductRequest requestedProduct = new ProductRequest(NAME_MILK, QTY_1, DATE_NEXT_YEAR);
+        Product productToCreate = new Product(null, NAME_MILK, QTY_1, DATE_NEXT_YEAR);
+        Product savedProduct = new Product(VALID_UUID, NAME_MILK, QTY_1, DATE_NEXT_YEAR);
+        ProductResponse expectedResponse = new ProductResponse(VALID_UUID, NAME_MILK, QTY_1, DATE_NEXT_YEAR);
 
-        Product productToCreate = new Product(null, NAME_MILK, QTY_1, DATE_2025_05_05);
-
-        Product savedProduct = new Product(VALID_UUID, NAME_MILK, QTY_1, DATE_2025_05_05);
-
-        ProductResponse expectedResponse = new ProductResponse(VALID_UUID, NAME_MILK, QTY_1, DATE_2025_05_05);
-
-        // set how the productRepository mock should behave
-        when(productRepository.findByNameAndExpiryDate(NAME_MILK, DATE_2025_05_05))
+        when(productRepository.findByNameAndExpiryDate(NAME_MILK, DATE_NEXT_YEAR))
                 .thenReturn(Optional.empty());
 
         when(productMapper.toProduct(requestedProduct))
@@ -86,7 +84,6 @@ public class ProductServiceImplTest {
         ProductResponse actualResponse = underTest_ProductServiceImpl.createProduct(requestedProduct);
 
         // THEN
-
         assertThat(actualResponse.name()).isEqualTo(expectedResponse.name());
         assertThat(actualResponse.expiryDate()).isEqualTo(expectedResponse.expiryDate());
         assertThat(actualResponse.quantity()).isEqualTo(expectedResponse.quantity());
@@ -101,13 +98,11 @@ public class ProductServiceImplTest {
     @DisplayName("CREATE: Should add quantity to existing Product and Return ProductResponse")
     public void testCreateProduct_whenValidProductRequestPassedAndProductWithTheSameNameAndExpiryDateExists_ReturnsProductResponse() {
 
-        ProductRequest requestedProductWith_2_Milk = new ProductRequest(NAME_MILK, 2, DATE_2025_05_05);
-
-        Product existingProductWith_1_Milk = new Product(VALID_UUID, NAME_MILK, 1, DATE_2025_05_05);
-
-        ProductResponse expectedResponseWith_3_Milk = new ProductResponse(VALID_UUID, NAME_MILK, 3, DATE_2025_05_05);
-
         //GIVEN
+        ProductRequest requestedProductWith_2_Milk = new ProductRequest(NAME_MILK, 2, DATE_NEXT_YEAR);
+        Product existingProductWith_1_Milk = new Product(VALID_UUID, NAME_MILK, 1, DATE_NEXT_YEAR);
+        ProductResponse expectedResponseWith_3_Milk = new ProductResponse(VALID_UUID, NAME_MILK, 3, DATE_NEXT_YEAR);
+
         when(productRepository.findByNameAndExpiryDate(anyString(), any(LocalDate.class)))
                 .thenReturn(Optional.of(existingProductWith_1_Milk));
 
@@ -127,9 +122,29 @@ public class ProductServiceImplTest {
 
         verify(productRepository).findByNameAndExpiryDate(requestedProductWith_2_Milk.getName(), requestedProductWith_2_Milk.getExpiryDate());
         verify(productRepository).save(existingProductWith_1_Milk);
-        verifyNoMoreInteractions(productRepository);
         verify(productMapper).toProductResponse(existingProductWith_1_Milk);
+        verifyNoMoreInteractions(productRepository);
         verify(productMapper, never()).toProduct(any(ProductRequest.class));
+    }
+
+    @Test
+    @DisplayName("CREATE: Should throw IllegalArgumentException when ProductRequest is invalid")
+    public void testCreateProduct_whenInvalidProductRequestPassed_ThrowsIllegalArgumentException() {
+
+        //GIVEN
+        ProductRequest invalidRequest = new ProductRequest(NAME_MILK, -22, DATE_NEXT_YEAR);
+
+        doThrow(new ValidationException("Validation failed"))
+                .when(objectValidator)
+                .validate(invalidRequest);
+
+        //WHEN & THEN
+        assertThatThrownBy(() -> underTest_ProductServiceImpl.createProduct(invalidRequest))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("Validation failed");
+
+        verify(objectValidator).validate(invalidRequest);
+        verify(productRepository, never()).save(any(Product.class));
     }
 }
 

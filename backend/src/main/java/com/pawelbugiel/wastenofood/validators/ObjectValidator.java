@@ -21,7 +21,7 @@ public class ObjectValidator<T> {
                     .map(ConstraintViolation::getMessage)
                     .collect(Collectors.toSet());
 
-            throw new ValidationException("Pawel Passed data is not valid. Errors : " + errorMessages);
+            throw new ValidationException("Validation failed: " + errorMessages);
         }
     }
 }
