@@ -8,17 +8,24 @@ import java.util.stream.Collectors;
 
 @Component
 public class ObjectValidator<T> {
-    private final ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    private final Validator validator;
 
-    private final Validator validator = validatorFactory.getValidator();
+    public ObjectValidator(Validator validator) {
+        this.validator = validator;
+    }
 
     public void validate(T objectToValidate) {
+
+        if (objectToValidate == null) {
+            throw new ValidationException("Object to validate cannot be null");
+        }
+
         Set<ConstraintViolation<T>> violations = validator.validate(objectToValidate);
 
         if (!violations.isEmpty()) {
             var errorMessages = violations
                     .stream()
-                    .map(ConstraintViolation::getMessage)
+                    .map(v -> v.getPropertyPath() + ": " + v.getMessage())
                     .collect(Collectors.toSet());
 
             throw new ValidationException("Validation failed: " + errorMessages);
