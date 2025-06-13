@@ -8,6 +8,7 @@ import com.pawelbugiel.wastenofood.mappers.ProductMapper;
 import com.pawelbugiel.wastenofood.models.Product;
 import com.pawelbugiel.wastenofood.repositories.ProductRepository;
 import com.pawelbugiel.wastenofood.validators.ObjectValidator;
+import com.pawelbugiel.wastenofood.validators.PageableValidator;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,6 +38,8 @@ public class ProductServiceImplTest {
     private ProductRepository productRepository;
     @Mock
     private ObjectValidator<ProductRequest> objectValidator;
+    @Mock
+    private PageableValidator pageableValidator;
     @InjectMocks
     private ProductServiceImpl underTest_ProductServiceImpl;
 
@@ -156,6 +161,221 @@ public class ProductServiceImplTest {
 
 //************** READ *************
 
+    @Test
+    @DisplayName("READ: Should return a page of ProductResponse when products exist")
+    public void testFindAllProducts_whenProductsExist_ReturnsPageOfProductResponses() {
+        // GIVEN
+        int page = 0;
+        int pageSize = 2;
+        String sortBy = "name";
+        Sort.Direction sortDirection = Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sortDirection, sortBy));
+
+        Product product1 = new Product(UUID.randomUUID(), "Bread", 2, DATE_YEAR_3K);
+        Product product2 = new Product(UUID.randomUUID(), "Milk", 1, DATE_YEAR_3K);
+        List<Product> productList = List.of(product1, product2);
+        Page<Product> productPage = new PageImpl<>(productList, pageable, productList.size());
+
+        ProductResponse response1 = new ProductResponse(product1.getId(), product1.getName(), product1.getQuantity(), product1.getExpiryDate());
+        ProductResponse response2 = new ProductResponse(product2.getId(), product2.getName(), product2.getQuantity(), product2.getExpiryDate());
+
+        when(productRepository.findAll(pageable)).thenReturn(productPage);
+        when(pageableValidator.validatePageable(page, pageSize, sortBy, sortDirection)).thenReturn(pageable);
+        when(productMapper.toProductResponse(product1)).thenReturn(response1);
+        when(productMapper.toProductResponse(product2)).thenReturn(response2);
+
+        // WHEN
+        Page<ProductResponse> result = underTest_ProductServiceImpl.findAllProducts(page, pageSize, sortBy, sortDirection);
+
+        // THEN
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getContent()).containsExactly(response1, response2);
+
+        verify(productRepository).findAll(pageable);
+        verify(productMapper).toProductResponse(product1);
+        verify(productMapper).toProductResponse(product2);
+        verifyNoMoreInteractions(productRepository);
+        verifyNoMoreInteractions(productMapper);
+    }
+
+    @Test
+    @DisplayName("READ: Should return empty page when no products exist")
+    public void testFindAllProducts_whenNoProductsExist_ReturnsEmptyPage() {
+        // GIVEN
+        int page = 0;
+        int pageSize = 10;
+        String sortBy = "expiryDate";
+        Sort.Direction sortDirection = Sort.Direction.DESC;
+
+        Page<Product> emptyPage = new PageImpl<>(List.of());
+
+        when(productRepository.findAll(any(Pageable.class)))
+                .thenReturn(emptyPage);
+        when(pageableValidator.validatePageable(any(), any(), any(), any()))
+                .thenReturn(PageRequest.of(page, pageSize, Sort.by(sortDirection, sortBy)));
+
+        // WHEN
+        Page<ProductResponse> result = underTest_ProductServiceImpl.findAllProducts(page, pageSize, sortBy, sortDirection);
+
+        // THEN
+        assertThat(result).isEmpty();
+
+        verify(productRepository).findAll(any(Pageable.class));
+        verifyNoInteractions(productMapper);
+        verifyNoMoreInteractions(productRepository);
+    }
+
+    @Test
+    @DisplayName("READ: Should return ProductResponse")
+    void testFindProductById_whenProductExists_returnsProductResponse() {
+        // GIVEN
+        UUID productId = UUID.randomUUID();
+
+        Product product = Product.builder()
+                .id(productId)
+                .name("Chleb")
+                .build();
+
+        ProductResponse expectedResponse = ProductResponse.builder()
+                .id(productId)
+                .name("Chleb")
+                .build();
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(productMapper.toProductResponse(product)).thenReturn(expectedResponse);
+
+        // WHEN
+        ProductResponse actualResponse = underTest_ProductServiceImpl.findProductById(productId);
+
+        // THEN
+        assertThat(actualResponse).isEqualTo(expectedResponse);
+
+        verify(productRepository).findById(productId);
+        verify(productMapper).toProductResponse(product);
+        verifyNoMoreInteractions(productRepository, productMapper);
+    }
+
+    @Test
+    @DisplayName("READ: Throws ProductNotFoundException, when product does not exist.")
+    void testFindProductById_whenProductDoesNotExist_throwsProductNotFoundException() {
+        // GIVEN
+        UUID productId = UUID.randomUUID();
+
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        // WHEN + THEN
+        assertThatThrownBy(() -> underTest_ProductServiceImpl.findProductById(productId))
+                .isInstanceOf(ProductNotFoundException.class)
+                .hasMessageContaining(productId.toString());
+
+        verify(productRepository).findById(productId);
+        verifyNoInteractions(productMapper);
+    }
+
+    @Test
+    @DisplayName("READ: Should return page of products matching partial name.")
+    void testFindProductsByPartialName_whenMatchingProductsExist_returnsProductPage() {
+        // GIVEN
+        String partialName = "bread";
+        int page = 0;
+        int pageSize = 2;
+        String sortBy = "expiryDate";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
+
+        Product product1 = Product.builder().id(UUID.randomUUID()).name("breadcrumb").build();
+        Product product2 = Product.builder().id(UUID.randomUUID()).name("brown bread").build();
+
+        ProductResponse response1 = ProductResponse.builder().id(product1.getId()).name(product1.getName()).build();
+        ProductResponse response2 = ProductResponse.builder().id(product2.getId()).name(product2.getName()).build();
+
+        Page<Product> productPage = new PageImpl<>(List.of(product1, product2), pageable, 2);
+
+        when(pageableValidator.validatePageable(page, pageSize, sortBy, direction)).thenReturn(pageable);
+        when(productRepository.findByPartialName(partialName, pageable)).thenReturn(productPage);
+        when(productMapper.toProductResponse(product1)).thenReturn(response1);
+        when(productMapper.toProductResponse(product2)).thenReturn(response2);
+
+        // WHEN
+        Page<ProductResponse> result = underTest_ProductServiceImpl.findProductsByPartialName(partialName, page, pageSize, sortBy, direction);
+
+        // THEN
+        assertThat(result.getContent()).containsExactly(response1, response2);
+
+        verify(pageableValidator).validatePageable(page, pageSize, sortBy, direction);
+        verify(productRepository).findByPartialName(partialName, pageable);
+        verify(productMapper).toProductResponse(product1);
+        verify(productMapper).toProductResponse(product2);
+        verifyNoMoreInteractions(productRepository, productMapper);
+    }
+
+    @Test
+    @DisplayName("READ: Should return empty page when no products match the partial name.")
+    void testFindProductsByPartialName_whenNoProductsMatch_returnsEmptyPage() {
+        // GIVEN
+        String partialName = "non-existing-product";
+        int page = 0;
+        int pageSize = 1;
+        String sortBy = "expiryDate";
+        Sort.Direction direction = Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
+        Page<Product> emptyProductPage = Page.empty(pageable);
+
+        when(pageableValidator.validatePageable(page, pageSize, sortBy, direction)).thenReturn(pageable);
+        when(productRepository.findByPartialName(partialName, pageable)).thenReturn(emptyProductPage);
+
+        // WHEN
+        Page<ProductResponse> result = underTest_ProductServiceImpl.findProductsByPartialName(partialName, page, pageSize, sortBy, direction);
+
+        // THEN
+        assertThat(result).isNotNull();
+        assertThat(result.getContent()).isEmpty();
+
+        verify(pageableValidator).validatePageable(page, pageSize, sortBy, direction);
+        verify(productRepository).findByPartialName(partialName, pageable);
+        verifyNoInteractions(productMapper);
+    }
+
+    @Test
+    @DisplayName("READ: Should return page of expired products.")
+    void testFindProductsWithExpiredDate_whenExpiredProductsExist_returnsPage() {
+        // GIVEN
+        int page = 0;
+        int pageSize = 2;
+        String sortBy = "expiryDate";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
+
+        Product product1 = Product.builder().id(UUID.randomUUID()).name("Joghurt").expiryDate(LocalDate.now().minusDays(1)).build();
+        Product product2 = Product.builder().id(UUID.randomUUID()).name("Cheese").expiryDate(LocalDate.now().minusDays(2)).build();
+
+        ProductResponse response1 = ProductResponse.builder().id(product1.getId()).name(product1.getName()).build();
+        ProductResponse response2 = ProductResponse.builder().id(product2.getId()).name(product2.getName()).build();
+
+        Page<Product> expiredPage = new PageImpl<>(List.of(product1, product2), pageable, 2);
+
+        when(pageableValidator.validatePageable(page, pageSize, sortBy, direction)).thenReturn(pageable);
+        when(productRepository.findWithExpiredDate(pageable)).thenReturn(expiredPage);
+        when(productMapper.toProductResponse(product1)).thenReturn(response1);
+        when(productMapper.toProductResponse(product2)).thenReturn(response2);
+
+        // WHEN
+        Page<ProductResponse> result = underTest_ProductServiceImpl.findProductsWithExpiredDate(page, pageSize, sortBy, direction);
+
+        // THEN
+        assertThat(result.getContent()).containsExactly(response1, response2);
+
+        verify(pageableValidator).validatePageable(page, pageSize, sortBy, direction);
+        verify(productRepository).findWithExpiredDate(pageable);
+        verify(productMapper).toProductResponse(product1);
+        verify(productMapper).toProductResponse(product2);
+        verifyNoMoreInteractions(productRepository, productMapper);
+    }
+
+
 
     //************** UPDATE *************
     @Test
@@ -236,8 +456,59 @@ public class ProductServiceImplTest {
         verifyNoMoreInteractions(productRepository);
         verifyNoInteractions(productMapper);
     }
+//************** DELETE *************
+
+    @Test
+    @DisplayName("DELETE: Should delete existing Product and return ProductResponse")
+    public void testDeleteProductById_whenProductExists_ReturnsDeletedProductResponse() {
+
+        // GIVEN
+        UUID productId = VALID_UUID;
+        Product foundProduct = new Product(productId, NAME_MILK, QTY_1, DATE_YEAR_3K);
+        ProductResponse expectedResponse = new ProductResponse(productId, NAME_MILK, QTY_1, DATE_YEAR_3K);
+
+        when(productRepository.findById(productId))
+                .thenReturn(Optional.of(foundProduct));
+
+        when(productMapper.toProductResponse(foundProduct))
+                .thenReturn(expectedResponse);
+
+        // WHEN
+        ProductResponse actualResponse = underTest_ProductServiceImpl.deleteProductById(productId);
+
+        // THEN
+        assertThat(actualResponse.name()).isEqualTo(expectedResponse.name());
+        assertThat(actualResponse.quantity()).isEqualTo(expectedResponse.quantity());
+        assertThat(actualResponse.expiryDate()).isEqualTo(expectedResponse.expiryDate());
+
+        verify(productRepository).findById(productId);
+        verify(productMapper).toProductResponse(foundProduct);
+        verify(productRepository).deleteById(productId);
+        verifyNoMoreInteractions(productRepository);
+        verifyNoMoreInteractions(productMapper);
+    }
+
+    @Test
+    @DisplayName("DELETE: Should throw ProductNotFoundException when product with given ID does not exist")
+    public void testDeleteProductById_whenProductWithGivenIdDoesNotExist_ThrowsProductNotFoundException() {
+
+        // GIVEN
+        UUID productId = VALID_UUID;
+
+        when(productRepository.findById(productId))
+                .thenReturn(Optional.empty());
+
+        // WHEN + THEN
+        assertThatThrownBy(() -> underTest_ProductServiceImpl.deleteProductById(productId))
+                .isInstanceOf(ProductNotFoundException.class)
+                .hasMessageContaining(productId.toString());
+
+        verify(productRepository).findById(productId);
+        verifyNoMoreInteractions(productRepository);
+        verifyNoInteractions(productMapper);
+    }
+
 
 }
-//************** DELETE *************
 
 
